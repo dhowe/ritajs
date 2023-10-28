@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 
-import RiTa from '../lib/rita.js';
+import RiTa from './index.js';
 
 describe('Stemmer', function () {
 

@@ -1,158 +1,158 @@
-
 import { expect } from 'chai';
-import RiTa from '../lib/rita.js';
 
-let hasLex = false;
+import RiTa from './index.js';
+
+let hasLex = true;
 
 describe('Conjugator', function () {
 
   it('Should call pastPart', function () {
 
-    equal(RiTa.pastPart("pen"), "penned"); // rita #150
-    equal(RiTa.pastPart("red"), "red");
+    expect(RiTa.pastPart("pen")).eq( "penned"); // rita #150
+    expect(RiTa.pastPart("red")).eq( "red");
 
-    equal(RiTa.pastPart("sleep"), "slept");
-    equal(RiTa.pastPart("withhold"), "withheld");
+    expect(RiTa.pastPart("sleep")).eq( "slept");
+    expect(RiTa.pastPart("withhold")).eq( "withheld");
 
-    equal(RiTa.pastPart("cut"), "cut");
-    equal(RiTa.pastPart("go"), "gone");
-    equal(RiTa.pastPart("swim"), "swum");
-    equal(RiTa.pastPart("would"), "would");
-    equal(RiTa.pastPart("might"), "might");
-    equal(RiTa.pastPart("run"), "run");
-    equal(RiTa.pastPart("speak"), "spoken");
-    equal(RiTa.pastPart("break"), "broken");
-    equal(RiTa.pastPart("plead"), "pled");
-    equal(RiTa.pastPart(""), "");
+    expect(RiTa.pastPart("cut")).eq( "cut");
+    expect(RiTa.pastPart("go")).eq( "gone");
+    expect(RiTa.pastPart("swim")).eq( "swum");
+    expect(RiTa.pastPart("would")).eq( "would");
+    expect(RiTa.pastPart("might")).eq( "might");
+    expect(RiTa.pastPart("run")).eq( "run");
+    expect(RiTa.pastPart("speak")).eq( "spoken");
+    expect(RiTa.pastPart("break")).eq( "broken");
+    expect(RiTa.pastPart("plead")).eq( "pled");
+    expect(RiTa.pastPart("")).eq( "");
 
     // or shined
-    equal(RiTa.pastPart("shrink"), "shrunk");
+    expect(RiTa.pastPart("shrink")).eq( "shrunk");
 
     // or shrunken
-    equal(RiTa.pastPart("stink"), "stunk");
-    equal(RiTa.pastPart("study"), "studied");
+    expect(RiTa.pastPart("stink")).eq( "stunk");
+    expect(RiTa.pastPart("study")).eq( "studied");
 
     //words with wrong 'vb' tag
     //https://github.com/dhowe/rita/issues/177
-    equal(RiTa.pastPart("bite"), "bitten");
-    equal(RiTa.pastPart("break"), "broken");
-    equal(RiTa.pastPart("call"), "called");
-    equal(RiTa.pastPart("commit"), "committed");
-    equal(RiTa.pastPart("computerize"), "computerized");
-    equal(RiTa.pastPart("concern"), "concerned");
-    equal(RiTa.pastPart("discriminate"), "discriminated");
-    equal(RiTa.pastPart("end"), "ended");
-    equal(RiTa.pastPart("expect"), "expected");
-    equal(RiTa.pastPart("finish"), "finished");
-    equal(RiTa.pastPart("gain"), "gained");
-    equal(RiTa.pastPart("get"), "gotten");
-    equal(RiTa.pastPart("increase"), "increased");
-    equal(RiTa.pastPart("involve"), "involved");
-    equal(RiTa.pastPart("launch"), "launched");
-    equal(RiTa.pastPart("lead"), "led");
-    equal(RiTa.pastPart("live"), "lived");
-    equal(RiTa.pastPart("outpace"), "outpaced");
-    equal(RiTa.pastPart("oversee"), "overseen");
-    equal(RiTa.pastPart("oversell"), "oversold");
-    equal(RiTa.pastPart("pale"), "paled");
-    equal(RiTa.pastPart("prepay"), "prepaid");
-    equal(RiTa.pastPart("pressure"), "pressured");
-    equal(RiTa.pastPart("proliferate"), "proliferated");
-    equal(RiTa.pastPart("remake"), "remade");
-    equal(RiTa.pastPart("reopen"), "reopened");
-    equal(RiTa.pastPart("report"), "reported");
-    equal(RiTa.pastPart("resell"), "resold");
-    equal(RiTa.pastPart("settle"), "settled");
+    expect(RiTa.pastPart("bite")).eq( "bitten");
+    expect(RiTa.pastPart("break")).eq( "broken");
+    expect(RiTa.pastPart("call")).eq( "called");
+    expect(RiTa.pastPart("commit")).eq( "committed");
+    expect(RiTa.pastPart("computerize")).eq( "computerized");
+    expect(RiTa.pastPart("concern")).eq( "concerned");
+    expect(RiTa.pastPart("discriminate")).eq( "discriminated");
+    expect(RiTa.pastPart("end")).eq( "ended");
+    expect(RiTa.pastPart("expect")).eq( "expected");
+    expect(RiTa.pastPart("finish")).eq( "finished");
+    expect(RiTa.pastPart("gain")).eq( "gained");
+    expect(RiTa.pastPart("get")).eq( "gotten");
+    expect(RiTa.pastPart("increase")).eq( "increased");
+    expect(RiTa.pastPart("involve")).eq( "involved");
+    expect(RiTa.pastPart("launch")).eq( "launched");
+    expect(RiTa.pastPart("lead")).eq( "led");
+    expect(RiTa.pastPart("live")).eq( "lived");
+    expect(RiTa.pastPart("outpace")).eq( "outpaced");
+    expect(RiTa.pastPart("oversee")).eq( "overseen");
+    expect(RiTa.pastPart("oversell")).eq( "oversold");
+    expect(RiTa.pastPart("pale")).eq( "paled");
+    expect(RiTa.pastPart("prepay")).eq( "prepaid");
+    expect(RiTa.pastPart("pressure")).eq( "pressured");
+    expect(RiTa.pastPart("proliferate")).eq( "proliferated");
+    expect(RiTa.pastPart("remake")).eq( "remade");
+    expect(RiTa.pastPart("reopen")).eq( "reopened");
+    expect(RiTa.pastPart("report")).eq( "reported");
+    expect(RiTa.pastPart("resell")).eq( "resold");
+    expect(RiTa.pastPart("settle")).eq( "settled");
 
-    equal(RiTa.pastPart("bite"), "bitten");
-    equal(RiTa.pastPart("break"), "broken");
-    equal(RiTa.pastPart("build"), "built");
-    equal(RiTa.pastPart("enter"), "entered");
-    equal(RiTa.pastPart("own"), "owned");
-    equal(RiTa.pastPart("plan"), "planned");
-    equal(RiTa.pastPart("rent"), "rented");
-    equal(RiTa.pastPart("repurchase"), "repurchased");
-    equal(RiTa.pastPart("roast"), "roasted");
-    
-    equal(RiTa.pastPart("start"), "started");
-    equal(RiTa.pastPart("bust"), "busted");
-    equal(RiTa.pastPart("heart"), "hearted");
-    equal(RiTa.pastPart("closet"), "closeted");
-    equal(RiTa.pastPart("bear"), "borne");
+    expect(RiTa.pastPart("bite")).eq( "bitten");
+    expect(RiTa.pastPart("break")).eq( "broken");
+    expect(RiTa.pastPart("build")).eq( "built");
+    expect(RiTa.pastPart("enter")).eq( "entered");
+    expect(RiTa.pastPart("own")).eq( "owned");
+    expect(RiTa.pastPart("plan")).eq( "planned");
+    expect(RiTa.pastPart("rent")).eq( "rented");
+    expect(RiTa.pastPart("repurchase")).eq( "repurchased");
+    expect(RiTa.pastPart("roast")).eq( "roasted");
+
+    expect(RiTa.pastPart("start")).eq( "started");
+    expect(RiTa.pastPart("bust")).eq( "busted");
+    expect(RiTa.pastPart("heart")).eq( "hearted");
+    expect(RiTa.pastPart("closet")).eq( "closeted");
+    expect(RiTa.pastPart("bear")).eq( "borne");
 
     if (hasLex) {
       // is already past part
-      equal(RiTa.pastPart("hopped"), "hopped");
-      equal(RiTa.pastPart("hated"), "hated");
-      equal(RiTa.pastPart("created"), "created");
-      equal(RiTa.pastPart("committed"), "committed");
-      equal(RiTa.pastPart("submitted"), "submitted");
-      equal(RiTa.pastPart("come"), "come");
-      equal(RiTa.pastPart("forgotten"), "forgotten");
-      equal(RiTa.pastPart("arisen"), "arisen");
-      equal(RiTa.pastPart("eaten"), "eaten");
-      equal(RiTa.pastPart("chosen"), "chosen");
-      equal(RiTa.pastPart("frozen"), "frozen");
-      equal(RiTa.pastPart("stolen"), "stolen");
-      equal(RiTa.pastPart("worn"), "worn");
-      equal(RiTa.pastPart("broken"), "broken");
-      equal(RiTa.pastPart("written"), "written");
-      equal(RiTa.pastPart("ridden"), "ridden");
-      equal(RiTa.pastPart("drawn"), "drawn");
-      equal(RiTa.pastPart("known"), "known");
-      equal(RiTa.pastPart("grown"), "grown");
-      equal(RiTa.pastPart("done"), "done");
-      equal(RiTa.pastPart("gone"), "gone");
+      expect(RiTa.pastPart("hopped")).eq( "hopped");
+      expect(RiTa.pastPart("hated")).eq( "hated");
+      expect(RiTa.pastPart("created")).eq( "created");
+      expect(RiTa.pastPart("committed")).eq( "committed");
+      expect(RiTa.pastPart("submitted")).eq( "submitted");
+      expect(RiTa.pastPart("come")).eq( "come");
+      expect(RiTa.pastPart("forgotten")).eq( "forgotten");
+      expect(RiTa.pastPart("arisen")).eq( "arisen");
+      expect(RiTa.pastPart("eaten")).eq( "eaten");
+      expect(RiTa.pastPart("chosen")).eq( "chosen");
+      expect(RiTa.pastPart("frozen")).eq( "frozen");
+      expect(RiTa.pastPart("stolen")).eq( "stolen");
+      expect(RiTa.pastPart("worn")).eq( "worn");
+      expect(RiTa.pastPart("broken")).eq( "broken");
+      expect(RiTa.pastPart("written")).eq( "written");
+      expect(RiTa.pastPart("ridden")).eq( "ridden");
+      expect(RiTa.pastPart("drawn")).eq( "drawn");
+      expect(RiTa.pastPart("known")).eq( "known");
+      expect(RiTa.pastPart("grown")).eq( "grown");
+      expect(RiTa.pastPart("done")).eq( "done");
+      expect(RiTa.pastPart("gone")).eq( "gone");
 
-      equal(RiTa.pastPart("awake"), "awoken");
-      equal(RiTa.pastPart("become"), "become");
-      equal(RiTa.pastPart("drink"), "drunk");
-      equal(RiTa.pastPart("run"), "run");
-      equal(RiTa.pastPart("shine"), "shone");
+      expect(RiTa.pastPart("awake")).eq( "awoken");
+      expect(RiTa.pastPart("become")).eq( "become");
+      expect(RiTa.pastPart("drink")).eq( "drunk");
+      expect(RiTa.pastPart("run")).eq( "run");
+      expect(RiTa.pastPart("shine")).eq( "shone");
 
-      equal(RiTa.pastPart("grown"), "grown");
-      equal(RiTa.pastPart("heard"), "heard");
+      expect(RiTa.pastPart("grown")).eq( "grown");
+      expect(RiTa.pastPart("heard")).eq( "heard");
     }
   });
 
   it('Should call presentPart', function () {
 
-    equal(RiTa.presentPart(""), "");
-    equal(RiTa.presentPart("sleep"), "sleeping");
-    equal(RiTa.presentPart("withhold"), "withholding");
+    expect(RiTa.presentPart("")).eq( "");
+    expect(RiTa.presentPart("sleep")).eq( "sleeping");
+    expect(RiTa.presentPart("withhold")).eq( "withholding");
 
-    equal(RiTa.presentPart("cut"), "cutting");
-    equal(RiTa.presentPart("go"), "going");
-    equal(RiTa.presentPart("run"), "running");
-    equal(RiTa.presentPart("speak"), "speaking");
-    equal(RiTa.presentPart("break"), "breaking");
-    equal(RiTa.presentPart("become"), "becoming");
-    equal(RiTa.presentPart("plead"), "pleading");
-    equal(RiTa.presentPart("awake"), "awaking");
-    equal(RiTa.presentPart("study"), "studying");
+    expect(RiTa.presentPart("cut")).eq( "cutting");
+    expect(RiTa.presentPart("go")).eq( "going");
+    expect(RiTa.presentPart("run")).eq( "running");
+    expect(RiTa.presentPart("speak")).eq( "speaking");
+    expect(RiTa.presentPart("break")).eq( "breaking");
+    expect(RiTa.presentPart("become")).eq( "becoming");
+    expect(RiTa.presentPart("plead")).eq( "pleading");
+    expect(RiTa.presentPart("awake")).eq( "awaking");
+    expect(RiTa.presentPart("study")).eq( "studying");
 
-    equal(RiTa.presentPart("lie"), "lying");
-    equal(RiTa.presentPart("swim"), "swimming");
-    equal(RiTa.presentPart("run"), "running");
-    equal(RiTa.presentPart("dig"), "digging");
-    equal(RiTa.presentPart("set"), "setting");
-    equal(RiTa.presentPart("speak"), "speaking");
-    equal(RiTa.presentPart("bring"), "bringing");
-    equal(RiTa.presentPart("speak"), "speaking");
+    expect(RiTa.presentPart("lie")).eq( "lying");
+    expect(RiTa.presentPart("swim")).eq( "swimming");
+    expect(RiTa.presentPart("run")).eq( "running");
+    expect(RiTa.presentPart("dig")).eq( "digging");
+    expect(RiTa.presentPart("set")).eq( "setting");
+    expect(RiTa.presentPart("speak")).eq( "speaking");
+    expect(RiTa.presentPart("bring")).eq( "bringing");
+    expect(RiTa.presentPart("speak")).eq( "speaking");
 
-    equal(RiTa.presentPart("study "), "studying"); // trim
-    equal(RiTa.presentPart(" study"), "studying"); // trim
+    expect(RiTa.presentPart("study ")).eq( "studying"); // trim
+    expect(RiTa.presentPart(" study")).eq( "studying"); // trim
 
-    equal(RiTa.presentPart("hoe"), "hoeing");
-    equal(RiTa.presentPart("shoe"), "shoeing");
+    expect(RiTa.presentPart("hoe")).eq( "hoeing");
+    expect(RiTa.presentPart("shoe")).eq( "shoeing");
 
     if (hasLex) {
 
-      equal(RiTa.pastPart("awake"), "awoken");
-      equal(RiTa.pastPart("become"), "become");
-      equal(RiTa.pastPart("drink"), "drunk");
-      equal(RiTa.pastPart("run"), "run");
-      equal(RiTa.pastPart("shine"), "shone");
+      expect(RiTa.pastPart("awake")).eq( "awoken");
+      expect(RiTa.pastPart("become")).eq( "become");
+      expect(RiTa.pastPart("drink")).eq( "drunk");
+      expect(RiTa.pastPart("run")).eq( "run");
+      expect(RiTa.pastPart("shine")).eq( "shone");
     }
   });
 
@@ -176,7 +176,7 @@ describe('Conjugator', function () {
 
     let args, s, a, c;
 
-    equal(RiTa.conjugate("walk"), "walk");
+    expect(RiTa.conjugate("walk")).eq( "walk");
     expect(function () { RiTa.conjugate() }).to.throw();
     expect(function () { RiTa.conjugate("") }).to.throw();
 
@@ -200,7 +200,7 @@ describe('Conjugator', function () {
 
     for (let i = 0; i < s.length; i++) {
       let c = RiTa.conjugate(s[i], args);
-      equal(c, a[i]);
+      expect(c).eq(a[i]);
     }
 
     args = {
@@ -226,11 +226,11 @@ describe('Conjugator', function () {
     s = ["swim", "need", "open"];
     a = ["swam", "needed", "opened"];
 
-    ok(a.length === s.length);
+    expect(a.length === s.length).true;
 
     for (let i = 0; i < s.length; i++) {
       let c = RiTa.conjugate(s[i], args);
-      equal(c, a[i]);
+      expect(c).eq( a[i]);
     }
 
     args = {
@@ -240,7 +240,7 @@ describe('Conjugator', function () {
     };
 
     a = ["swam", "needed", "opened"];
-    ok(a.length === s.length);
+    expect(a.length === s.length).true;
 
     for (let i = 0; i < s.length; i++) {
       equal(RiTa.conjugate(s[i], args), a[i]);
@@ -252,7 +252,7 @@ describe('Conjugator', function () {
       tense: RiTa.FUTURE
     };
     a = ["will swim", "will need", "will open"];
-    ok(a.length === s.length);
+    expect(a.length === s.length).true;
 
     for (let i = 0; i < s.length; i++) {
       equal(RiTa.conjugate(s[i], args), a[i]);
@@ -265,11 +265,11 @@ describe('Conjugator', function () {
     };
     a = ["swam", "needed", "opened"];
 
-    ok(a.length === s.length);
+    expect(a.length === s.length).true;
 
     for (let i = 0; i < s.length; i++) {
       c = RiTa.conjugate(s[i], args);
-      equal(c, a[i]);
+      expect(c).eq( a[i]);
     }
 
     args = {
@@ -279,10 +279,10 @@ describe('Conjugator', function () {
       form: RiTa.INFINITIVE
     };
     a = ["to swim", "to need", "to open"];
-    ok(a.length === s.length);
+    expect(a.length === s.length).true;
     for (let i = 0; i < s.length; i++) {
       c = RiTa.conjugate(s[i], args);
-      equal(c, a[i]);
+      expect(c).eq( a[i]);
     }
 
     args = {
@@ -294,10 +294,10 @@ describe('Conjugator', function () {
 
     s = ["scorch", "burn", "hit"];
     a = ["was scorched", "was burned", "was hit"];
-    ok(a.length === s.length);
+    expect(a.length === s.length).true;
     for (let i = 0; i < s.length; i++) {
       c = RiTa.conjugate(s[i], args);
-      equal(c, a[i]);
+      expect(c).eq( a[i]);
     }
 
     s = ["swim", "need", "open"];
@@ -309,10 +309,10 @@ describe('Conjugator', function () {
       progressive: true
     };
     a = ["to be swimming", "to be needing", "to be opening"];
-    ok(a.length === s.length);
+    expect(a.length === s.length).true;
     for (let i = 0; i < s.length; i++) {
       c = RiTa.conjugate(s[i], args);
-      equal(c, a[i]);
+      expect(c).eq( a[i]);
     }
 
     args = {
@@ -324,10 +324,10 @@ describe('Conjugator', function () {
     };
 
     a = ["to have swum", "to have needed", "to have opened"];
-    ok(a.length === s.length);
+    expect(a.length === s.length).true;
     for (let i = 0; i < s.length; i++) {
       c = RiTa.conjugate(s[i], args);
-      equal(c, a[i]);
+      expect(c).eq( a[i]);
     }
 
     args = {
@@ -447,11 +447,11 @@ describe('Conjugator', function () {
     RiTa.conjugate("swim", "2PPa")
   });
 
-  if (hasLex)   it('Should call toString', function () {
-    equal(RiTa.conjugator.toString(), '  ---------------------\n  Passive = false\n  Perfect = false\n  Progressive = false\n  ---------------------\n  Number = 8\n  Person = 2\n  Tense = 4\n  ---------------------\n');
+  if (hasLex) it('Should call toString', function () {
+    expect(RiTa.conjugator.toString()).eq( '  ---------------------\n  Passive = false\n  Perfect = false\n  Progressive = false\n  ---------------------\n  Number = 8\n  Person = 2\n  Tense = 4\n  ---------------------\n');
   });
 
-  if (hasLex)  it('Should accept stems', function () {
+  if (hasLex) it('Should accept stems', function () {
 
     // https://github.com/dhowe/rita/issues/116
     let stem = RiTa.stem("walking");
@@ -515,7 +515,7 @@ describe('Conjugator', function () {
   it("Should call unconjugate", function () {
 
     if (!hasLex) this.skip();
-    
+
     expect(RiTa.conjugator.unconjugate("trepanning")).eq("trepan");
 
     // 3rd person singular (regular)
@@ -659,14 +659,14 @@ describe('Conjugator', function () {
     expect(RiTa.conjugator.unconjugate("heard")).eq("hear");
   });
 
-  it("Should conjugate verbs", function() {
+  it("Should conjugate verbs", function () {
     //words with wrong 'vb' tag
     //https://github.com/dhowe/rita/issues/177
 
     let opt = {
-        number: RiTa.SINGULAR,
-        person: RiTa.FIRST,
-        tense: RiTa.PAST
+      number: RiTa.SINGULAR,
+      person: RiTa.FIRST,
+      tense: RiTa.PAST
     };
     expect(RiTa.conjugate("bite", opt)).eq("bit");
     expect(RiTa.conjugate("break", opt)).eq("broke");
@@ -712,9 +712,7 @@ describe('Conjugator', function () {
     expect(RiTa.conjugate("rent", opt)).eq("have rented");
     expect(RiTa.conjugate("repurchase", opt)).eq("have repurchased");
     expect(RiTa.conjugate("roast", opt)).eq("have roasted");
-})
+  })
 
-  function ok(a, m) { expect(a, m).to.be.true; }
-  function def(res, m) { expect(res, m).to.not.be.undefined; }
   function equal(a, b, m) { expect(a).eq(b, m); }
 });
