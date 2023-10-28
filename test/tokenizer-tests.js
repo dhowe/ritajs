@@ -663,7 +663,7 @@ describe('Tokenizer', () => {
 
   it('Should handle numbers with commas', function () {
     let input, expected, output;
-    input = "It was 19,700 square inches, the equivalent of 409 A5 pages."; // SYNC:
+    input = "It was 19,700 square inches, the equivalent of 409 A5 pages.";
     expected = [
       'It', 'was',
       '19,700', 'square',

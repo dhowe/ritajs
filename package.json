@@ -1,5 +1,5 @@
 {
-  "name": "new-ritajs",
+  "name": "ritajs",
   "version": "1.0.0",
   "description": "",
   "type": "module",
@@ -12,5 +12,9 @@
   "devDependencies": {
     "chai": "^4.3.10",
     "mocha": "^10.2.0"
+  },
+  "dependencies": {
+    "flatted": "^3.2.9",
+    "riscript": "^1.0.3"
   }
 }
