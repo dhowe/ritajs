@@ -515,82 +515,82 @@ describe('Tokenizer', () => {
     var input = "Stealth's Open Frame, OEM style LCD monitors are designed for special mounting applications. The slim profile packaging provides an excellent solution for building into kiosks, consoles, machines and control panels. If you cannot find an off the shelf solution call us today about designing a custom solution to fit your exact needs.";
     var expected = ["Stealth's Open Frame, OEM style LCD monitors are designed for special mounting applications.", "The slim profile packaging provides an excellent solution for building into kiosks, consoles, machines and control panels.", "If you cannot find an off the shelf solution call us today about designing a custom solution to fit your exact needs."];
     var output = RiTa.sentences(input);
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = "Stealth's Open Frame, OEM style LCD monitors are designed for special mounting applications.\n\nThe slim profile packaging provides an excellent solution for building into kiosks, consoles, machines and control panels.\r\n If you cannot find an off the shelf solution call us today about designing a custom solution to fit your exact needs.";
     var expected = ["Stealth's Open Frame, OEM style LCD monitors are designed for special mounting applications.", "The slim profile packaging provides an excellent solution for building into kiosks, consoles, machines and control panels.", "If you cannot find an off the shelf solution call us today about designing a custom solution to fit your exact needs."];
     var output = RiTa.sentences(input);
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = "\"The boy went fishing.\", he said. Then he went away.";
     var expected = ["\"The boy went fishing.\", he said.", "Then he went away."];
     var output = RiTa.sentences(input);
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = "The dog";
     var output = RiTa.sentences(input);
-    eql(output, [input]);
+    expect(output).eql( [input]);
 
     var input = "I guess the dog ate the baby.";
     var output = RiTa.sentences(input);
-    eql(output, [input]);
+    expect(output).eql( [input]);
 
     var input = "Oh my god, the dog ate the baby!";
     var output = RiTa.sentences(input);
     var expected = ["Oh my god, the dog ate the baby!"];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = "Which dog ate the baby?"
     var output = RiTa.sentences(input);
     var expected = ["Which dog ate the baby?"];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = "'Yes, it was a dog that ate the baby', he said."
     var output = RiTa.sentences(input);
     var expected = ["\'Yes, it was a dog that ate the baby\', he said."];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = "The baby belonged to Mr. and Mrs. Stevens. They will be very sad.";
     var output = RiTa.sentences(input);
     var expected = ["The baby belonged to Mr. and Mrs. Stevens.", "They will be very sad."];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     // More quotation marks
     var input = "\"The baby belonged to Mr. and Mrs. Stevens. They will be very sad.\"";
     var output = RiTa.sentences(input);
     var expected = ["\"The baby belonged to Mr. and Mrs. Stevens.", "They will be very sad.\""];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = "\u201CThe baby belonged to Mr. and Mrs. Stevens. They will be very sad.\u201D";
     var output = RiTa.sentences(input);
     var expected = ["\u201CThe baby belonged to Mr. and Mrs. Stevens.", "They will be very sad.\u201D"];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     //https://github.com/dhowe/RiTa/issues/498
     var input = "\"My dear Mr. Bennet. Netherfield Park is let at last.\"";
     var output = RiTa.sentences(input);
     var expected = ["\"My dear Mr. Bennet.", "Netherfield Park is let at last.\""];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = "\u201CMy dear Mr. Bennet. Netherfield Park is let at last.\u201D";
     var output = RiTa.sentences(input);
     var expected = ["\u201CMy dear Mr. Bennet.", "Netherfield Park is let at last.\u201D"];
-    eql(output, expected);
+    expect(output).eql( expected);
     /*******************************************/
 
     var input = "She wrote: \"I don't paint anymore. For a while I thought it was just a phase that I'd get over.\"";
     var output = RiTa.sentences(input);
     var expected = ["She wrote: \"I don't paint anymore.", "For a while I thought it was just a phase that I'd get over.\""];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     var input = " I had a visit from my \"friend\" the tax man.";
     var output = RiTa.sentences(input);
     var expected = ["I had a visit from my \"friend\" the tax man."];
-    eql(output, expected);
+    expect(output).eql( expected);
 
-    eql(RiTa.sentences(""), [""]);
+    expect(RiTa.sentences("")).eql( [""]);
 
-    eql(RiTa.sentences("Today I would make something. A 4.7 inch gun. It was noon."), ["Today I would make something.", "A 4.7 inch gun.", "It was noon."]);
+    expect(RiTa.sentences("Today I would make something. A 4.7 inch gun. It was noon.")).eql( ["Today I would make something.", "A 4.7 inch gun.", "It was noon."]);
   });
 
 
@@ -599,12 +599,12 @@ describe('Tokenizer', () => {
     var input = "Type two hyphens—without a space before, after, or between them.";
     var output = RiTa.sentences(input);
     var expected = ["Type two hyphens—without a space before, after, or between them."];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     input = "After a split second of hesitation, the second baseman leaped for the ball—or, rather, limped for it.";
     output = RiTa.sentences(input);
     expected = ["After a split second of hesitation, the second baseman leaped for the ball—or, rather, limped for it."];
-    eql(output, expected);
+    expect(output).eql( expected);
 
     //tokenize and untokenize
     var sentence = "Type two hyphens--without a space—before, after, or between them.";
@@ -727,11 +727,4 @@ describe('Tokenizer', () => {
 
   });
 
-  function eql(a, b, m) { expect(a).eql(b, m); }
-
-  function eq(a, b, m) { expect(a).eq(b, m); }
-
-  function ok(a, m) { expect(a, m).to.be.true; }
-
-  function def(res, m) { expect(res, m).to.not.be.undefined; }
 });

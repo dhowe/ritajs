@@ -5,587 +5,587 @@ import RiTa from './index.js';
 describe('Tagger', () => {
 
   let hasLex = true;
-  
+
   it('Should call pos.array', function () {
     if (!hasLex) this.skip();
-    eql(RiTa.pos([]), []);
-    eql(RiTa.pos(["deal"]), ["nn"]);
-    eql(RiTa.pos(["freed"]), ["jj"]);
-    eql(RiTa.pos(["the"]), ["dt"]);
-    eql(RiTa.pos(["a"]), ["dt"]);
-    eql(RiTa.pos("the top seed".split(/ /)), ["dt", "jj", "nn"]);
-    eql(RiTa.pos("by illegal means".split(/ /)), ["in", "jj", "nn"]);
-    eql(RiTa.pos("He outnumbers us".split(/ /)), ["prp", "vbz", "prp"]);
-    eql(RiTa.pos("I outnumber you".split(/ /)), ["prp", "vbp", "prp"]);
-    eql(RiTa.pos("Elephants dance".split(/ /)), ["nns", "vbp"]);
-    eql(RiTa.pos("the boy dances".split(/ /)), ["dt", "nn", "vbz"]);
-    eql(RiTa.pos("Dave dances".split(/ /)), ["nnp", "vbz"]);
+    expect(RiTa.pos([])).eql([]);
+    expect(RiTa.pos(["deal"])).eql(["nn"]);
+    expect(RiTa.pos(["freed"])).eql(["jj"]);
+    expect(RiTa.pos(["the"])).eql(["dt"]);
+    expect(RiTa.pos(["a"])).eql(["dt"]);
+    expect(RiTa.pos("the top seed".split(/ /))).eql(["dt", "jj", "nn"]);
+    expect(RiTa.pos("by illegal means".split(/ /))).eql(["in", "jj", "nn"]);
+    expect(RiTa.pos("He outnumbers us".split(/ /))).eql(["prp", "vbz", "prp"]);
+    expect(RiTa.pos("I outnumber you".split(/ /))).eql(["prp", "vbp", "prp"]);
+    expect(RiTa.pos("Elephants dance".split(/ /))).eql(["nns", "vbp"]);
+    expect(RiTa.pos("the boy dances".split(/ /))).eql(["dt", "nn", "vbz"]);
+    expect(RiTa.pos("Dave dances".split(/ /))).eql(["nnp", "vbz"]);
   });
 
   it('Should call simple pos.array', function () {
-    eql(RiTa.pos([], { simple: true }), []);
-    eql(RiTa.pos(["freed"], { simple: true }), ["a"]);
-    eql(RiTa.pos(["the"], { simple: true }), ["-"]);
-    eql(RiTa.pos(["a"], { simple: true }), ["-"]);
-    eql(RiTa.pos("the top seed".split(/ /), { simple: true }), ["-", "a", "n"]);
-    eql(RiTa.pos("by illegal means".split(/ /), { simple: true }), ["-", "a", "n"]);
-    eql(RiTa.pos("He outnumbers us".split(/ /), { simple: true }), ["-", "v", "-"]);
-    eql(RiTa.pos("I outnumber you".split(/ /), { simple: true }), ["-", "v", "-"]);
-    eql(RiTa.pos("Elephants dance".split(/ /), { simple: true }), ["n", "v"]);
-    eql(RiTa.pos("the boy dances".split(/ /), { simple: true }), ["-", "n", "v"]);
+    expect(RiTa.pos([], { simple: true })).eql([]);
+    expect(RiTa.pos(["freed"], { simple: true })).eql(["a"]);
+    expect(RiTa.pos(["the"], { simple: true })).eql(["-"]);
+    expect(RiTa.pos(["a"], { simple: true })).eql(["-"]);
+    expect(RiTa.pos("the top seed".split(/ /), { simple: true })).eql(["-", "a", "n"]);
+    expect(RiTa.pos("by illegal means".split(/ /), { simple: true })).eql(["-", "a", "n"]);
+    expect(RiTa.pos("He outnumbers us".split(/ /), { simple: true })).eql(["-", "v", "-"]);
+    expect(RiTa.pos("I outnumber you".split(/ /), { simple: true })).eql(["-", "v", "-"]);
+    expect(RiTa.pos("Elephants dance".split(/ /), { simple: true })).eql(["n", "v"]);
+    expect(RiTa.pos("the boy dances".split(/ /), { simple: true })).eql(["-", "n", "v"]);
   });
 
   it('Should call pos.array.inline.simple', function () {
     let result, answer, txt;
 
-    eql(RiTa.pos([], { inline: true, simple: true }), "");
-    eql(RiTa.pos(["asdfaasd"], { inline: true, simple: true }), "asdfaasd/n");
+    expect(RiTa.pos([], { inline: true, simple: true })).eql("");
+    expect(RiTa.pos(["asdfaasd"], { inline: true, simple: true })).eql("asdfaasd/n");
 
     result = RiTa.pos(["clothes"], { inline: true, simple: true });
     answer = "clothes/n";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos(["teeth"], { inline: true, simple: true });
     answer = "teeth/n";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("There is a cat".split(/ /), { inline: true, simple: true });
     answer = "There/- is/v a/- cat/n";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos(RiTa.tokenize("The boy, dressed in red, ate an apple."), { inline: true, simple: true });
     answer = "The/- boy/n , dressed/v in/- red/a , ate/v an/- apple/n .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     txt = "The dog ran faster than the other dog. But the other dog was prettier.";
     result = RiTa.pos(RiTa.tokenize(txt), { inline: true, simple: true });
     answer = "The/- dog/n ran/v faster/r than/- the/- other/a dog/n . But/- the/- other/a dog/n was/v prettier/a .";
-    eq(result, answer);
+    expect(result).eq(answer);;
   });
 
   it('Should handle inflected verbs', function () {
-    eql(RiTa.pos("disbelieves"), ["vbz"]);
-    eql(RiTa.pos("disbelieves", { simple: 1 }), ["v"]);
+    expect(RiTa.pos("disbelieves")).eql(["vbz"]);
+    expect(RiTa.pos("disbelieves", { simple: 1 })).eql(["v"]);
 
-    eql(RiTa.pos("fates"), ["nns"]);
-    eql(RiTa.pos("fates", { simple: 1 }), ["n"]);
+    expect(RiTa.pos("fates")).eql(["nns"]);
+    expect(RiTa.pos("fates", { simple: 1 })).eql(["n"]);
 
-    eql(RiTa.pos("hates"), ["vbz"]);
-    eql(RiTa.pos("hates", { simple: 1 }), ["v"]);
+    expect(RiTa.pos("hates")).eql(["vbz"]);
+    expect(RiTa.pos("hates", { simple: 1 })).eql(["v"]);
 
-    eql(RiTa.pos("hated"), ["vbd"]);
-    eql(RiTa.pos("hated", { simple: 1 }), ["v"]);
+    expect(RiTa.pos("hated")).eql(["vbd"]);
+    expect(RiTa.pos("hated", { simple: 1 })).eql(["v"]);
 
-    eql(RiTa.pos("hating"), ["vbg"]);
-    eql(RiTa.pos("hating", { simple: 1 }), ["v"]);
+    expect(RiTa.pos("hating")).eql(["vbg"]);
+    expect(RiTa.pos("hating", { simple: 1 })).eql(["v"]);
 
-    eql(RiTa.pos("He rode the horse"), ['prp', 'vbd', 'dt', 'nn']);
-    eql(RiTa.pos("He has ridden the horse"), ['prp', 'vbz', 'vbn', 'dt', 'nn']);
+    expect(RiTa.pos("He rode the horse")).eql(['prp', 'vbd', 'dt', 'nn']);
+    expect(RiTa.pos("He has ridden the horse")).eql(['prp', 'vbz', 'vbn', 'dt', 'nn']);
 
-    eql(RiTa.pos("He rowed the boat"), ['prp', 'vbd', 'dt', 'nn']);
-    eql(RiTa.pos("He has rowed the boat"), ['prp', 'vbz', 'vbn', 'dt', 'nn']);
+    expect(RiTa.pos("He rowed the boat")).eql(['prp', 'vbd', 'dt', 'nn']);
+    expect(RiTa.pos("He has rowed the boat")).eql(['prp', 'vbz', 'vbn', 'dt', 'nn']);
   });
 
   it('Should call pos', function () {
     let result, answer, resultArr, answerArr, txt;
 
-    eql(RiTa.pos(""), []);
-    eql(RiTa.pos(","), [',']);
-    eql(RiTa.pos(" "), []);
+    expect(RiTa.pos("")).eql([]);
+    expect(RiTa.pos(",")).eql([',']);
+    expect(RiTa.pos(" ")).eql([]);
 
-    eql(RiTa.pos("freed"), ["jj"]);
-    eql(RiTa.pos("biped"), ["nn"]);
-    eql(RiTa.pos("greed"), ["nn"]);
-    eql(RiTa.pos("creed"), ["nn"]);
-    eql(RiTa.pos("weed"), ["nn"]);
+    expect(RiTa.pos("freed")).eql(["jj"]);
+    expect(RiTa.pos("biped")).eql(["nn"]);
+    expect(RiTa.pos("greed")).eql(["nn"]);
+    expect(RiTa.pos("creed")).eql(["nn"]);
+    expect(RiTa.pos("weed")).eql(["nn"]);
 
     //https://github.com/dhowe/rita/issues/177
-    eql(RiTa.pos("broke"), ["vbd"]);
-    eql(RiTa.pos("broke", { simple: 1 }), ["v"]);
-    eql(RiTa.pos("committed"), ["vbn"]);
-    eql(RiTa.pos("committed", { simple: 1 }), ["v"]);
-    eql(RiTa.pos("outpaced"), ["vbd"]);
-    eql(RiTa.pos("outpaced", { simple: 1 }), ["v"]);
-    eql(RiTa.pos("concerned"), ["vbd"]);
-    eql(RiTa.pos("concerned", { simple: 1 }), ["v"]);
-    eql(RiTa.pos("committed"), ["vbn"]);
-    eql(RiTa.pos("committed", { simple: 1 }), ["v"]);
+    expect(RiTa.pos("broke")).eql(["vbd"]);
+    expect(RiTa.pos("broke", { simple: 1 })).eql(["v"]);
+    expect(RiTa.pos("committed")).eql(["vbn"]);
+    expect(RiTa.pos("committed", { simple: 1 })).eql(["v"]);
+    expect(RiTa.pos("outpaced")).eql(["vbd"]);
+    expect(RiTa.pos("outpaced", { simple: 1 })).eql(["v"]);
+    expect(RiTa.pos("concerned")).eql(["vbd"]);
+    expect(RiTa.pos("concerned", { simple: 1 })).eql(["v"]);
+    expect(RiTa.pos("committed")).eql(["vbn"]);
+    expect(RiTa.pos("committed", { simple: 1 })).eql(["v"]);
 
 
 
-    eql(RiTa.pos("the top seed"), ["dt", "jj", "nn"]);
-    eql(RiTa.pos("by illegal means"), ["in", "jj", "nn"]);
-    eql(RiTa.pos('Joannie Smith ran away'), ['nnp', 'nnp', 'vbd', 'rb']);
+    expect(RiTa.pos("the top seed")).eql(["dt", "jj", "nn"]);
+    expect(RiTa.pos("by illegal means")).eql(["in", "jj", "nn"]);
+    expect(RiTa.pos('Joannie Smith ran away')).eql(['nnp', 'nnp', 'vbd', 'rb']);
 
     result = RiTa.pos("mammal");
     answer = ["nn"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("asfaasd");
     answer = ["nn"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("innings");
     answer = ["nns"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("clothes");
     answer = ["nns"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("clothes");
     answer = ["nns"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("teeth");
     answer = ["nns"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("memories");
     answer = ["nns"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
-    eql(RiTa.pos("flunks"), ["vbz"], 'Failed: flunks');
-    eql(RiTa.pos("outnumbers"), ["vbz"], 'Failed: outnumbers');
-    eql(RiTa.pos("He outnumbers us"), ["prp", "vbz", "prp"]);
-    eql(RiTa.pos("I outnumber you"), ["prp", "vbp", "prp"]);
+    expect(RiTa.pos("flunks")).eql(["vbz"], 'Failed: flunks');
+    expect(RiTa.pos("outnumbers")).eql(["vbz"], 'Failed: outnumbers');
+    expect(RiTa.pos("He outnumbers us")).eql(["prp", "vbz", "prp"]);
+    expect(RiTa.pos("I outnumber you")).eql(["prp", "vbp", "prp"]);
 
     resultArr = RiTa.pos("Elephants dance");
     answerArr = ["nns", "vbp"];
-    eql(answerArr, resultArr);
+    expect(answerArr).eql(resultArr);
 
     result = RiTa.pos("the boy dances");
     answer = ["dt", "nn", "vbz"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("he dances");
     answer = ["prp", "vbz"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     resultArr = RiTa.pos("Dave dances");
     answerArr = ["nnp", "vbz"];
-    eql(answerArr, resultArr);
+    expect(answerArr).eql(resultArr);
 
     result = RiTa.pos("running");
     answer = ["vbg"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("asserting");
     answer = ["vbg"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("assenting");
     answer = ["vbg"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("Dave");
     answer = ["nnp"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("They feed the cat");
     answer = ["prp", "vbp", "dt", "nn"];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("There is a cat.");
     answer = ["ex", "vbz", "dt", "nn", "."];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("The boy, dressed in red, ate an apple.");
     answer = ["dt", "nn", ",", "vbn", "in", "jj", ",", "vbd", "dt", "nn", "."];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
     result = RiTa.pos(txt);
     answer = ["dt", "nn", "vbd", "rbr", "in", "dt", "jj", "nn", ".", "cc", "dt", "jj", "nn", "vbd", "jjr", "."];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     // Tests for verb conjugation
-    eql(RiTa.pos("is"), ["vbz"]);
-    eql(RiTa.pos("am"), ["vbp"]);
-    eql(RiTa.pos("be"), ["vb"]);
+    expect(RiTa.pos("is")).eql(["vbz"]);
+    expect(RiTa.pos("am")).eql(["vbp"]);
+    expect(RiTa.pos("be")).eql(["vb"]);
 
     result = RiTa.pos("There is a cat.");
     answer = ["ex", "vbz", "dt", "nn", "."];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("There was a cat.");
     answer = ["ex", "vbd", "dt", "nn", "."];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("I am a cat.");
     answer = ["prp", "vbp", "dt", "nn", "."];
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("I was a cat.");
     answer = ["prp", "vbd", "dt", "nn", "."];
-    eql(result, answer);
+    expect(result).eql(answer);
 
-    eql(RiTa.pos("flunk"), ["vb"]);
-    eql(RiTa.pos("He flunks the test"), ["prp", "vbz", "dt", "nn"]);
+    expect(RiTa.pos("flunk")).eql(["vb"]);
+    expect(RiTa.pos("He flunks the test")).eql(["prp", "vbz", "dt", "nn"]);
 
-    eql(RiTa.pos("he"), ["prp"]);
-    eql(RiTa.pos("outnumber"), ["vb"]);
-    eql(RiTa.pos("I outnumbered you"), ["prp", "vbd", "prp"], "I outnumbered you");
-    eql(RiTa.pos("She outnumbered us"), ["prp", "vbd", "prp"], "She outnumbered us");
-    eql(RiTa.pos("I am outnumbering you"), ["prp", "vbp", "vbg", "prp"], "I am outnumbering you");
-    eql(RiTa.pos("I have outnumbered you"), ["prp", "vbp", "vbd", "prp"], "I have outnumbered you");//?
+    expect(RiTa.pos("he")).eql(["prp"]);
+    expect(RiTa.pos("outnumber")).eql(["vb"]);
+    expect(RiTa.pos("I outnumbered you")).eql(["prp", "vbd", "prp"], "I outnumbered you");
+    expect(RiTa.pos("She outnumbered us")).eql(["prp", "vbd", "prp"], "She outnumbered us");
+    expect(RiTa.pos("I am outnumbering you")).eql(["prp", "vbp", "vbg", "prp"], "I am outnumbering you");
+    expect(RiTa.pos("I have outnumbered you")).eql(["prp", "vbp", "vbd", "prp"], "I have outnumbered you");//?
 
     let checks = ["emphasis", "stress", "discus", "colossus", "fibrosis", "digitalis", "pettiness", "mess", "cleanliness", "orderliness", "bronchitis", "preparedness", "highness"];
     for (let i = 0, j = checks.length; i < j; i++) {
-      eql(RiTa.pos(checks[i]), ["nn"]);
+      expect(RiTa.pos(checks[i])).eql(["nn"]);
     }
 
     //sequential adjectives
-    eql(RiTa.pos('a light blue sky'), ['dt', 'jj', 'jj', 'nn']);
+    expect(RiTa.pos('a light blue sky')).eql(['dt', 'jj', 'jj', 'nn']);
 
     // vbg will not be wrongly tagged as nn
-    eql(RiTa.pos("He is running toward me"), ["prp", "vbz", "vbg", "in", "prp"]);
-    eql(RiTa.pos("She is riding a bike"), ["prp", "vbz", "vbg", "dt", "nn"]);
-    eql(RiTa.pos("he stands still, thinking about the words"), ["prp", "vbz", "rb", ",", "vbg", "in", "dt", "nns"]);
-    eql(RiTa.pos("She walked out of the room smoking"), ["prp", "vbd", "in", "in", "dt", "nn", "vbg"]);
-    eql(RiTa.pos("He kept saying his adventure story"), ["prp", "vbd", "vbg", "prp$", "nn", "nn"]);
-    eql(RiTa.pos("Drinking is his hobby"), ["vbg", "vbz", "prp$", "nn"]);
-    eql(RiTa.pos("The kid playing at the corner is the boss"), ["dt", "nn", "vbg", "in", "dt", "nn", "vbz", "dt", "nn"]);
-    eql(RiTa.pos("She is the leader of the reading group"), ["prp", "vbz", "dt", "nn", "in", "dt", "vbg", "nn"]);
-    eql(RiTa.pos("I love working"), ["prp", "vbp", "vbg"]);
-    eql(RiTa.pos("I was thinking about buying a car"), ["prp", "vbd", "vbg", "in", "vbg", "dt", "nn"]);
+    expect(RiTa.pos("He is running toward me")).eql(["prp", "vbz", "vbg", "in", "prp"]);
+    expect(RiTa.pos("She is riding a bike")).eql(["prp", "vbz", "vbg", "dt", "nn"]);
+    expect(RiTa.pos("he stands still, thinking about the words")).eql(["prp", "vbz", "rb", ",", "vbg", "in", "dt", "nns"]);
+    expect(RiTa.pos("She walked out of the room smoking")).eql(["prp", "vbd", "in", "in", "dt", "nn", "vbg"]);
+    expect(RiTa.pos("He kept saying his adventure story")).eql(["prp", "vbd", "vbg", "prp$", "nn", "nn"]);
+    expect(RiTa.pos("Drinking is his hobby")).eql(["vbg", "vbz", "prp$", "nn"]);
+    expect(RiTa.pos("The kid playing at the corner is the boss")).eql(["dt", "nn", "vbg", "in", "dt", "nn", "vbz", "dt", "nn"]);
+    expect(RiTa.pos("She is the leader of the reading group")).eql(["prp", "vbz", "dt", "nn", "in", "dt", "vbg", "nn"]);
+    expect(RiTa.pos("I love working")).eql(["prp", "vbp", "vbg"]);
+    expect(RiTa.pos("I was thinking about buying a car")).eql(["prp", "vbd", "vbg", "in", "vbg", "dt", "nn"]);
 
     // #179
-    eql(RiTa.pos("lancer"), ["nn"]);
-    eql(RiTa.pos("dancer"), ["nn"]);
-    eql(RiTa.pos("builder"), ["nn"]);
-    eql(RiTa.pos("programmer"), ["nn"]);
-    eql(RiTa.pos("mixer"), ["nn"]);
-    eql(RiTa.pos("He is a dancer"), ["prp", "vbz", "dt", "nn"]);
-    eql(RiTa.pos("She is a body bulider"), ["prp", "vbz", "dt", "nn", "nn"]);
-    eql(RiTa.pos("I am a programmer"), ["prp", "vbp", "dt", "nn"]);
+    expect(RiTa.pos("lancer")).eql(["nn"]);
+    expect(RiTa.pos("dancer")).eql(["nn"]);
+    expect(RiTa.pos("builder")).eql(["nn"]);
+    expect(RiTa.pos("programmer")).eql(["nn"]);
+    expect(RiTa.pos("mixer")).eql(["nn"]);
+    expect(RiTa.pos("He is a dancer")).eql(["prp", "vbz", "dt", "nn"]);
+    expect(RiTa.pos("She is a body bulider")).eql(["prp", "vbz", "dt", "nn", "nn"]);
+    expect(RiTa.pos("I am a programmer")).eql(["prp", "vbp", "dt", "nn"]);
 
     // rita#148
-    eql(RiTa.pos("I have gone alone in there"), ["prp", "vbp", "vbn", "rb", "in", "nn"]);
-    eql(RiTa.pos("We stopped and went on from there"), ["prp", "vbd", "cc", "vbd", "in", "in", "nn"]);
-    eql(RiTa.pos("She lives there"), ["prp", "vbz", "rb"]);
-    eql(RiTa.pos("He was standing there"), ["prp", "vbd", "vbg", "rb"]);
-    eql(RiTa.pos("There are good reasons to save the world"), ["ex", "vbp", "jj", "nns", "to", "vb", "dt", "nn"]);
-    eql(RiTa.pos("There is a pig"), ["ex", "vbz", "dt", "nn"]);
-    eql(RiTa.pos("There isn't a world that is worth saving"), ["ex", "vbz", "dt", "nn", "in", "vbz", "jj", "vbg"]);
+    expect(RiTa.pos("I have gone alone in there")).eql(["prp", "vbp", "vbn", "rb", "in", "nn"]);
+    expect(RiTa.pos("We stopped and went on from there")).eql(["prp", "vbd", "cc", "vbd", "in", "in", "nn"]);
+    expect(RiTa.pos("She lives there")).eql(["prp", "vbz", "rb"]);
+    expect(RiTa.pos("He was standing there")).eql(["prp", "vbd", "vbg", "rb"]);
+    expect(RiTa.pos("There are good reasons to save the world")).eql(["ex", "vbp", "jj", "nns", "to", "vb", "dt", "nn"]);
+    expect(RiTa.pos("There is a pig")).eql(["ex", "vbz", "dt", "nn"]);
+    expect(RiTa.pos("There isn't a world that is worth saving")).eql(["ex", "vbz", "dt", "nn", "in", "vbz", "jj", "vbg"]);
   });
 
   it('Should call pos.simple', function () {
     //eql(RiTa.pos("", { simple: true }), []);
-    eql(RiTa.pos("biped", { simple: true }), ["n"]);
-    eql(RiTa.pos("greed", { simple: true }), ["n"]);
-    eql(RiTa.pos("creed", { simple: true }), ["n"]);
-    eql(RiTa.pos("weed", { simple: true }), ["n"]);
-    eql(RiTa.pos("is", { simple: true }), ["v"]);
-    eql(RiTa.pos("am", { simple: true }), ["v"]);
-    eql(RiTa.pos("be", { simple: true }), ["v"]);
-    eql(RiTa.pos("freed", { simple: true }), ["a"]);
+    expect(RiTa.pos("biped", { simple: true })).eql(["n"]);
+    expect(RiTa.pos("greed", { simple: true })).eql(["n"]);
+    expect(RiTa.pos("creed", { simple: true })).eql(["n"]);
+    expect(RiTa.pos("weed", { simple: true })).eql(["n"]);
+    expect(RiTa.pos("is", { simple: true })).eql(["v"]);
+    expect(RiTa.pos("am", { simple: true })).eql(["v"]);
+    expect(RiTa.pos("be", { simple: true })).eql(["v"]);
+    expect(RiTa.pos("freed", { simple: true })).eql(["a"]);
   });
 
   it('Should call pos.inline', function () {
     let result, answer, txt;
 
-    eql(RiTa.pos("", { inline: true }), "");
-    eql(RiTa.pos("asdfaasd", { inline: true }), "asdfaasd/nn");
+    expect(RiTa.pos("", { inline: true })).eql("");
+    expect(RiTa.pos("asdfaasd", { inline: true })).eql("asdfaasd/nn");
 
     result = RiTa.pos("clothes", { inline: true });
     answer = "clothes/nns";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("teeth", { inline: true });
     answer = "teeth/nns";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("There is a cat.", { inline: true });
     answer = "There/ex is/vbz a/dt cat/nn .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("The boy, dressed in red, ate an apple.", { inline: true });
     answer = "The/dt boy/nn , dressed/vbn in/in red/jj , ate/vbd an/dt apple/nn .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
     result = RiTa.pos(txt, { inline: true });
     answer = "The/dt dog/nn ran/vbd faster/rbr than/in the/dt other/jj dog/nn . But/cc the/dt other/jj dog/nn was/vbd prettier/jjr .";
-    eq(result, answer);
+    expect(result).eq(answer);;
   });
 
 
   it('Should call posInline', function () {
     let result, answer, txt;
 
-    eql(RiTa.posInline(""), "");
-    eql(RiTa.posInline(" "), "");
-    eql(RiTa.posInline("asdfaasd"), "asdfaasd/nn");
+    expect(RiTa.posInline("")).eql("");
+    expect(RiTa.posInline(" ")).eql("");
+    expect(RiTa.posInline("asdfaasd")).eql("asdfaasd/nn");
 
     result = RiTa.posInline("clothes");
     answer = "clothes/nns";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.posInline("teeth");
     answer = "teeth/nns";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.posInline("There is a cat.");
     answer = "There/ex is/vbz a/dt cat/nn .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.posInline("The boy, dressed in red, ate an apple.");
     answer = "The/dt boy/nn , dressed/vbn in/in red/jj , ate/vbd an/dt apple/nn .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
     result = RiTa.posInline(txt);
     answer = "The/dt dog/nn ran/vbd faster/rbr than/in the/dt other/jj dog/nn . But/cc the/dt other/jj dog/nn was/vbd prettier/jjr .";
-    eq(result, answer);
+    expect(result).eq(answer);;
 
     //https://github.com/dhowe/rita/issues/177
     //'bit': as a vbd 
     txt = "The mosquito bit me.";
     result = RiTa.posInline(txt);
     answer = "The/dt mosquito/nn bit/vbd me/prp ."
-    eq(result, answer);
+    expect(result).eq(answer);;
     //'bit': as an nn
     txt = "Give the duck a bit of bread.";
     result = RiTa.posInline(txt);
     answer = "Give/vb the/dt duck/nn a/dt bit/nn of/in bread/nn ."
-    eq(result, answer);
+    expect(result).eq(answer);;
 
     txt = "The show has ended.";
     result = RiTa.posInline(txt);
     answer = "The/dt show/nn has/vbz ended/vbn ."
-    eq(result, answer);
+    expect(result).eq(answer);;
 
     //'remade': as a vbd
     txt = "She remade this video.";
     result = RiTa.posInline(txt);
     answer = "She/prp remade/vbd this/dt video/nn .";
-    eq(result, answer);
+    expect(result).eq(answer);;
     //'remade': as a vbn 
     txt = "They will be remade into something else.";
     result = RiTa.posInline(txt);
     answer = "They/prp will/md be/vb remade/vbn into/in something/nn else/rb .";
-    0 && eq(result, answer);
+    0 && expect(result).eq(answer);;
 
     //'sold': as a vbd
     txt = "She sold her apartment.";
     result = RiTa.posInline(txt);
-     answer = "She/prp sold/vbd her/prp$ apartment/nn .";
-     0 && eq(result, answer);
-     //'sold': as a vbn
+    answer = "She/prp sold/vbd her/prp$ apartment/nn .";
+    0 && expect(result).eq(answer);;
+    //'sold': as a vbn
     txt = "Her apartment was sold.";
     result = RiTa.posInline(txt);
     answer = "Her/prp$ apartment/nn was/vbd sold/vbn .";
-    eq(result, answer);
+    expect(result).eq(answer);;
 
     //'resold': as a vbd
     txt = "She resold her apartment.";
     result = RiTa.posInline(txt);
     answer = "She/prp resold/vbd her/prp$ apartment/nn .";
-     eq(result, answer);
-     //'resold': as a vbn
+    expect(result).eq(answer);;
+    //'resold': as a vbn
     txt = "Her apartment was resold.";
     result = RiTa.posInline(txt);
     answer = "Her/prp$ apartment/nn was/vbd resold/vbn .";
-    0 && eq(result, answer);
+    0 && expect(result).eq(answer);;
 
     //'led': as a vbd
     txt = "He led a team of crows into battle.";
     result = RiTa.posInline(txt);
     answer = "He/prp led/vbd a/dt team/nn of/in crows/nns into/in battle/nn .";
-    eq(result, answer);
+    expect(result).eq(answer);;
     //'led': as a vbn
     txt = "He led a team of crows into battle.";
     result = RiTa.posInline(txt);
     answer = "He/prp led/vbd a/dt team/nn of/in crows/nns into/in battle/nn .";
-    eq(result, answer);
+    expect(result).eq(answer);;
   });
 
   it('Should call pos.inline.simple', function () {
     let result, answer, txt;
 
-    eql(RiTa.pos("", { inline: true, simple: true }), "");
-    eql(RiTa.pos("asdfaasd", { inline: true, simple: true }), "asdfaasd/n");
+    expect(RiTa.pos("", { inline: true, simple: true })).eql("");
+    expect(RiTa.pos("asdfaasd", { inline: true, simple: true })).eql("asdfaasd/n");
 
     result = RiTa.pos("clothes", { inline: true, simple: true });
     answer = "clothes/n";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("teeth", { inline: true, simple: true });
     answer = "teeth/n";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("There is a cat.", { inline: true, simple: true });
     answer = "There/- is/v a/- cat/n .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.pos("The boy, dressed in red, ate an apple.", { inline: true, simple: true });
     answer = "The/- boy/n , dressed/v in/- red/a , ate/v an/- apple/n .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
     result = RiTa.pos(txt, { inline: true, simple: true });
     answer = "The/- dog/n ran/v faster/r than/- the/- other/a dog/n . But/- the/- other/a dog/n was/v prettier/a .";
-    eq(result, answer);
+    expect(result).eq(answer);;
   });
 
   it('Should call posInline.simple', function () {
     let result, answer, txt;
-    eql(RiTa.posInline("asdfaasd", { inline: true, simple: true }), "asdfaasd/n");
+    expect(RiTa.posInline("asdfaasd", { inline: true, simple: true })).eql("asdfaasd/n");
 
-    eql(RiTa.posInline("", { inline: true, simple: true }), "");
+    expect(RiTa.posInline("", { inline: true, simple: true })).eql("");
 
     result = RiTa.posInline("clothes", { inline: true, simple: true });
     answer = "clothes/n";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.posInline("teeth", { inline: true, simple: true });
     answer = "teeth/n";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.posInline("There is a cat.", { inline: true, simple: true });
     answer = "There/- is/v a/- cat/n .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     result = RiTa.posInline("The boy, dressed in red, ate an apple.", { inline: true, simple: true });
     answer = "The/- boy/n , dressed/v in/- red/a , ate/v an/- apple/n .";
-    eql(result, answer);
+    expect(result).eql(answer);
 
     txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
     result = RiTa.posInline(txt, { inline: true, simple: true });
     answer = "The/- dog/n ran/v faster/r than/- the/- other/a dog/n . But/- the/- other/a dog/n was/v prettier/a .";
-    eq(result, answer);
+    expect(result).eq(answer);;
   });
 
   it('Should call isAdverb', function () {
 
     //bad inputs
-    ok(!RiTa.isAdverb(""));
-    ok(!RiTa.isAdverb());
-    ok(!RiTa.isAdverb(42));
-    ok(!RiTa.isAdverb(["lively"]));
+    expect(!RiTa.isAdverb("")).true;
+    expect(!RiTa.isAdverb()).true;
+    expect(!RiTa.isAdverb(42)).true;
+    expect(!RiTa.isAdverb(["lively"])).true;
 
-    ok(!RiTa.isAdverb("swim"));
-    ok(!RiTa.isAdverb("walk"));
-    ok(!RiTa.isAdverb("walker"));
-    ok(!RiTa.isAdverb("beautiful"));
-    ok(!RiTa.isAdverb("dance"));
-    ok(!RiTa.isAdverb("dancing"));
-    ok(!RiTa.isAdverb("dancer"));
+    expect(!RiTa.isAdverb("swim")).true;
+    expect(!RiTa.isAdverb("walk")).true;
+    expect(!RiTa.isAdverb("walker")).true;
+    expect(!RiTa.isAdverb("beautiful")).true;
+    expect(!RiTa.isAdverb("dance")).true;
+    expect(!RiTa.isAdverb("dancing")).true;
+    expect(!RiTa.isAdverb("dancer")).true;
 
     //verb
-    ok(!RiTa.isAdverb("wash"));
-    ok(!RiTa.isAdverb("walk"));
-    ok(!RiTa.isAdverb("play"));
-    ok(!RiTa.isAdverb("throw"));
-    ok(!RiTa.isAdverb("drink"));
-    ok(!RiTa.isAdverb("eat"));
-    ok(!RiTa.isAdverb("chew"));
+    expect(!RiTa.isAdverb("wash")).true;
+    expect(!RiTa.isAdverb("walk")).true;
+    expect(!RiTa.isAdverb("play")).true;
+    expect(!RiTa.isAdverb("throw")).true;
+    expect(!RiTa.isAdverb("drink")).true;
+    expect(!RiTa.isAdverb("eat")).true;
+    expect(!RiTa.isAdverb("chew")).true;
 
     //adj
-    ok(!RiTa.isAdverb("wet"));
-    ok(!RiTa.isAdverb("dry"));
-    ok(!RiTa.isAdverb("furry"));
-    ok(!RiTa.isAdverb("sad"));
-    ok(!RiTa.isAdverb("happy"));
+    expect(!RiTa.isAdverb("wet")).true;
+    expect(!RiTa.isAdverb("dry")).true;
+    expect(!RiTa.isAdverb("furry")).true;
+    expect(!RiTa.isAdverb("sad")).true;
+    expect(!RiTa.isAdverb("happy")).true;
 
     //n
-    ok(!RiTa.isAdverb("dogs"));
-    ok(!RiTa.isAdverb("wind"));
-    ok(!RiTa.isAdverb("dolls"));
-    ok(!RiTa.isAdverb("frogs"));
-    ok(!RiTa.isAdverb("ducks"));
-    ok(!RiTa.isAdverb("flowers"));
-    ok(!RiTa.isAdverb("fish"));
+    expect(!RiTa.isAdverb("dogs")).true;
+    expect(!RiTa.isAdverb("wind")).true;
+    expect(!RiTa.isAdverb("dolls")).true;
+    expect(!RiTa.isAdverb("frogs")).true;
+    expect(!RiTa.isAdverb("ducks")).true;
+    expect(!RiTa.isAdverb("flowers")).true;
+    expect(!RiTa.isAdverb("fish")).true;
 
     //adv
-    ok(RiTa.isAdverb("truthfully"));
-    ok(RiTa.isAdverb("kindly"));
-    ok(RiTa.isAdverb("bravely"));
-    ok(RiTa.isAdverb("doggedly"));
-    ok(RiTa.isAdverb("sleepily"));
-    ok(RiTa.isAdverb("scarily"));
-    ok(RiTa.isAdverb("excitedly"));
-    ok(RiTa.isAdverb("energetically"));
-    ok(RiTa.isAdverb("hard")); // +adj
+    expect(RiTa.isAdverb("truthfully")).true;
+    expect(RiTa.isAdverb("kindly")).true;
+    expect(RiTa.isAdverb("bravely")).true;
+    expect(RiTa.isAdverb("doggedly")).true;
+    expect(RiTa.isAdverb("sleepily")).true;
+    expect(RiTa.isAdverb("scarily")).true;
+    expect(RiTa.isAdverb("excitedly")).true;
+    expect(RiTa.isAdverb("energetically")).true;
+    expect(RiTa.isAdverb("hard")).true; // +adj
   });
 
   it('Should call isNoun', function () {
 
-    ok(RiTa.isNoun("thieves"), "thieves");
-    ok(RiTa.isNoun("calves"));
+    expect(RiTa.isNoun("thieves"), "thieves").true;
+    expect(RiTa.isNoun("calves")).true;
 
-    ok(!RiTa.isNoun("scarily"));
-    ok(RiTa.isNoun("boxes"));
-    ok(RiTa.isNoun("swim"));
-    ok(RiTa.isNoun("walk"));
-    ok(RiTa.isNoun("walker"));
-    ok(RiTa.isNoun("dance"));
-    ok(RiTa.isNoun("dancer"));
-    ok(RiTa.isNoun("cats"));
-    ok(RiTa.isNoun("teeth"));
-    ok(RiTa.isNoun("apples"));
-    ok(RiTa.isNoun("buses"));
-    ok(RiTa.isNoun("prognoses"));
-    ok(RiTa.isNoun("oxen"));
-    ok(RiTa.isNoun("theses"));
-    ok(RiTa.isNoun("stimuli"));
-    ok(RiTa.isNoun("crises"));
+    expect(!RiTa.isNoun("scarily")).true;
+    expect(RiTa.isNoun("boxes")).true;
+    expect(RiTa.isNoun("swim")).true;
+    expect(RiTa.isNoun("walk")).true;
+    expect(RiTa.isNoun("walker")).true;
+    expect(RiTa.isNoun("dance")).true;
+    expect(RiTa.isNoun("dancer")).true;
+    expect(RiTa.isNoun("cats")).true;
+    expect(RiTa.isNoun("teeth")).true;
+    expect(RiTa.isNoun("apples")).true;
+    expect(RiTa.isNoun("buses")).true;
+    expect(RiTa.isNoun("prognoses")).true;
+    expect(RiTa.isNoun("oxen")).true;
+    expect(RiTa.isNoun("theses")).true;
+    expect(RiTa.isNoun("stimuli")).true;
+    expect(RiTa.isNoun("crises")).true;
 
     //verb
-    ok(RiTa.isNoun("wash"));
-    ok(RiTa.isNoun("walk"));
-    ok(RiTa.isNoun("play"));
-    ok(RiTa.isNoun("throw"));
-    ok(RiTa.isNoun("duck"));
-    ok(RiTa.isNoun("dog"));
-    ok(RiTa.isNoun("drink"));
-    ok(!RiTa.isNoun("abates"));
+    expect(RiTa.isNoun("wash")).true;
+    expect(RiTa.isNoun("walk")).true;
+    expect(RiTa.isNoun("play")).true;
+    expect(RiTa.isNoun("throw")).true;
+    expect(RiTa.isNoun("duck")).true;
+    expect(RiTa.isNoun("dog")).true;
+    expect(RiTa.isNoun("drink")).true;
+    expect(!RiTa.isNoun("abates")).true;
 
-    ok(!RiTa.isNoun("eat"));
-    ok(!RiTa.isNoun("chew"));
-    ok(!RiTa.isNoun("moved"));
-    ok(!RiTa.isNoun("went"));
-    ok(!RiTa.isNoun("spent"));
+    expect(!RiTa.isNoun("eat")).true;
+    expect(!RiTa.isNoun("chew")).true;
+    expect(!RiTa.isNoun("moved")).true;
+    expect(!RiTa.isNoun("went")).true;
+    expect(!RiTa.isNoun("spent")).true;
 
     //adj
-    ok(!RiTa.isNoun("hard"));
-    ok(!RiTa.isNoun("dry"));
-    ok(!RiTa.isNoun("furry"));
-    ok(!RiTa.isNoun("sad"));
-    ok(!RiTa.isNoun("happy"));
-    ok(!RiTa.isNoun("beautiful"));
+    expect(!RiTa.isNoun("hard")).true;
+    expect(!RiTa.isNoun("dry")).true;
+    expect(!RiTa.isNoun("furry")).true;
+    expect(!RiTa.isNoun("sad")).true;
+    expect(!RiTa.isNoun("happy")).true;
+    expect(!RiTa.isNoun("beautiful")).true;
 
     //n
-    ok(RiTa.isNoun("dogs"));
-    ok(RiTa.isNoun("wind"));
-    ok(RiTa.isNoun("dolls"));
-    ok(RiTa.isNoun("frogs"));
-    ok(RiTa.isNoun("ducks"));
-    ok(RiTa.isNoun("flower"));
-    ok(RiTa.isNoun("fish"));
-    ok(RiTa.isNoun("wet")); //+v/adj
-    ok(RiTa.isNoun("ducks")); // +v
-    ok(RiTa.isNoun("flowers")); // +v
+    expect(RiTa.isNoun("dogs")).true;
+    expect(RiTa.isNoun("wind")).true;
+    expect(RiTa.isNoun("dolls")).true;
+    expect(RiTa.isNoun("frogs")).true;
+    expect(RiTa.isNoun("ducks")).true;
+    expect(RiTa.isNoun("flower")).true;
+    expect(RiTa.isNoun("fish")).true;
+    expect(RiTa.isNoun("wet")).true; //+v/adj
+    expect(RiTa.isNoun("ducks")).true; // +v
+    expect(RiTa.isNoun("flowers")).true; // +v
 
     //adv
-    ok(!RiTa.isNoun("truthfully"));
-    ok(!RiTa.isNoun("kindly"));
-    ok(!RiTa.isNoun("bravely"));
-    ok(!RiTa.isNoun("scarily"));
-    ok(!RiTa.isNoun("sleepily"));
-    ok(!RiTa.isNoun("excitedly"));
-    ok(!RiTa.isNoun("energetically"));
+    expect(!RiTa.isNoun("truthfully")).true;
+    expect(!RiTa.isNoun("kindly")).true;
+    expect(!RiTa.isNoun("bravely")).true;
+    expect(!RiTa.isNoun("scarily")).true;
+    expect(!RiTa.isNoun("sleepily")).true;
+    expect(!RiTa.isNoun("excitedly")).true;
+    expect(!RiTa.isNoun("energetically")).true;
 
     //bad input
-    ok(!RiTa.isNoun(""));
-    ok(!RiTa.isNoun());
-    ok(!RiTa.isNoun(42));
-    ok(!RiTa.isNoun(["rabbit"]));
+    expect(!RiTa.isNoun("")).true;
+    expect(!RiTa.isNoun()).true;
+    expect(!RiTa.isNoun(42)).true;
+    expect(!RiTa.isNoun(["rabbit"])).true;
 
     //verbs (esp. past particle)
-    ok(!RiTa.isNoun("heard"), "heard: " + RiTa.tagger.allTags("heard"));
-    ok(!RiTa.isNoun("deterred"));
+    expect(!RiTa.isNoun("heard"), "heard: " + RiTa.tagger.allTags("heard")).true;
+    expect(!RiTa.isNoun("deterred")).true;
   });
 
   it('Should call isVerb', function () {
@@ -593,157 +593,157 @@ describe('Tagger', () => {
     expect(RiTa.isVerb("abandons")).eq(true);
 
     // verbs
-    ok(RiTa.isVerb("dance"));
-    ok(RiTa.isVerb("swim"));
-    ok(RiTa.isVerb("walk"));
+    expect(RiTa.isVerb("dance")).true;
+    expect(RiTa.isVerb("swim")).true;
+    expect(RiTa.isVerb("walk")).true;
 
-    ok(RiTa.isVerb("dances"));
-    ok(RiTa.isVerb("swims"));
-    ok(RiTa.isVerb("walks"));
-    ok(RiTa.isVerb("costs"));
+    expect(RiTa.isVerb("dances")).true;
+    expect(RiTa.isVerb("swims")).true;
+    expect(RiTa.isVerb("walks")).true;
+    expect(RiTa.isVerb("costs")).true;
 
     // inflections
-    ok(RiTa.isVerb("danced"));
-    ok(RiTa.isVerb("swam"));
-    ok(RiTa.isVerb("walked"));
-    ok(RiTa.isVerb("costed"));
-    ok(RiTa.isVerb("satisfies"));
-    ok(RiTa.isVerb("falsifies"));
-    ok(RiTa.isVerb("beautifies"));
-    ok(RiTa.isVerb("repossesses"));
+    expect(RiTa.isVerb("danced")).true;
+    expect(RiTa.isVerb("swam")).true;
+    expect(RiTa.isVerb("walked")).true;
+    expect(RiTa.isVerb("costed")).true;
+    expect(RiTa.isVerb("satisfies")).true;
+    expect(RiTa.isVerb("falsifies")).true;
+    expect(RiTa.isVerb("beautifies")).true;
+    expect(RiTa.isVerb("repossesses")).true;
 
-    ok(!RiTa.isVerb("dancer"));
-    ok(!RiTa.isVerb("walker"));
-    ok(!RiTa.isVerb("beautiful"));
+    expect(!RiTa.isVerb("dancer")).true;
+    expect(!RiTa.isVerb("walker")).true;
+    expect(!RiTa.isVerb("beautiful")).true;
 
-    ok(RiTa.isVerb("eat"), 'eat');
-    ok(RiTa.isVerb("chew"));
+    expect(RiTa.isVerb("eat"), 'eat').true;
+    expect(RiTa.isVerb("chew")).true;
 
-    ok(RiTa.isVerb("throw")); // +n
-    ok(RiTa.isVerb("walk")); // +n
-    ok(RiTa.isVerb("wash")); // +n
-    ok(RiTa.isVerb("drink")); // +n
+    expect(RiTa.isVerb("throw")).true; // +n
+    expect(RiTa.isVerb("walk")).true; // +n
+    expect(RiTa.isVerb("wash")).true; // +n
+    expect(RiTa.isVerb("drink")).true; // +n
 
-    ok(RiTa.isVerb("fish")); // +n
+    expect(RiTa.isVerb("fish")).true; // +n
 
-    ok(RiTa.isVerb("wind")); // +n
-    ok(RiTa.isVerb("wet")); // +adj
-    ok(RiTa.isVerb("dry")); // +adj
+    expect(RiTa.isVerb("wind")).true; // +n
+    expect(RiTa.isVerb("wet")).true; // +adj
+    expect(RiTa.isVerb("dry")).true; // +adj
 
     //adj
-    ok(!RiTa.isVerb("hard"));
-    ok(!RiTa.isVerb("furry"));
-    ok(!RiTa.isVerb("sad"));
-    ok(!RiTa.isVerb("happy"));
+    expect(!RiTa.isVerb("hard")).true;
+    expect(!RiTa.isVerb("furry")).true;
+    expect(!RiTa.isVerb("sad")).true;
+    expect(!RiTa.isVerb("happy")).true;
 
     //n
-    ok(!RiTa.isVerb("dolls"));
-    ok(!RiTa.isVerb("frogs"));
-    ok(RiTa.isVerb("flowers"));
-    ok(RiTa.isVerb("ducks"));
+    expect(!RiTa.isVerb("dolls")).true;
+    expect(!RiTa.isVerb("frogs")).true;
+    expect(RiTa.isVerb("flowers")).true;
+    expect(RiTa.isVerb("ducks")).true;
 
     //adv
-    ok(!RiTa.isVerb("truthfully"));
-    ok(!RiTa.isVerb("kindly"));
-    ok(!RiTa.isVerb("bravely"));
-    ok(!RiTa.isVerb("scarily"));
-    ok(!RiTa.isVerb("sleepily"));
-    ok(!RiTa.isVerb("excitedly"));
-    ok(!RiTa.isVerb("energetically"));
+    expect(!RiTa.isVerb("truthfully")).true;
+    expect(!RiTa.isVerb("kindly")).true;
+    expect(!RiTa.isVerb("bravely")).true;
+    expect(!RiTa.isVerb("scarily")).true;
+    expect(!RiTa.isVerb("sleepily")).true;
+    expect(!RiTa.isVerb("excitedly")).true;
+    expect(!RiTa.isVerb("energetically")).true;
 
     // inflections
-    ok(RiTa.isVerb("hates"));
-    ok(RiTa.isVerb("hated"));
-    ok(RiTa.isVerb("hating"));
-    ok(RiTa.isVerb("dancing"));
-    ok(RiTa.isVerb("flowers"));
+    expect(RiTa.isVerb("hates")).true;
+    expect(RiTa.isVerb("hated")).true;
+    expect(RiTa.isVerb("hating")).true;
+    expect(RiTa.isVerb("dancing")).true;
+    expect(RiTa.isVerb("flowers")).true;
 
     // irregular inflections (SYNC:)
-    ok(RiTa.isVerb("hates"));
-    ok(RiTa.isVerb("hated"));
-    ok(RiTa.isVerb("ridden"));
-    ok(RiTa.isVerb("rode"));
+    expect(RiTa.isVerb("hates")).true;
+    expect(RiTa.isVerb("hated")).true;
+    expect(RiTa.isVerb("ridden")).true;
+    expect(RiTa.isVerb("rode")).true;
 
-    ok(RiTa.isVerb("abetted"));
-    ok(RiTa.isVerb("abetting"));
-    ok(RiTa.isVerb("abutted"));
-    ok(RiTa.isVerb("abutting"));
-    ok(RiTa.isVerb("abuts"));
-    ok(RiTa.isVerb("abut"));
+    expect(RiTa.isVerb("abetted")).true;
+    expect(RiTa.isVerb("abetting")).true;
+    expect(RiTa.isVerb("abutted")).true;
+    expect(RiTa.isVerb("abutting")).true;
+    expect(RiTa.isVerb("abuts")).true;
+    expect(RiTa.isVerb("abut")).true;
 
-    ok(RiTa.isVerb("misdeal"));
-    ok(RiTa.isVerb("misdeals"));
-    ok(RiTa.isVerb("misdealt"));
+    expect(RiTa.isVerb("misdeal")).true;
+    expect(RiTa.isVerb("misdeals")).true;
+    expect(RiTa.isVerb("misdealt")).true;
 
     // bad inputs
-    ok(!RiTa.isVerb(""));
-    ok(!RiTa.isVerb());
-    ok(!RiTa.isVerb(42));
-    ok(!RiTa.isVerb(["work"]));
+    expect(!RiTa.isVerb("")).true;
+    expect(!RiTa.isVerb()).true;
+    expect(!RiTa.isVerb(42)).true;
+    expect(!RiTa.isVerb(["work"])).true;
   });
 
   it('Should call isAdjective', function () {
 
-    ok(!RiTa.isAdjective("swim"));
-    ok(!RiTa.isAdjective("walk"));
-    ok(!RiTa.isAdjective("walker"));
-    ok(RiTa.isAdjective("beautiful"));
-    ok(!RiTa.isAdjective("dance"));
-    ok(!RiTa.isAdjective("dancing"));
-    ok(!RiTa.isAdjective("dancer"));
+    expect(!RiTa.isAdjective("swim")).true;
+    expect(!RiTa.isAdjective("walk")).true;
+    expect(!RiTa.isAdjective("walker")).true;
+    expect(RiTa.isAdjective("beautiful")).true;
+    expect(!RiTa.isAdjective("dance")).true;
+    expect(!RiTa.isAdjective("dancing")).true;
+    expect(!RiTa.isAdjective("dancer")).true;
 
     //verb
-    ok(!RiTa.isAdjective("wash"));
-    ok(!RiTa.isAdjective("walk"));
-    ok(!RiTa.isAdjective("play"));
-    ok(!RiTa.isAdjective("throw"));
-    ok(!RiTa.isAdjective("drink"));
-    ok(!RiTa.isAdjective("eat"));
-    ok(!RiTa.isAdjective("chew"));
+    expect(!RiTa.isAdjective("wash")).true;
+    expect(!RiTa.isAdjective("walk")).true;
+    expect(!RiTa.isAdjective("play")).true;
+    expect(!RiTa.isAdjective("throw")).true;
+    expect(!RiTa.isAdjective("drink")).true;
+    expect(!RiTa.isAdjective("eat")).true;
+    expect(!RiTa.isAdjective("chew")).true;
 
     //adj
-    ok(RiTa.isAdjective("hard"));
-    ok(RiTa.isAdjective("wet"));
-    ok(RiTa.isAdjective("dry"));
-    ok(RiTa.isAdjective("furry"));
-    ok(RiTa.isAdjective("sad"));
-    ok(RiTa.isAdjective("happy"));
-    ok(RiTa.isAdjective("kindly")); //+adv
+    expect(RiTa.isAdjective("hard")).true;
+    expect(RiTa.isAdjective("wet")).true;
+    expect(RiTa.isAdjective("dry")).true;
+    expect(RiTa.isAdjective("furry")).true;
+    expect(RiTa.isAdjective("sad")).true;
+    expect(RiTa.isAdjective("happy")).true;
+    expect(RiTa.isAdjective("kindly")).true; //+adv
 
     //n
-    ok(!RiTa.isAdjective("dogs"));
-    ok(!RiTa.isAdjective("wind"));
-    ok(!RiTa.isAdjective("dolls"));
-    ok(!RiTa.isAdjective("frogs"));
-    ok(!RiTa.isAdjective("ducks"));
-    ok(!RiTa.isAdjective("flowers"));
-    ok(!RiTa.isAdjective("fish"));
+    expect(!RiTa.isAdjective("dogs")).true;
+    expect(!RiTa.isAdjective("wind")).true;
+    expect(!RiTa.isAdjective("dolls")).true;
+    expect(!RiTa.isAdjective("frogs")).true;
+    expect(!RiTa.isAdjective("ducks")).true;
+    expect(!RiTa.isAdjective("flowers")).true;
+    expect(!RiTa.isAdjective("fish")).true;
 
     //adv
-    ok(!RiTa.isAdjective("truthfully"));
-    ok(!RiTa.isAdjective("bravely"));
-    ok(!RiTa.isAdjective("scarily"));
-    ok(!RiTa.isAdjective("sleepily"));
-    ok(!RiTa.isAdjective("excitedly"));
-    ok(!RiTa.isAdjective("energetically"));
+    expect(!RiTa.isAdjective("truthfully")).true;
+    expect(!RiTa.isAdjective("bravely")).true;
+    expect(!RiTa.isAdjective("scarily")).true;
+    expect(!RiTa.isAdjective("sleepily")).true;
+    expect(!RiTa.isAdjective("excitedly")).true;
+    expect(!RiTa.isAdjective("energetically")).true;
 
     //bad inputs
-    ok(!RiTa.isAdjective(""));
-    ok(!RiTa.isAdjective());
-    ok(!RiTa.isAdjective(42));
-    ok(!RiTa.isAdjective(["happy"]));
+    expect(!RiTa.isAdjective("")).true;
+    expect(!RiTa.isAdjective()).true;
+    expect(!RiTa.isAdjective(42)).true;
+    expect(!RiTa.isAdjective(["happy"])).true;
   });
 
   //test helpers
 
   it('Should call allTags', function () {
-    eql(RiTa.tagger.allTags('monkey'), ["nn"]);
-    eql(RiTa.tagger.allTags('monkeys'), ["nns"]);
-    eql(RiTa.tagger.allTags(''), []);
-    eql(RiTa.tagger.allTags(['monkey']), []);
-    eql(RiTa.tagger.allTags("hates", { noDerivations: true }), []);
-    eql(RiTa.tagger.allTags("satisfies"), ["vbz"]);
-    eql(RiTa.tagger.allTags("falsifies"), ["vbz"])
+    expect(RiTa.tagger.allTags('monkey')).eql(["nn"]);
+    expect(RiTa.tagger.allTags('monkeys')).eql(["nns"]);
+    expect(RiTa.tagger.allTags('')).eql([]);
+    expect(RiTa.tagger.allTags(['monkey'])).eql([]);
+    expect(RiTa.tagger.allTags("hates", { noDerivations: true })).eql([]);
+    expect(RiTa.tagger.allTags("satisfies")).eql(["vbz"]);
+    expect(RiTa.tagger.allTags("falsifies")).eql(["vbz"]);
     expect(RiTa.tagger.allTags("hates")).to.include("vbz");
     expect(RiTa.tagger.allTags("hates")).to.include("nns");
     expect(RiTa.tagger.allTags("cakes")).to.include("nns");
@@ -764,128 +764,128 @@ describe('Tagger', () => {
     expect(RiTa.tagger.allTags("asdkasws")).to.include("nns");
 
     //https://github.com/dhowe/rita/issues/177
-    expect(RiTa.tagger.allTags("bit")).eql(['vbd','nn','rb']);
-    expect(RiTa.tagger.allTags("broke")).eql(['vbd','jj','rb']);
-    expect(RiTa.tagger.allTags("called")).eql(['vbd','vbn']);
-    expect(RiTa.tagger.allTags("committed")).eql(['vbn','jj','vbd']);
-    expect(RiTa.tagger.allTags("computerized")).eql(['jj','vbd','vbn']);
-    expect(RiTa.tagger.allTags("concerned")).eql(['vbd','jj','vbn']);;
-    expect(RiTa.tagger.allTags("discriminated")).eql(['vbd','vbn','jj']);
-    expect(RiTa.tagger.allTags("ended")).eql(['vbd','jj','vbn']);
-    expect(RiTa.tagger.allTags("expected")).eql(['vbn','vbd','jj']);
-    expect(RiTa.tagger.allTags("finished")).eql(['vbd','jj','vbn']);
-    expect(RiTa.tagger.allTags("gained")).eql(['vbd','vbn']);
+    expect(RiTa.tagger.allTags("bit")).eql(['vbd', 'nn', 'rb']);
+    expect(RiTa.tagger.allTags("broke")).eql(['vbd', 'jj', 'rb']);
+    expect(RiTa.tagger.allTags("called")).eql(['vbd', 'vbn']);
+    expect(RiTa.tagger.allTags("committed")).eql(['vbn', 'jj', 'vbd']);
+    expect(RiTa.tagger.allTags("computerized")).eql(['jj', 'vbd', 'vbn']);
+    expect(RiTa.tagger.allTags("concerned")).eql(['vbd', 'jj', 'vbn']);;
+    expect(RiTa.tagger.allTags("discriminated")).eql(['vbd', 'vbn', 'jj']);
+    expect(RiTa.tagger.allTags("ended")).eql(['vbd', 'jj', 'vbn']);
+    expect(RiTa.tagger.allTags("expected")).eql(['vbn', 'vbd', 'jj']);
+    expect(RiTa.tagger.allTags("finished")).eql(['vbd', 'jj', 'vbn']);
+    expect(RiTa.tagger.allTags("gained")).eql(['vbd', 'vbn']);
 
     expect(RiTa.tagger.allTags("got")).eql(['vbd', 'vbn']);
-    expect(RiTa.tagger.allTags("increased")).eql(['vbn','jj','vbd']);
-    expect(RiTa.tagger.allTags("involved")).eql(['vbn','vbd','jj']);
-    expect(RiTa.tagger.allTags("launched")).eql(['vbn','vbd']);
+    expect(RiTa.tagger.allTags("increased")).eql(['vbn', 'jj', 'vbd']);
+    expect(RiTa.tagger.allTags("involved")).eql(['vbn', 'vbd', 'jj']);
+    expect(RiTa.tagger.allTags("launched")).eql(['vbn', 'vbd']);
     expect(RiTa.tagger.allTags("led")).eql(['vbd', 'vbn']);
-    expect(RiTa.tagger.allTags("lived")).eql(['vbd','vbn']);
+    expect(RiTa.tagger.allTags("lived")).eql(['vbd', 'vbn']);
     expect(RiTa.tagger.allTags("oversaw")).eql(['vbd']);
-    expect(RiTa.tagger.allTags("paled")).eql(['vbd','vbn']);
-    expect(RiTa.tagger.allTags("prepaid")).eql(['jj','vbd','vbn']);;
-    expect(RiTa.tagger.allTags("pressured")).eql(['vbn','jj','vbd']);
-    expect(RiTa.tagger.allTags("proliferated")).eql(['vbn','vbd']);
-    expect(RiTa.tagger.allTags("remade")).eql(['vbd','vbn']);
-    expect(RiTa.tagger.allTags("reopened")).eql(['vbd','vbn']);
-    expect(RiTa.tagger.allTags("reported")).eql(['vbd','jj','vbn']);
-    expect(RiTa.tagger.allTags("resold")).eql(['vbd','vbn']);
-    expect(RiTa.tagger.allTags("settled")).eql(['vbd','vbn','jj']);
-    expect(RiTa.tagger.allTags("started")).eql(['vbd','jj','vbn']);
+    expect(RiTa.tagger.allTags("paled")).eql(['vbd', 'vbn']);
+    expect(RiTa.tagger.allTags("prepaid")).eql(['jj', 'vbd', 'vbn']);;
+    expect(RiTa.tagger.allTags("pressured")).eql(['vbn', 'jj', 'vbd']);
+    expect(RiTa.tagger.allTags("proliferated")).eql(['vbn', 'vbd']);
+    expect(RiTa.tagger.allTags("remade")).eql(['vbd', 'vbn']);
+    expect(RiTa.tagger.allTags("reopened")).eql(['vbd', 'vbn']);
+    expect(RiTa.tagger.allTags("reported")).eql(['vbd', 'jj', 'vbn']);
+    expect(RiTa.tagger.allTags("resold")).eql(['vbd', 'vbn']);
+    expect(RiTa.tagger.allTags("settled")).eql(['vbd', 'vbn', 'jj']);
+    expect(RiTa.tagger.allTags("started")).eql(['vbd', 'jj', 'vbn']);
 
-   });
+  });
 
   it('Should call hasTag', function () {
-    ok(!RiTa.tagger.hasTag());
-    ok(!RiTa.tagger.hasTag('nn adj', 'nn'));
-    ok(RiTa.tagger.hasTag(RiTa.tagger.allTags('monkey'), 'nn'));
+    expect(!RiTa.tagger.hasTag()).true;
+    expect(!RiTa.tagger.hasTag('nn adj', 'nn')).true;
+    expect(RiTa.tagger.hasTag(RiTa.tagger.allTags('monkey'), 'nn')).true;
   });
 
   it('Should call inlineTags', function () {
-    eq(RiTa.tagger.inlineTags(), "");
-    eq(RiTa.tagger.inlineTags([]), "");
+    expect(RiTa.tagger.inlineTags()).eq("");
+    expect(RiTa.tagger.inlineTags([])).eq("");
     expect(function () { RiTa.tagger.inlineTags(["I", "am", "Pikachu"], [], "/"); }).to.throw();
-    eq(RiTa.tagger.inlineTags(["I", "am", "happy", "."], ["prp", "vbp", "jj", "."]), "I/prp am/vbp happy/jj .");
-    eq(RiTa.tagger.inlineTags(["I", "am", "happy", "."], ["prp", "vbp", "jj", "."], ";"), "I;prp am;vbp happy;jj .");
+    expect(RiTa.tagger.inlineTags(["I", "am", "happy", "."], ["prp", "vbp", "jj", "."])).eq("I/prp am/vbp happy/jj .");
+    expect(RiTa.tagger.inlineTags(["I", "am", "happy", "."], ["prp", "vbp", "jj", "."], ";")).eq("I;prp am;vbp happy;jj .");
   });
 
   it('Should call tag', function () {
-    eql(RiTa.tagger.tag([]), []);
-    eql(RiTa.tagger.tag(), []);
-    eq(RiTa.tagger.tag([], { inline: true }), "");
-    eql(RiTa.tagger.tag(["I", "am", "happy", "."], { simple: true }), ["-", "v", "a", "-"]);
-    eq(RiTa.tagger.tag(["I", "am", "happy", "."], { simple: true, inline: true }), "I/- am/v happy/a .");
-    eq(RiTa.tagger.tag(["I", "roll", "a", "9", "."], { inline: true }), "I/prp roll/vbp a/dt 9/cd .");
-    eq(RiTa.tagger.tag(["A", "badguy", "."], { inline: true }), "A/dt badguy/nn .");
-    eq(RiTa.tagger.tag(["A", "C", "level", "grade", "."], { inline: true }), "A/dt C/C level/jj grade/nn .");
+    expect(RiTa.tagger.tag([])).eql([]);
+    expect(RiTa.tagger.tag()).eql([]);
+    expect(RiTa.tagger.tag([], { inline: true })).eq("");
+    expect(RiTa.tagger.tag(["I", "am", "happy", "."], { simple: true })).eql(["-", "v", "a", "-"]);
+    expect(RiTa.tagger.tag(["I", "am", "happy", "."], { simple: true, inline: true })).eq("I/- am/v happy/a .");
+    expect(RiTa.tagger.tag(["I", "roll", "a", "9", "."], { inline: true })).eq("I/prp roll/vbp a/dt 9/cd .");
+    expect(RiTa.tagger.tag(["A", "badguy", "."], { inline: true })).eq("A/dt badguy/nn .");
+    expect(RiTa.tagger.tag(["A", "C", "level", "grade", "."], { inline: true })).eq("A/dt C/C level/jj grade/nn .");
     // rule 1
-    eq(RiTa.tagger.tag(["The", "run", "was", "great", "."], { inline: true }), "The/dt run/nn was/vbd great/jj .");
-    eq(RiTa.tagger.tag(["They", "are", "the", "beaten", "."], { inline: true }), "They/prp are/vbp the/dt beaten/nn .");
-    eq(RiTa.tagger.tag(["A", "diss", "."], { inline: true }), "A/dt diss/nns .");
-    eq(RiTa.tagger.tag(["The", "soon", "."], { inline: true }), "The/dt soon/jj .");
-    eq(RiTa.tagger.tag(["The", "sooner", "."], { inline: true }), "The/dt sooner/jjr .");
-    eq(RiTa.tagger.tag(["The", "soonest", "."], { inline: true }), "The/dt soonest/jjs .");
+    expect(RiTa.tagger.tag(["The", "run", "was", "great", "."], { inline: true })).eq("The/dt run/nn was/vbd great/jj .");
+    expect(RiTa.tagger.tag(["They", "are", "the", "beaten", "."], { inline: true })).eq("They/prp are/vbp the/dt beaten/nn .");
+    expect(RiTa.tagger.tag(["A", "diss", "."], { inline: true })).eq("A/dt diss/nns .");
+    expect(RiTa.tagger.tag(["The", "soon", "."], { inline: true })).eq("The/dt soon/jj .");
+    expect(RiTa.tagger.tag(["The", "sooner", "."], { inline: true })).eq("The/dt sooner/jjr .");
+    expect(RiTa.tagger.tag(["The", "soonest", "."], { inline: true })).eq("The/dt soonest/jjs .");
     //rule 2
-    eq(RiTa.tagger.tag(["It", "is", "59876", "."], { inline: true }), "It/prp is/vbz 59876/cd .");
+    expect(RiTa.tagger.tag(["It", "is", "59876", "."], { inline: true })).eq("It/prp is/vbz 59876/cd .");
     //rule 3
-    eq(RiTa.tagger.tag(["I", "teabaged", "."], { inline: true }), "I/prp teabaged/vbn .");
-    eq(RiTa.tagger.tag(["Sun", "teabaged", "."], { inline: true }), "Sun/nn teabaged/vbn .");
-    eq(RiTa.tagger.tag(["The", "worker", "proletarianized", "."], { inline: true }), "The/dt worker/nn proletarianized/vbn .");
+    expect(RiTa.tagger.tag(["I", "teabaged", "."], { inline: true })).eq("I/prp teabaged/vbn .");
+    expect(RiTa.tagger.tag(["Sun", "teabaged", "."], { inline: true })).eq("Sun/nn teabaged/vbn .");
+    expect(RiTa.tagger.tag(["The", "worker", "proletarianized", "."], { inline: true })).eq("The/dt worker/nn proletarianized/vbn .");
     //rule 4
-    eq(RiTa.tagger.tag(["The", "fortunately", "."], { inline: true }), "The/dt fortunately/rb ."); // 1-b then 4
-    eq(RiTa.tagger.tag(["He", "is", "goodly", "working", "."], { inline: true }), "He/prp is/vbz goodly/rb working/vbg .");
+    expect(RiTa.tagger.tag(["The", "fortunately", "."], { inline: true })).eq("The/dt fortunately/rb ."); // 1-b then 4
+    expect(RiTa.tagger.tag(["He", "is", "goodly", "working", "."], { inline: true })).eq("He/prp is/vbz goodly/rb working/vbg .");
     //rule 5
-    eq(RiTa.tagger.tag(["It", "is", "nonexistional", "."], { inline: true }), "It/prp is/vbz nonexistional/jj .");
-    eq(RiTa.tagger.tag(["It", "is", "mammal", "."], { inline: true }), "It/prp is/vbz mammal/nn .");
-    eq(RiTa.tagger.tag(["It", "is", "onal", "."], { inline: true }), "It/prp is/vbz onal/nn .");
+    expect(RiTa.tagger.tag(["It", "is", "nonexistional", "."], { inline: true })).eq("It/prp is/vbz nonexistional/jj .");
+    expect(RiTa.tagger.tag(["It", "is", "mammal", "."], { inline: true })).eq("It/prp is/vbz mammal/nn .");
+    expect(RiTa.tagger.tag(["It", "is", "onal", "."], { inline: true })).eq("It/prp is/vbz onal/nn .");
     //rule 6
-    eq(RiTa.tagger.tag(["We", "must", "place", "it", "."], { inline: true }), "We/prp must/md place/vb it/prp .");
-    eq(RiTa.tagger.tag(["We", "must", "teabag", "him", "."], { inline: true }), "We/prp must/md teabag/vb him/prp .");
+    expect(RiTa.tagger.tag(["We", "must", "place", "it", "."], { inline: true })).eq("We/prp must/md place/vb it/prp .");
+    expect(RiTa.tagger.tag(["We", "must", "teabag", "him", "."], { inline: true })).eq("We/prp must/md teabag/vb him/prp .");
     //rule 7 
-    eq(RiTa.tagger.tag(["He", "has", "played", "it", "."], { inline: true }), "He/prp has/vbz played/vbn it/prp .");
-    eq(RiTa.tagger.tag(["He", "gets", "played", "."], { inline: true }), "He/prp gets/vbz played/vbn .");
+    expect(RiTa.tagger.tag(["He", "has", "played", "it", "."], { inline: true })).eq("He/prp has/vbz played/vbn it/prp .");
+    expect(RiTa.tagger.tag(["He", "gets", "played", "."], { inline: true })).eq("He/prp gets/vbz played/vbn .");
     //rule 8
-    eq(RiTa.tagger.tag(["The", "morning", "."], { inline: true }), "The/dt morning/nn .");
-    eq(RiTa.tagger.tag(["They", "are", "fishing", "."], { inline: true }), "They/prp are/vbp fishing/vbg .");
+    expect(RiTa.tagger.tag(["The", "morning", "."], { inline: true })).eq("The/dt morning/nn .");
+    expect(RiTa.tagger.tag(["They", "are", "fishing", "."], { inline: true })).eq("They/prp are/vbp fishing/vbg .");
     //rule 9
-    eq(RiTa.tagger.tag(["He", "dances", "."], { inline: true }), "He/prp dances/vbz .");
-    eq(RiTa.tagger.tag(["The", "dog", "dances", "."], { inline: true }), "The/dt dog/nn dances/vbz .");
-    eq(RiTa.tagger.tag(["Dave", "dances", "."], { inline: true }), "Dave/nnp dances/vbz .");
+    expect(RiTa.tagger.tag(["He", "dances", "."], { inline: true })).eq("He/prp dances/vbz .");
+    expect(RiTa.tagger.tag(["The", "dog", "dances", "."], { inline: true })).eq("The/dt dog/nn dances/vbz .");
+    expect(RiTa.tagger.tag(["Dave", "dances", "."], { inline: true })).eq("Dave/nnp dances/vbz .");
     //rule 10
-    eq(RiTa.tagger.tag(["Taipei", "."], { inline: true }), "Taipei/nnp .");
-    eq(RiTa.tagger.tag(["Buddhas", "."], { inline: true }), "Buddhas/nnps .");
-    eq(RiTa.tagger.tag(["In", "Beijing", "."], { inline: true }), "In/in Beijing/nnp .");
-    eq(RiTa.tagger.tag(["One", "of", "the", "Beats", "."], { inline: true }), "One/cd of/in the/dt Beats/nnps .");
-    eq(RiTa.tagger.tag(["Taipei", "is", "a", "big", "city", "."], { inline: true }), "Taipei/nnp is/vbz a/dt big/jj city/nn .");
-    eq(RiTa.tagger.tag(["Buddhas", "in", "this", "temple", "have", "a", "history", "of", "500", "years", "."], { inline: true }), "Buddhas/nnps in/in this/dt temple/nn have/vbp a/dt history/nn of/in 500/cd years/nns .");
-    eq(RiTa.tagger.tag(["Balls", "on", "the", "floor", "."], { inline: true }), "Balls/nns on/in the/dt floor/nn .");
+    expect(RiTa.tagger.tag(["Taipei", "."], { inline: true })).eq("Taipei/nnp .");
+    expect(RiTa.tagger.tag(["Buddhas", "."], { inline: true })).eq("Buddhas/nnps .");
+    expect(RiTa.tagger.tag(["In", "Beijing", "."], { inline: true })).eq("In/in Beijing/nnp .");
+    expect(RiTa.tagger.tag(["One", "of", "the", "Beats", "."], { inline: true })).eq("One/cd of/in the/dt Beats/nnps .");
+    expect(RiTa.tagger.tag(["Taipei", "is", "a", "big", "city", "."], { inline: true })).eq("Taipei/nnp is/vbz a/dt big/jj city/nn .");
+    expect(RiTa.tagger.tag(["Buddhas", "in", "this", "temple", "have", "a", "history", "of", "500", "years", "."], { inline: true })).eq("Buddhas/nnps in/in this/dt temple/nn have/vbp a/dt history/nn of/in 500/cd years/nns .");
+    expect(RiTa.tagger.tag(["Balls", "on", "the", "floor", "."], { inline: true })).eq("Balls/nns on/in the/dt floor/nn .");
     //rule 11
-    eq(RiTa.tagger.tag(["dances", "."], { inline: true }), "dances/nns .");
-    eq(RiTa.tagger.tag(["dances", "and", "performances", "."], { inline: true }), "dances/nns and/cc performances/nns .");
-    eq(RiTa.tagger.tag(["cakes", "quickly", "."], { inline: true }), "cakes/nns quickly/rb .");
-    eq(RiTa.tagger.tag(["dances", "quickly", "."], { inline: true }), "dances/vbz quickly/rb .");
+    expect(RiTa.tagger.tag(["dances", "."], { inline: true })).eq("dances/nns .");
+    expect(RiTa.tagger.tag(["dances", "and", "performances", "."], { inline: true })).eq("dances/nns and/cc performances/nns .");
+    expect(RiTa.tagger.tag(["cakes", "quickly", "."], { inline: true })).eq("cakes/nns quickly/rb .");
+    expect(RiTa.tagger.tag(["dances", "quickly", "."], { inline: true })).eq("dances/vbz quickly/rb .");
     //rule 12
-    eq(RiTa.tagger.tag(["David", "cakes", "."], { inline: true }), "David/nnp cakes/nns .");
-    eq(RiTa.tagger.tag(["David", "laughs", "and", "dances", "."], { inline: true }), "David/nnp laughs/vbz and/cc dances/vbz .");
-    eq(RiTa.tagger.tag(["counterattacks", "."], { inline: true }), "counterattacks/nns .");
+    expect(RiTa.tagger.tag(["David", "cakes", "."], { inline: true })).eq("David/nnp cakes/nns .");
+    expect(RiTa.tagger.tag(["David", "laughs", "and", "dances", "."], { inline: true })).eq("David/nnp laughs/vbz and/cc dances/vbz .");
+    expect(RiTa.tagger.tag(["counterattacks", "."], { inline: true })).eq("counterattacks/nns .");
     //rule 13
-    eq(RiTa.tagger.tag(["Monkeys", "run", "."], { inline: true }), "Monkeys/nns run/vbp .");
-    eq(RiTa.tagger.tag(["Monkeys", "attack", "."], { inline: true }), "Monkeys/nns attack/vbp .");
+    expect(RiTa.tagger.tag(["Monkeys", "run", "."], { inline: true })).eq("Monkeys/nns run/vbp .");
+    expect(RiTa.tagger.tag(["Monkeys", "attack", "."], { inline: true })).eq("Monkeys/nns attack/vbp .");
     //
-    eq(RiTa.tagger.tag(["A", "light", "blue", "sky", "."], { inline: true }), "A/dt light/jj blue/jj sky/nn .");
-  
+    expect(RiTa.tagger.tag(["A", "light", "blue", "sky", "."], { inline: true })).eq("A/dt light/jj blue/jj sky/nn .");
+
     //https://github.com/dhowe/rita/issues/177
-    eq(RiTa.tagger.tag(["It", "broke", "."], { inline: true }), "It/prp broke/vbd .");
-    eq(RiTa.tagger.tag(["It", "outpaced", "that","."], { inline: true }), "It/prp outpaced/vbd that/in .");
-    eq(RiTa.tagger.tag(["She", "remade", "this", "video", "."], { inline: true }), "She/prp remade/vbd this/dt video/nn .");
-    eq(RiTa.tagger.tag(["She", "has", "remade", "this", "video", "."], { inline: true }), "She/prp has/vbz remade/vbn this/dt video/nn .");
-    0 && eq(RiTa.tagger.tag(["The", "video","was" ,"remade", "."], { inline: true }), "The/dt video/nn was/vbd remade/vbn .");
-    0 && eq(RiTa.tagger.tag(["Being", "literate", "didn\'t" ,"stop", "him", "from", "being", "discriminated", "against","."], { inline: true }), "Being/vbg literate/jj didn't/vbd stop/vb him/prp from/in being/vbg discriminated/vbn against/in .");
-   
+    expect(RiTa.tagger.tag(["It", "broke", "."], { inline: true })).eq("It/prp broke/vbd .");
+    expect(RiTa.tagger.tag(["It", "outpaced", "that", "."], { inline: true })).eq("It/prp outpaced/vbd that/in .");
+    expect(RiTa.tagger.tag(["She", "remade", "this", "video", "."], { inline: true })).eq("She/prp remade/vbd this/dt video/nn .");
+    expect(RiTa.tagger.tag(["She", "has", "remade", "this", "video", "."], { inline: true })).eq("She/prp has/vbz remade/vbn this/dt video/nn .");
+    0 && expect(RiTa.tagger.tag(["The", "video", "was", "remade", "."], { inline: true })).eq("The/dt video/nn was/vbd remade/vbn .");
+    0 && expect(RiTa.tagger.tag(["Being", "literate", "didn\'t", "stop", "him", "from", "being", "discriminated", "against", "."], { inline: true })).eq("Being/vbg literate/jj didn't/vbd stop/vb him/prp from/in being/vbg discriminated/vbn against/in .");
+
   });
 
-  it('Should handle hyphenated words in sentence', () => { 
+  it('Should handle hyphenated words in sentence', () => {
     let pool = [
       'He is my father-in-law.',
       'We have a off-site meeting yesterday.',
@@ -944,8 +944,8 @@ describe('Tagger', () => {
       ["prp", "vbd", "dt", "jj", "jj", "nn", "."]
     ];
 
-    answers.forEach((a, i) => { 
-      eql(RiTa.pos(pool[i]), a, "fail at: " + pool[i]);
+    answers.forEach((a, i) => {
+      expect(RiTa.pos(pool[i])).eql(a, "fail at: " + pool[i]);
     });
   });
   // }
@@ -953,9 +953,4 @@ describe('Tagger', () => {
   //   expect(true).true;
   // });
 
-
-  function eql(a, b, m) { expect(a).eql(b, m); }
-  function eq(a, b, m) { expect(a).eq(b, m); }
-  function ok(a, m) { expect(a, m).to.be.true; }
-  function def(res, m) { expect(res, m).to.not.be.undefined; }
 });
