@@ -3,7 +3,7 @@ import { expect } from 'chai';
 
 import RiTa from './index.js';
 
-describe('RiTa.Lexicon', function () {
+describe('Lexicon', function () {
 
   /*it('Should call *search generator', () => {
     let lex = RiTa.lexicon, result;

@@ -3,7 +3,7 @@ import {expect} from 'chai';
 
 import RiTa from './index.js';
 
-describe('RiTa.Analyzer', function () {
+describe('Analyzer', function () {
   
   let hasLex = true;
 
@@ -76,12 +76,15 @@ describe('RiTa.Analyzer', function () {
 
     if (!hasLex) return; // NOTE: below currently fail without lexicon
 
+    let tmp = RiTa.SILENCE_LTS;
+    RiTa.SILENCE_LTS = true;
     feats = RiTa.analyze("1903");
     expect(feats.phones).eq("w-ah-n-n-ih-n-z-ih-r-ow-th-r-iy");
     expect(feats.stresses).eq("0/0/0/0/0");
     expect(feats.syllables).eq("w-ah-n/n-ih-n/z-ih/r-ow/th-r-iy");
     expect(feats.tokens).eq("1903");
     expect(feats.pos).eq("cd");
+    RiTa.SILENCE_LTS = tmp;
 
     feats = RiTa.analyze("the clothes");
     expect(feats.pos).eq("dt nns");

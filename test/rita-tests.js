@@ -2,21 +2,23 @@ import { expect } from 'chai';
 
 import RiTa from './index.js';
 
-describe('RiTa.Core', () => {
+describe('Core', () => {
 
   it('Should have access to statics', function () {
     eq(RiTa.CDN, "https://www.unpkg.com/rita/");
 
     //console.log(process.env.NODE_ENV, process.env.npm_package_version, RiTa.VERSION);
     if (typeof process === 'undefined') return; // TODO: browser
+
     if (process.env.NODE_ENV === 'dev') {
-      expect(RiTa.VERSION === 'DEV' || /[0-9]\.[0-9]\.[0-9]+/.test(RiTa.VERSION)).eq(true);
+      expect(RiTa.VERSION === 'DEV' || /[0-9]\.[0-9]\.[0-9]+/.test(RiTa.VERSION))
+        .eq(true, 'DEV: version should be # or DEV, got: ' + RiTa.VERSION);
     }
     else {
       if (typeof process.env.npm_package_version === 'undefined') {
         console.warn("[WARN] No package version: ignore if running in vscode ");
       } else {
-        eql(RiTa.VERSION, process.env.npm_package_version);
+        eql(RiTa.VERSION, process.env.npm_package_version, 'bad version number="' + RiTa.VERSION + "\", ");
       }
     }
 

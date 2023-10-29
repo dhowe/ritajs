@@ -1,10 +1,10 @@
 {
-  "name": "ritajs",
+  "name": "rjs3",
   "version": "1.0.0",
   "description": "",
   "type": "module",
   "scripts": {
-    "test": "mocha"
+    "test": "NODE_ENV=dev npx mocha"
   },
   "keywords": [],
   "author": "",
