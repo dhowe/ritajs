@@ -3,10 +3,14 @@
   "version": "1.0.1",
   "description": "",
   "type": "module",
+  "main": "rita.js",
   "scripts": {
     "test": "NODE_ENV=dev npx mocha",
     "build": "rm -rf dist/ && env NODE_ENV=prod tsup"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
