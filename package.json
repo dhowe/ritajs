@@ -3,10 +3,11 @@
   "version": "1.0.1",
   "description": "",
   "type": "module",
-  "main": "rita.js",
+  "main": "dist/rita.js",
   "scripts": {
     "test": "NODE_ENV=dev npx mocha",
-    "build": "rm -rf dist/ && env NODE_ENV=prod tsup"
+    "build": "rm -rf dist/ && env NODE_ENV=prod tsup",
+    "build:watch": "tsup --watch"
   },
   "files": [
     "dist"
@@ -15,6 +16,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/chai": "^4.3.9",
+    "@types/mocha": "^10.0.3",
     "@types/node": "^20.8.10",
     "chai": "^4.3.10",
     "mocha": "^10.2.0",
