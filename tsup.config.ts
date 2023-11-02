@@ -6,7 +6,7 @@ export const tsup: Options = {
   name: "rita",
   target: 'es2020',
   // noExternal: ['chevrotain'],
-  entry: { riscript: 'src/index.js' },
+  entry: ['lib/rita.js' ],
   format: [/*'cjs',*/ 'esm'], // generate cjs and esm files
   splitting: true,
   clean: true, // rm dist/*
@@ -16,6 +16,6 @@ export const tsup: Options = {
   sourcemap: env === 'prod', // source map is only available in prod
   skipNodeModulesBundle: true,
   watch: false,//env === 'development',
-  outDir: env === 'prod' ? 'dist' : 'lib',
+  outDir:  'dist',
   //format: ['cjs', 'esm'], // generate cjs and esm files
 };
