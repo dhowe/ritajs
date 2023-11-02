@@ -15,6 +15,6 @@
   },
   "dependencies": {
     "flatted": "^3.2.9",
-    "riscript": "^1.0.3"
+    "rscript-ozu": "^0.1.5"
   }
 }
