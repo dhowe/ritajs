@@ -4,14 +4,16 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "test": "NODE_ENV=dev npx mocha"
+    "test": "NODE_ENV=dev npx mocha",
+    "build": "rm -rf dist/ && env NODE_ENV=prod tsup"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "chai": "^4.3.10",
-    "mocha": "^10.2.0"
+    "mocha": "^10.2.0",
+    "tsup": "^7.2.0"
   },
   "dependencies": {
     "flatted": "^3.2.9",
