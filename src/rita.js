@@ -1,5 +1,5 @@
 
-import RiScript from 'rscript';
+import RiScript from 'riscript';
 import Stemmer from './stemmer.js';
 import Tokenizer from './tokenizer.js';
 import Conjugator from './conjugator.js';
