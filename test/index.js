@@ -1,2 +1,2 @@
-import RiTa from '../lib/rita.js';
+import RiTa from '../src/rita.js';
 export default RiTa;

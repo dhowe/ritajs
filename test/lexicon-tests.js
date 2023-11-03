@@ -595,7 +595,7 @@ describe('Lexicon', function () {
     expect(res).eql(['rice']);
   });
 
-  it('Should call search with pos, letters', function () {
+  it('Should call search with pos, letters', function () { // slow
 
     let res = RiTa.search('cause', { pos: 'nns' });
     expect(res).eql(['causes', 'causeways']);
