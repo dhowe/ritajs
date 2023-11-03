@@ -4,6 +4,12 @@
   "description": "",
   "type": "module",
   "main": "dist/rita.js",
+  "exports": {
+    ".": {
+      "import": "./dist/rita.js",
+      "require": "./dist/rita.cjs"
+    }
+  },
   "scripts": {
     "test": "NODE_ENV=dev npx mocha",
     "build": "rm -rf dist/ && env NODE_ENV=prod tsup",

@@ -11,6 +11,11 @@ import Concorder from './concorder.js';
 import RandGen from './randgen.js';
 import RiMarkov from './markov.js';
 
+/*
+TODO: 
+  -- lexicon performance
+  -- optional lexicon
+*/
 
 class RiTa {
 
