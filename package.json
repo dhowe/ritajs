@@ -4,6 +4,9 @@
   "description": "",
   "type": "module",
   "main": "dist/rita.js",
+  "engines": {
+    "node": ">=14.0"
+  },
   "exports": {
     ".": {
       "import": "./dist/rita.js",
