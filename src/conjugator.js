@@ -100,12 +100,6 @@ class Conjugator {
 
     let dbug = opts && opts.dbug;
 
-    this.verbsEndingInE = this.verbsEndingInE // lazy-load
-      || this.RiTa.search(/e$/, { limit: -1, minLength: 1, pos: "vb" });
-
-    this.verbsEndingInDoubles = this.verbsEndingInDoubles // lazy-load
-      || this.RiTa.search(/([a-z])\1+$/, { limit: -1, minLength: 1, pos: 'vb' });
-
     if (IRREG_VERBS_LEX.hasOwnProperty(word)) {
       dbug && console.log(word + " in exceptions1 (in lex)");
       return IRREG_VERBS_LEX[word];

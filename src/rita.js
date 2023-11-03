@@ -234,9 +234,12 @@ RiTa.analyzer = new Analyzer(RiTa);
 RiTa.concorder = new Concorder(RiTa);
 RiTa.tokenizer = new Tokenizer(RiTa);
 RiTa.inflector = new Inflector(RiTa);
-RiTa.conjugator = new Conjugator(RiTa);
 RiTa.randomizer = new RandGen(RiTa);
 RiTa.lexicon = new Lexicon(RiTa);
+RiTa.conjugator = new Conjugator(RiTa);
+
+RiTa.conjugator.verbsEndingInE = await RiTa.search(/e$/, { limit: -1, minLength: 1, pos: "vb" });
+RiTa.conjugator.verbsEndingInDoubles = await RiTa.search(/([a-z])\1+$/, { limit: -1, minLength: 1, pos: 'vb' });
 
 // MESSAGES
 RiTa.SILENT = false;

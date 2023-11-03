@@ -189,7 +189,7 @@ class Lexicon {
       : this.similarByType(word, opts);
   }
 
-  randomWord(regex, opts) {
+  async randomWord(regex, opts) {
 
     // no arguments, just return
     if (!regex && !opts) {
@@ -210,12 +210,12 @@ class Lexicon {
     opts.shuffle = true;
     opts.limit = 1;
 
-    let result = this.search(regex, opts);
+    let result = await this.search(regex, opts);
 
     // relax our pos constraints if we got nothing
     if (result.length < 1 && opts.hasOwnProperty('pos')) {
       opts.strictPos = false;
-      result = this.search(regex, opts);
+      result = await this.search(regex, opts);
     }
 
     // we've still got nothing, throw
@@ -227,7 +227,17 @@ class Lexicon {
     return result[0];
   }
 
-  search(pattern, options) {
+  async search(pattern, options) {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this._search(pattern, options));
+      } catch (e) {
+        reject(e);
+      }   
+    });
+  }
+
+  _search(pattern, options) {
 
     let words = Object.keys(this.data);
 
