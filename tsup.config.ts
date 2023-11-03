@@ -41,7 +41,7 @@ export default defineConfig([esmOpts, cjsOpts]);
 //   name: "rita",
 //   target: 'es2020',
 //   // noExternal: ['chevrotain'],
-//   entry: ['lib/rita.js' ],
+//   entry: ['src/rita.js' ],
 //   format: [/*'cjs',*/ 'esm'], // generate cjs and esm files
 //   splitting: true,
 //   clean: true, // rm dist/*

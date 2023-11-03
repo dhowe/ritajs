@@ -12,8 +12,7 @@
   },
   "scripts": {
     "test": "NODE_ENV=dev npx mocha",
-    "build": "rm -rf dist/ && env NODE_ENV=prod tsup",
-    "build:watch": "tsup --watch",
+    "build": "rm -rf dist/ && env NODE_ENV=prod tsup && fix-tsup-cjs",
     "pub": "npm version patch && npm publish"
   },
   "files": [
@@ -27,6 +26,7 @@
     "@types/mocha": "^10.0.3",
     "@types/node": "^20.8.10",
     "chai": "^4.3.10",
+    "fix-tsup-cjs": "^1.2.0",
     "mocha": "^10.2.0",
     "tsup": "^7.2.0"
   },
