@@ -14,7 +14,7 @@
     "test": "NODE_ENV=dev npx mocha",
     "build": "rm -rf dist/ && env NODE_ENV=prod tsup",
     "build:watch": "tsup --watch",
-    "publish": "npm version patch && npm publish"
+    "pub": "npm version patch && npm publish"
   },
   "files": [
     "dist"
