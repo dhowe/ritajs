@@ -13,7 +13,6 @@ const opts: Options = {
   minify: false,
   sourcemap: true,
   dts: false,
-  bundle: true,
 }
 
 const esm: Options = {

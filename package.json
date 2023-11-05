@@ -15,7 +15,8 @@
   "type": "module",
   "scripts": {
     "test": "NODE_ENV=dev npx mocha",
-    "build": "rm -rf dist/ && env NODE_ENV=prod tsup && fix-tsup-cjs",
+    "build": "rm -rf dist/ && env NODE_ENV=prod tsup",
+    "postbuild": "fix-tsup-cjs --no-dts",
     "pub": "np patch --no-tests"
   },
   "files": [
