@@ -7,8 +7,8 @@ class Lexicon {
 
     this.RiTa = parent;
     this.data = custom || dict;
-    this.lexWarned = false;
     this.analyzer = parent.analyzer;
+    this.lexWarned = false;
   }
 
   hasWord(word, opts = {}) {
@@ -206,7 +206,7 @@ class Lexicon {
     opts.type = "sound";
     return await ((opts.matchSpelling) ?
       this.similarBySoundAndLetter(word, opts)
-      : this.similarByType(word, opts)); 
+      : this.similarByType(word, opts));
   }
 
   async randomWord(regex, opts) {
@@ -330,7 +330,7 @@ class Lexicon {
     });
   }
 
-  similarByTypeSync(theWord, opts) { // slow as we need to iterate through all
+  similarByTypeSync(theWord, opts) {
 
     this.parseArgs(opts); // TODO: add minLimit (minResultCount) ?
 
@@ -451,9 +451,10 @@ class Lexicon {
     opts.maxLength = opts.maxLength || Number.MAX_SAFE_INTEGER;
     opts.minLength = opts.minLength || (opts.limit > 1 ? 3 : 4); // 4 for randomWord
 
-    if (opts.limit && opts.limit < 1) delete opts.limit; // 0,1 = no limit 
-
-    // handle part-of-speech
+    if (typeof opts.limit !== 'number' || opts.limit < 1) {
+      opts.limit = Number.MAX_SAFE_INTEGER;
+    }
+    
     let tpos = opts.pos || false;
     if (tpos && tpos.length) {
       opts.pluralize = (tpos === "nns");
@@ -498,17 +499,13 @@ class Lexicon {
   }
 
   async similarBySoundAndLetter(word, opts) {
-
-    // Do in parallel using Promise.allSettled()
-    opts.type = 'letter';
-    const simLetter = await this.similarByType(word, opts);
-    if (simLetter.length < 1) return [];
-
-    opts.type = 'sound';
-    const simSound = await this.similarByType(word, opts);
-    if (simSound.length < 1) return [];
-
-    return this._intersect(simSound, simLetter).slice(0, opts.limit);
+    // do in parallel
+    const prom1 = this.similarByType(word, { ...opts, type: 'letter' });
+    const prom2 = this.similarByType(word, { ...opts, type: 'sound' });
+    let results = await Promise.allSettled([prom1, prom2]);
+    let [bySound, byLetter] = results.map(r => r.value);
+    if (bySound.length < 1 || byLetter.length < 1) return [];
+    return this._intersect(bySound, byLetter).slice(0, opts.limit);
   }
 
   rawPhones(word, opts) {

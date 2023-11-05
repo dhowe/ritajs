@@ -38,7 +38,7 @@ class Conjugator {
       this.verbsEndingInE = res;
       console.log('verbsEndingInE done', this.verbsEndingInE.length);
     });
-    this.RiTa.search({ pos: 'v', limit: 999999 }).then((res) => {
+    this.RiTa.search({ pos: 'v', limit: -1 }).then((res) => {
       this.allVerbs = res;
       console.log('allVerbs done', this.allVerbs.length);
     });
