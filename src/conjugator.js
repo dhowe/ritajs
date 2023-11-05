@@ -32,16 +32,12 @@ class Conjugator {
   constructor(parent) {
     this.RiTa = parent;
     this._reset();
-    this.RiTa.search(/e$/, {
-      limit: -1, minLength: 1, pos: "vb"
-    }).then((res) => {
-      this.verbsEndingInE = res;
-      console.log('verbsEndingInE done', this.verbsEndingInE.length);
-    });
-    this.RiTa.search({ pos: 'v', limit: -1 }).then((res) => {
-      this.allVerbs = res;
-      console.log('allVerbs done', this.allVerbs.length);
-    });
+    this.RiTa.search({ pos: 'v', limit: -1, minLength: -1 })
+      .then(res => {
+        this.allVerbs = res;
+        this.verbsEndingInE = res.filter(v => v.endsWith("e"));
+        this.verbsEndingInDouble = res.filter(v => /([^])\1$/.test(v));
+      });
   }
 
   // TODO: add handling of past tense modals.
@@ -161,7 +157,7 @@ class Conjugator {
         return word.slice(0, -3) + "y";
       }
       else if (/([a-z])\1ed$/.test(word)) {
-        if (VERB_END_DOUBLES.includes(word.replace(/ed$/, ""))) {
+        if (this.verbsEndingInDouble.includes(word.replace(/ed$/, ""))) {
           dbug && console.log("'" + word + "' hit rule: ends with -ed");
           return word.slice(0, -2);
         }
@@ -184,7 +180,7 @@ class Conjugator {
     else if (word.endsWith("ing")) {
 
       if (/([a-z])\1ing$/.test(word)) {
-        if (VERB_END_DOUBLES.includes(word.slice(0, -3))) {
+        if (this.verbsEndingInDouble.includes(word.slice(0, -3))) {
           dbug && console.log("'" + word + "' hit rule: ends with -(XX)ing [in-list]");
           return word.slice(0, -3);
         }
@@ -953,8 +949,6 @@ const PRESENT_RULES = [
   RE("^be$", 2, "is"),
   RE("([zsx]|ch|sh)$", 0, "es", 1)
 ];
-
-const VERB_END_DOUBLES = ["access", "add", "address", "agree", "amass", "appall", "assess", "ball", "ballyhoo", "bankroll", "befall", "bill", "bless", "bluff", "boo", "boycott", "bull", "buttress", "buzz", "bypass", "call", "caress", "chill", "class", "compass", "compress", "confess", "crisscross", "cross", "cuff", "cull", "decree", "depress", "digress", "disagree", "discuss", "dismiss", "dispossess", "distill", "distress", "doff", "doo", "dress", "drill", "dull", "dwell", "ebb", "egg", "embarrass", "emboss", "encompass", "engross", "enroll", "express", "fall", "fill", "flee", "foresee", "forestall", "foretell", "free", "fulfill", "fuss", "gall", "gloss", "grass", "grill", "gross", "guarantee", "guess", "handcuff", "harass", "harness", "huff", "impress", "install", "instill", "kill", "kiss", "loll", "lull", "mass", "mess", "mill", "miss", "misspell", "mothball", "mull", "obsess", "oppress", "outclass", "outguess", "outsell", "overbill", "overfill", "oversee", "oversell", "pall", "pass", "piss", "poll", "possess", "press", "process", "profess", "progress", "puff", "pull", "purr", "putt", "quell", "reassess", "rebuff", "recall", "recess", "redress", "refill", "regress", "repossess", "repress", "reprocess", "resell", "roll", "scoff", "scuff", "see", "sell", "shampoo", "shell", "shoo", "skill", "smell", "sniff", "snowball", "snuff", "spell", "spill", "staff", "stall", "stiff", "still", "stonewall", "stress", "stroll", "stuff", "suppress", "surpass", "swell", "tattoo", "tee", "tell", "thrill", "till", "toll", "toss", "trespass", "truss", "wall", "well", "will", "witness", "woo", "yell"];
 
 const VERB_CONS_DOUBLING = ["abat", "abet", "abhor", "abut", "accur", "acquit", "adlib",
   "admit", "aerobat", "aerosol", "allot", "alot", "anagram",
