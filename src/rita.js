@@ -245,7 +245,7 @@ RiTa.CDN = 'https://www.unpkg.com/rita/';
 
 // CONSTANTS
 RiTa.PHONES = ['aa', 'ae', 'ah', 'ao', 'aw', 'ay', 'b', 'ch', 'd', 'dh', 'eh', 'er', 'ey', 'f', 'g', 'hh', 'ih', 'iy', 'jh', 'k', 'l', 'm', 'n', 'ng', 'ow', 'oy', 'p', 'r', 's', 'sh', 't', 'th', 'uh', 'uw', 'v', 'w', 'y', 'z', 'zh'];
-RiTa.VERSION = typeof __VERSION__ !== 'undefined' ? __VERSION__ : 'DEV';
+RiTa.VERSION = '[VI]{{inject}}[/VI]';
 RiTa.HAS_LEXICON = typeof __NOLEX__ === 'undefined';
 RiTa.FIRST = 1;
 RiTa.SECOND = 2;
@@ -278,6 +278,7 @@ RiTa.SPLIT_CONTRACTIONS = false;
 const ONLY_PUNCT = /^[\p{P}|\+|-|<|>|\^|\$|\ufffd|`]*$/u;
 const IS_LETTER = /^[a-z\u00C0-\u00ff]+$/;
 
+RiTa.RiScript = RiScript;
 RiScript.RiTa = RiTa;
 
 export default RiTa;

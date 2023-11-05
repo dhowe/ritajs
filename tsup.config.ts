@@ -1,6 +1,6 @@
 import type { Options } from 'tsup';
 import { defineConfig } from 'tsup';
-
+import { esbuildPluginVersionInjector } from 'esbuild-plugin-version-injector';
 
 // const env = process.env.NODE_ENV;
 
@@ -13,6 +13,7 @@ const opts: Options = {
   minify: false,
   sourcemap: true,
   dts: false,
+  esbuildPlugins: [esbuildPluginVersionInjector()]
 }
 
 const esm: Options = {
