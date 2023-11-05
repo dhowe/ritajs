@@ -158,7 +158,6 @@ describe('Lexicon', function () {
 
   it('Should call randomWord', async function () {
 
-
     let result;
     result = await RiTa.randomWord();
 
@@ -388,8 +387,10 @@ describe('Lexicon', function () {
 
     let results = [];
     for (let i = 0; i < 10; i++) {
-      results.push(RiTa.randomWord({ pos: "nns" }));
+      results.push(await RiTa.randomWord({ pos: "nns" }));
+      expect(typeof results[results.length - 1] == 'string').true;
     }
+
     expect(results.length === 10).to.be.true;
 
     let i = 0;
@@ -424,7 +425,8 @@ describe('Lexicon', function () {
     // console.log(await RiTa.search());
     expect((await RiTa.search()).length).gt(20000); // all words
     expect((await RiTa.search({ limit: 11 })).length).eq(11);
-    expect(await RiTa.search({ pos: "n" })).eql([
+    
+    expect((await RiTa.search({ pos: "n" }))).eql([
       'abalone', 'abandonment',
       'abbey', 'abbot',
       'abbreviation', 'abdomen',
@@ -432,7 +434,7 @@ describe('Lexicon', function () {
       'ability', 'abnormality'
     ]);
 
-    expect(await RiTa.search({ numSyllables: 2 })).eql([
+    expect((await RiTa.search({ numSyllables: 2 }))).eql([
       'abashed', 'abate',
       'abbey', 'abbot',
       'abet', 'abhor',
@@ -440,15 +442,16 @@ describe('Lexicon', function () {
       'ablaze', 'able'
     ]);
 
-    expect(await RiTa.search({ numSyllables: 2, pos: 'n' })).eql([
+    expect((await RiTa.search({ numSyllables: 2, pos: 'n' }))).eql([
       'abbey', 'abbot',
       'abode', 'abscess',
       'absence', 'abstract',
       'abuse', 'abyss',
       'accent', 'access'
     ]);
+
     //console.log(RiTa.search({ numSyllables: 1, pos: 'n' }));
-    expect(await RiTa.search({ numSyllables: 1, pos: 'n' })).eql([
+    expect((await RiTa.search({ numSyllables: 1, pos: 'n' }))).eql([
       'ace', 'ache',
       'act', 'age',
       'aid', 'aide',
@@ -456,20 +459,20 @@ describe('Lexicon', function () {
       'aisle', 'ale'
     ]);
 
-    let search = await RiTa.search( { pos: "vb", limit: -1 });
+    let search = await RiTa.search({ pos: "vb", limit: -1 });
     expect(search.includes("concerned")).to.be.false;
     expect(search.includes("committed")).to.be.false;
     expect(search.includes("called")).to.be.false;
     expect(search.includes("computerized")).to.be.false;
 
-    search = await RiTa.search( { pos: "vbd", limit: -1 });
+    search = await RiTa.search({ pos: "vbd", limit: -1 });
     expect(search.includes("concerned")).to.be.true;
     expect(search.includes("committed")).to.be.true;
     expect(search.includes("called")).to.be.true;
     expect(search.includes("computerized")).to.be.true;
     0 && expect(search.includes("conclude")).to.be.true;
 
-    search = await RiTa.search( { pos: "vbn", limit: -1 });
+    search = await RiTa.search({ pos: "vbn", limit: -1 });
     expect(search.includes("concerned")).to.be.true;
     expect(search.includes("committed")).to.be.true;
     expect(search.includes("called")).to.be.true;
@@ -480,7 +483,7 @@ describe('Lexicon', function () {
 
   it('Should call search with letters', async function () {
 
-    expect(await RiTa.search("phant")).eql([
+    expect((await RiTa.search("phant"))).eql([
       'elephant',
       'elephantine',
       'phantom',
@@ -488,7 +491,7 @@ describe('Lexicon', function () {
       'triumphant',
       'triumphantly'
     ]);
-    expect(await RiTa.search(/phant/)).eql([
+    expect((await RiTa.search(/phant/))).eql([
       'elephant',
       'elephantine',
       'phantom',
@@ -496,7 +499,7 @@ describe('Lexicon', function () {
       'triumphant',
       'triumphantly'
     ]);
-    expect(await RiTa.search({ regex: "phant" })).eql([
+    expect((await RiTa.search({ regex: "phant" }))).eql([
       'elephant',
       'elephantine',
       'phantom',
@@ -504,7 +507,7 @@ describe('Lexicon', function () {
       'triumphant',
       'triumphantly'
     ]);
-    expect(await RiTa.search({ regex: /phant/ })).eql([
+    expect((await RiTa.search({ regex: /phant/ }))).eql([
       'elephant',
       'elephantine',
       'phantom',
@@ -517,7 +520,7 @@ describe('Lexicon', function () {
   it('Should call search with phones, limit', async function () {
 
     // omitting no limit tests as they are a bit slow
-    let result = await RiTa.search( /f-a[eh]-n-t/, { type: 'phones', limit: 10 });
+    let result = await RiTa.search(/f-a[eh]-n-t/, { type: 'phones', limit: 10 });
     expect(result).eql([
       "elephant",
       "elephantine",
@@ -531,7 +534,7 @@ describe('Lexicon', function () {
       "infantry"
     ]);
 
-    result = await RiTa.search( 'f-ah-n-t', { type: 'phones', limit: 5 });
+    result = await RiTa.search('f-ah-n-t', { type: 'phones', limit: 5 });
     expect(result).eql([
       'elephant',
       'infant',
@@ -541,7 +544,7 @@ describe('Lexicon', function () {
     ]);
 
     //regex in options
-    result = await RiTa.search( { regex: /f-a[eh]-n-t/, type: 'phones', limit: 10 });
+    result = await RiTa.search({ regex: /f-a[eh]-n-t/, type: 'phones', limit: 10 });
     expect(result).eql([
       "elephant",
       "elephantine",
@@ -557,7 +560,8 @@ describe('Lexicon', function () {
   });
 
   it('Should call search with phones no limit and shuffle', async function () {
-    let result = await RiTa.search( { regex: 'f-ah-n-t', type: 'phones', limit: -1 });
+    let result = await RiTa.search({ regex: 'f-ah-n-t', type: 'phones', limit: -1 });
+
     expect(result).eql([
       'elephant',
       'infant',
@@ -568,31 +572,31 @@ describe('Lexicon', function () {
       "triumphantly"
     ]);
 
-    let result2 = await RiTa.search( { regex: 'f-ah-n-t', type: 'phones', limit: -1, shuffle: true });
+    let result2 = await RiTa.search({ regex: 'f-ah-n-t', type: 'phones', limit: -1, shuffle: true });
     expect(result2.sort()).eql(result);
   });
 
   it('Should call search with pos, phones, sylls, limit', async function () {
 
-    expect(await RiTa.search('f-ah-n-t', { type: 'phones', pos: 'n', limit: 3, numSyllables: 2 }))
-      .eql(['infant']);
+    let res = await RiTa.search('f-ah-n-t', { type: 'phones', pos: 'n', limit: 3, numSyllables: 2 });
+      expect(res).eql(['infant']);
   });
 
   it('Should call search with pos, phones, limit', async function () {
 
-    expect(await RiTa.search('f-ah-n-t', { type: 'phones', pos: 'n', limit: 3 }))
-      .eql(['elephant', 'infant', 'infantry']);
+    let res = await RiTa.search('f-ah-n-t', { type: 'phones', pos: 'n', limit: 3 })
+    expect(res).eql(['elephant', 'infant', 'infantry']);
 
-    expect(await RiTa.search(/f-a[eh]-n-t/, { type: 'phones', pos: 'v', limit: 5 }))
-      .eql(["fantasize"]);
+    res = await RiTa.search(/f-a[eh]-n-t/, { type: 'phones', pos: 'v', limit: 5 })
+    expect(res).eql(["fantasize"]);
   });
 
   it('Should call search with pos, regex', async function () {
 
-    let res = await RiTa.search( /cares$/, { pos: 'nns', limit: -1 });
+    let res = await RiTa.search(/cares$/, { pos: 'nns', limit: -1 });
     expect(res).eql(['cares', 'scares']);
 
-    res = await RiTa.search( /^rice$/, { pos: 'nns', limit: -1 });
+    res = await RiTa.search(/^rice$/, { pos: 'nns', limit: -1 });
     expect(res).eql(['rice']);
   });
 
@@ -623,36 +627,36 @@ describe('Lexicon', function () {
 
   it('Should call search with simple pos, phones, limit', async function () {
 
-    expect(await RiTa.search(/f-a[eh]-n-t/, { type: 'phones', pos: 'vb', limit: 5 }))
+    expect((await RiTa.search(/f-a[eh]-n-t/, { type: 'phones', pos: 'vb', limit: 5 })))
       .eql(["fantasize"]);
 
-    expect(await RiTa.search('f-ah-n-t', { type: 'phones', pos: 'nns', limit: 3 }))
+    expect((await RiTa.search('f-ah-n-t', { type: 'phones', pos: 'nns', limit: 3 })))
       .eql(['elephants', 'infants', 'infantries']);
   });
 
   it('Should call search with pos, stress, limit', async function () {
 
-    expect(await RiTa.search('010', { type: 'stresses', limit: 5, pos: 'n' }))
+    expect((await RiTa.search('010', { type: 'stresses', limit: 5, pos: 'n' })))
       .eql(['abalone', 'abandonment', 'abbreviation', 'abdomen', 'abduction']);
 
-    expect(await RiTa.search('010', { type: 'stresses', limit: 5, pos: 'n', numSyllables: 3 }))
+    expect((await RiTa.search('010', { type: 'stresses', limit: 5, pos: 'n', numSyllables: 3 })))
       .eql(['abdomen', 'abduction', 'abortion', 'abruptness', 'absorber']);
 
-    expect(await RiTa.search('010', { type: 'stresses', limit: 5, pos: 'nns' }))
+    expect((await RiTa.search('010', { type: 'stresses', limit: 5, pos: 'nns' })))
       .eql(['abalone',
         'abandonments',
         'abbreviations',
         'abductions',
         'abilities']);
 
-    expect(await RiTa.search(/0\/1\/0/, { type: 'stresses', limit: 5, pos: 'nns' }))
+    expect((await RiTa.search(/0\/1\/0/, { type: 'stresses', limit: 5, pos: 'nns' })))
       .eql(['abalone',
         'abandonments',
         'abbreviations',
         'abductions',
         'abilities']);
 
-    expect(await RiTa.search('010', { type: 'stresses', limit: 5, pos: 'nns', numSyllables: 3 }))
+    expect((await RiTa.search('010', { type: 'stresses', limit: 5, pos: 'nns', numSyllables: 3 })))
       .eql(['abductions',
         'abortions',
         'absorbers',
@@ -662,7 +666,7 @@ describe('Lexicon', function () {
 
   it('Should call search with stresses, limit', async function () {
 
-    expect(await RiTa.search('010000', { type: 'stresses', limit: 5 })).eql([
+    expect((await RiTa.search('010000', { type: 'stresses', limit: 5 }))).eql([
       'accountability',
       'anticipatory',
       'appreciatively',
@@ -670,26 +674,26 @@ describe('Lexicon', function () {
       'colonialism'
     ]);
 
-    expect(await RiTa.search('010000', { type: 'stresses', limit: 5, maxLength: 11 })).eql([
+    expect((await RiTa.search('010000', { type: 'stresses', limit: 5, maxLength: 11 }))).eql([
       'colonialism',
       "imperialism",
       "materialism"
     ]);
-    expect(await RiTa.search('010000', { type: 'stresses', limit: 5, minLength: 12 })).eql([
+    expect((await RiTa.search('010000', { type: 'stresses', limit: 5, minLength: 12 }))).eql([
       'accountability',
       'anticipatory',
       'appreciatively',
       'authoritarianism',
       "conciliatory"
     ]);
-    expect(await RiTa.search('0/1/0/0/0/0', { type: 'stresses', limit: 5 })).eql([
+    expect((await RiTa.search('0/1/0/0/0/0', { type: 'stresses', limit: 5 }))).eql([
       'accountability',
       'anticipatory',
       'appreciatively',
       'authoritarianism',
       'colonialism'
     ]);
-    expect(await RiTa.search({ regex: '010000', type: 'stresses', limit: 5 })).eql([
+    expect((await RiTa.search({ regex: '010000', type: 'stresses', limit: 5 }))).eql([
       'accountability',
       'anticipatory',
       'appreciatively',
@@ -697,19 +701,19 @@ describe('Lexicon', function () {
       'colonialism'
     ]);
 
-    expect(await RiTa.search({ regex: '010000', type: 'stresses', limit: 5, maxLength: 11 })).eql([
+    expect((await RiTa.search({ regex: '010000', type: 'stresses', limit: 5, maxLength: 11 }))).eql([
       'colonialism',
       "imperialism",
       "materialism"
     ]);
-    expect(await RiTa.search({ regex: '010000', type: 'stresses', limit: 5, minLength: 12 })).eql([
+    expect((await RiTa.search({ regex: '010000', type: 'stresses', limit: 5, minLength: 12 }))).eql([
       'accountability',
       'anticipatory',
       'appreciatively',
       'authoritarianism',
       "conciliatory"
     ]);
-    expect(await RiTa.search({ regex: '0/1/0/0/0/0', type: 'stresses', limit: 5 })).eql([
+    expect((await RiTa.search({ regex: '0/1/0/0/0/0', type: 'stresses', limit: 5 }))).eql([
       'accountability',
       'anticipatory',
       'appreciatively',
@@ -720,7 +724,7 @@ describe('Lexicon', function () {
 
   it('Should call search with stress regex, limit', async function () {
 
-    expect(await RiTa.search(/0\/1\/0\/0\/0\/0/, { type: 'stresses', limit: 5 })).eql([
+    expect((await RiTa.search(/0\/1\/0\/0\/0\/0/, { type: 'stresses', limit: 5 }))).eql([
       'accountability',
       'anticipatory',
       'appreciatively',
@@ -730,7 +734,7 @@ describe('Lexicon', function () {
 
     //regex in options
 
-    expect(await RiTa.search({ regex: /0\/1\/0\/0\/0\/0/, type: 'stresses', limit: 5 })).eql([
+    expect((await RiTa.search({ regex: /0\/1\/0\/0\/0\/0/, type: 'stresses', limit: 5 }))).eql([
       'accountability',
       'anticipatory',
       'appreciatively',
@@ -746,6 +750,7 @@ describe('Lexicon', function () {
       let ent = RiTa.lexicon[test];
       return ('(' + epos + ') Fail: ' + result + ': expected ' + epos + ', got ' + (ent ? ent[1] : 'null'));
     }
+
     let result, syllables;
 
     result = await RiTa.randomWord({ numSyllables: 3, pos: "vbz" });
@@ -766,7 +771,7 @@ describe('Lexicon', function () {
     syllables = RiTa.syllables(result);
     expect(syllables.split(RiTa.SYLLABLE_BOUNDARY).length).eq(1, "GOT: " + result + ' (' + syllables + ')');
     expect(RiTa.isNoun(result)).eq(true, fail(result, 'nns'));
-    // TODO: still failing occasionally on: proves, torpedoes, strives, times, etc. ?
+    // TODO: ? still failing occasionally on: proves, torpedoes, strives, times, etc. ?
 
     result = await RiTa.randomWord({ numSyllables: 5, pos: "nns" });
     expect(result.length > 0, "randomWord nns: " + result).to.be.true;
@@ -777,30 +782,30 @@ describe('Lexicon', function () {
     expect(RiTa.isNoun(result)).eq(true, fail(result, 'nns'));
   });
 
-  it('Should call alliterations.numSyllables', function () {
+  it('Should call alliterations.numSyllables', async function () {
 
-    let result = RiTa.alliterations("cat", { minLength: 1, numSyllables: 7 });
+    let result = await RiTa.alliterations("cat", { minLength: 1, numSyllables: 7 });
     expect(result).eql(['electrocardiogram', 'electromechanical', 'telecommunications']);
     for (let i = 0; i < result.length; i++) {
       expect(RiTa.isAlliteration(result[i], "cat"), 'FAIL2: ' + result[i]).to.be.true;
     }
   });
 
-  it('Should call alliterations.pos', function () {
+  it('Should call alliterations.pos', async function () {
 
     let res;
 
-    res = RiTa.alliterations("cat", { numSyllables: 7, pos: 'n' });
+    res = await RiTa.alliterations("cat", { numSyllables: 7, pos: 'n' });
     expect(res).eql(['electrocardiogram', 'telecommunications']);
     for (let i = 0; i < res.length; i++) {
       expect(RiTa.isAlliteration(res[i], "cat"), 'FAIL2: ' + res[i]).to.be.true;
     }
 
-    res = RiTa.alliterations("dog", { minLength: 14, pos: 'v' });
+    res = await RiTa.alliterations("dog", { minLength: 14, pos: 'v' });
     res.forEach(r => expect(r.length >= 14).to.be.true);
     expect(res).eql(['disenfranchise']);
 
-    res = RiTa.alliterations("dog", { minLength: 13, pos: 'rb', limit: 11 });
+    res = await RiTa.alliterations("dog", { minLength: 13, pos: 'rb', limit: 11 });
     res.forEach(r => expect(r.length >= 13).to.be.true);
     expect(res).eql([
       'coincidentally',
@@ -816,7 +821,7 @@ describe('Lexicon', function () {
       'unpredictably'
     ]);
 
-    res = RiTa.alliterations("freedom", { minLength: 14, pos: 'nns' });
+    res = await RiTa.alliterations("freedom", { minLength: 14, pos: 'nns' });
     res.forEach(r => expect(r.length >= 14).to.be.true);
     //console.log(res);
     expect(res).eql([
@@ -829,47 +834,47 @@ describe('Lexicon', function () {
     ]);
   });
 
-  it('Should call alliterations', function () {
+  it('Should call alliterations', async function () {
 
     let result;
 
-    result = RiTa.alliterations("", { silent: 1 });
+    result = await RiTa.alliterations("", { silent: 1 });
     expect(result.length < 1).to.be.true;
 
-    result = RiTa.alliterations("#$%^&*", { silent: 1 });
+    result = await RiTa.alliterations("#$%^&*", { silent: 1 });
     expect(result.length < 1).to.be.true;
 
-    result = RiTa.alliterations("umbrella", { silent: 1 });
+    result = await RiTa.alliterations("umbrella", { silent: 1 });
     expect(result.length < 1, "failed on 'umbrella'").to.be.true;
 
-    result = RiTa.alliterations("cat", { limit: 100 });
+    result = await RiTa.alliterations("cat", { limit: 100 });
     expect(result.length === 100, "failed on 'cat'").to.be.true;
     expect(result.includes("cat")).to.be.false;
     for (let i = 0; i < result.length; i++) {
       expect(RiTa.isAlliteration(result[i], "cat")).to.be.true;
     }
 
-    result = RiTa.alliterations("dog", { limit: 100 });
+    result = await RiTa.alliterations("dog", { limit: 100 });
     expect(result.includes("dog")).to.be.false;
     expect(result.length === 100, "failed on 'dog'").to.be.true;
     for (let i = 0; i < result.length; i++) {
       expect(RiTa.isAlliteration(result[i], "dog")).to.be.true;
     }
 
-    result = RiTa.alliterations("dog", { minLength: 15 });
+    result = await RiTa.alliterations("dog", { minLength: 15 });
     expect(result.length > 0 && result.length < 5, "got length=" + result.length).to.be.true;
     for (let i = 0; i < result.length; i++) {
       expect(RiTa.isAlliteration(result[i], "dog"), 'FAIL1: ' + result[i]).to.be.true;
     }
 
-    result = RiTa.alliterations("cat", { minLength: 16 });
+    result = await RiTa.alliterations("cat", { minLength: 16 });
     expect(result.length > 0 && result.length < 15, "failed on 'cat'").to.be.true;
     for (let i = 0; i < result.length; i++) {
       expect(RiTa.isAlliteration(result[i], "cat"), 'FAIL2: ' + result[i]).to.be.true;
     }
 
-    result = RiTa.alliterations("khatt", { minLength: 16 });
-    //console.log(RiTa.alliterations("khatt", { minLength: 16 }));
+    result = await RiTa.alliterations("khatt", { minLength: 16 });
+    //console.log(await RiTa.alliterations("khatt", { minLength: 16 }));
 
     expect(result.length > 0 && result.length < 15, "failed on 'khatt'").to.be.true;
     for (let i = 0; i < result.length; i++) {
@@ -877,70 +882,70 @@ describe('Lexicon', function () {
     }
 
     // for one letter words should return []
-    expect(RiTa.alliterations("a")).eql([]);
-    expect(RiTa.alliterations("I")).eql([]);
-    expect(RiTa.alliterations("K")).eql([]);
+    expect((await RiTa.alliterations("a"))).eql([]);
+    expect((await RiTa.alliterations("I"))).eql([]);
+    expect((await RiTa.alliterations("K"))).eql([]);
 
   });
 
-  it('Should call rhymes', function () {
+  it('Should call rhymes', async function () {
 
-    expect(RiTa.rhymes("cat").length).eq(10);
-    expect(RiTa.rhymes("cat").includes("hat")).to.be.true;
-    expect(RiTa.rhymes("yellow").includes("mellow")).to.be.true;
-    expect(RiTa.rhymes("toy").includes("boy")).to.be.true;
-    expect(RiTa.rhymes("crab").includes("drab")).to.be.true;
+    expect(((await RiTa.rhymes("cat")).length)).eq(10);
+    expect((await RiTa.rhymes("cat")).includes("hat")).to.be.true;
+    expect((await RiTa.rhymes("yellow")).includes("mellow")).to.be.true;
+    expect((await RiTa.rhymes("toy")).includes("boy")).to.be.true;
+    expect((await RiTa.rhymes("crab")).includes("drab")).to.be.true;
 
-    expect(RiTa.rhymes("mouse").includes("house")).to.be.true;
-    expect(RiTa.rhymes("apple").includes("polo")).to.be.false;
-    expect(RiTa.rhymes("this").includes("these")).to.be.false;
+    expect((await RiTa.rhymes("mouse")).includes("house")).to.be.true;
+    expect((await RiTa.rhymes("apple")).includes("polo")).to.be.false;
+    expect((await RiTa.rhymes("this")).includes("these")).to.be.false;
 
-    expect(RiTa.rhymes("hose").includes("house")).to.be.false;
-    expect(RiTa.rhymes("sieve").includes("mellow")).to.be.false;
-    expect(RiTa.rhymes("swag").includes("grab")).to.be.false;
+    expect((await RiTa.rhymes("hose")).includes("house")).to.be.false;
+    expect((await RiTa.rhymes("sieve")).includes("mellow")).to.be.false;
+    expect((await RiTa.rhymes("swag")).includes("grab")).to.be.false;
 
-    expect(RiTa.rhymes("weight", { limit: 1000 }).includes("eight")).to.be.true;
-    expect(RiTa.rhymes("eight", { limit: 1000 }).includes("weight")).to.be.true;
-    expect(RiTa.rhymes("sieve", { limit: 1000 }).includes("give")).to.be.true;
-    expect(RiTa.rhymes("shore", { limit: 1000 }).includes("more")).to.be.true;
-    expect(RiTa.rhymes("tense", { limit: 1000 }).includes("sense")).to.be.true;
+    expect((await RiTa.rhymes("weight", { limit: 1000 })).includes("eight")).to.be.true;
+    expect((await RiTa.rhymes("eight", { limit: 1000 })).includes("weight")).to.be.true;
+    expect((await RiTa.rhymes("sieve", { limit: 1000 })).includes("give")).to.be.true;
+    expect((await RiTa.rhymes("shore", { limit: 1000 })).includes("more")).to.be.true;
+    expect((await RiTa.rhymes("tense", { limit: 1000 })).includes("sense")).to.be.true;
 
-    expect(RiTa.rhymes("bog").includes("fog")).to.be.true;
-    expect(RiTa.rhymes("dog").includes("log")).to.be.true;
+    expect((await RiTa.rhymes("bog")).includes("fog")).to.be.true;
+    expect((await RiTa.rhymes("dog")).includes("log")).to.be.true;
 
     // for single letter word return []
-    expect(RiTa.rhymes("a")).eql([]);
-    expect(RiTa.rhymes("I")).eql([]);
-    expect(RiTa.rhymes("Z")).eql([]);
-    expect(RiTa.rhymes("B")).eql([]);
-    expect(RiTa.rhymes("K")).eql([]);
+    expect((await RiTa.rhymes("a"))).eql([]);
+    expect((await RiTa.rhymes("I"))).eql([]);
+    expect((await RiTa.rhymes("Z"))).eql([]);
+    expect((await RiTa.rhymes("B"))).eql([]);
+    expect((await RiTa.rhymes("K"))).eql([]);
   });
 
-  it('Should call rhymes.pos', function () {
+  it('Should call rhymes.pos', async function () {
 
-    expect(RiTa.rhymes("cat", { pos: 'v' }).includes("hat")).to.be.false;
-    expect(RiTa.rhymes("yellow", { pos: 'a' }).includes("mellow")).to.be.true;
-    expect(RiTa.rhymes("toy", { pos: 'n' }).includes("boy")).to.be.true;
-    expect(RiTa.rhymes("sieve", { pos: 'n' }).includes("give")).to.be.false;
+    expect((await RiTa.rhymes("cat", { pos: 'v' })).includes("hat")).to.be.false;
+    expect((await RiTa.rhymes("yellow", { pos: 'a' })).includes("mellow")).to.be.true;
+    expect((await RiTa.rhymes("toy", { pos: 'n' })).includes("boy")).to.be.true;
+    expect((await RiTa.rhymes("sieve", { pos: 'n' })).includes("give")).to.be.false;
 
-    expect(RiTa.rhymes("tense", { pos: 'v' }).includes("condense")).to.be.true;
-    expect(RiTa.rhymes("crab", { pos: 'n' }).includes("drab")).to.be.false;
-    expect(RiTa.rhymes("shore", { pos: 'v' }).includes("more")).to.be.false;
+    expect((await RiTa.rhymes("tense", { pos: 'v' })).includes("condense")).to.be.true;
+    expect((await RiTa.rhymes("crab", { pos: 'n' })).includes("drab")).to.be.false;
+    expect((await RiTa.rhymes("shore", { pos: 'v' })).includes("more")).to.be.false;
 
-    expect(RiTa.rhymes("mouse", { pos: 'nn' }).includes("house")).to.be.true;
+    expect((await RiTa.rhymes("mouse", { pos: 'nn' })).includes("house")).to.be.true;
 
-    expect(RiTa.rhymes("weight", { pos: 'vb' }).includes("eight")).to.be.false;
-    expect(RiTa.rhymes("eight", { pos: 'nn', limit: 1000 }).includes("weight")).to.be.true;
+    expect((await RiTa.rhymes("weight", { pos: 'vb' })).includes("eight")).to.be.false;
+    expect((await RiTa.rhymes("eight", { pos: 'nn', limit: 1000 })).includes("weight")).to.be.true;
 
-    expect(RiTa.rhymes("apple", { pos: 'v' }).includes("polo")).to.be.false;
-    expect(RiTa.rhymes("this", { pos: 'v' }).includes("these")).to.be.false;
+    expect((await RiTa.rhymes("apple", { pos: 'v' })).includes("polo")).to.be.false;
+    expect((await RiTa.rhymes("this", { pos: 'v' })).includes("these")).to.be.false;
 
-    expect(RiTa.rhymes("hose", { pos: 'v' }).includes("house")).to.be.false;
-    expect(RiTa.rhymes("sieve", { pos: 'v' }).includes("mellow")).to.be.false;
-    expect(RiTa.rhymes("swag", { pos: 'v' }).includes("grab")).to.be.false;
+    expect((await RiTa.rhymes("hose", { pos: 'v' })).includes("house")).to.be.false;
+    expect((await RiTa.rhymes("sieve", { pos: 'v' })).includes("mellow")).to.be.false;
+    expect((await RiTa.rhymes("swag", { pos: 'v' })).includes("grab")).to.be.false;
 
     //https://github.com/dhowe/rita/issues/177
-    let rhyme = RiTa.rhymes("spreads", { pos: 'vbz', limit: 1000 });
+    let rhyme = await RiTa.rhymes("spreads", { pos: 'vbz', limit: 1000 });
     expect(rhyme.includes("discriminateds")).to.be.false;
     expect(rhyme.includes("endeds")).to.be.false;
     expect(rhyme.includes("finisheds")).to.be.false;
@@ -948,65 +953,65 @@ describe('Lexicon', function () {
     expect(rhyme.includes("proliferateds")).to.be.false;
     expect(rhyme.includes("outpaceds")).to.be.false;
     expect(rhyme.includes("liveds")).to.be.false;
-    expect(RiTa.rhymes("hit", { pos: 'vb' }).includes("bit")).to.be.false;
-    expect(RiTa.rhymes("hit", { pos: 'vbd' }).includes("bit")).to.be.true;
-    expect(RiTa.rhymes("stroke", { pos: 'vb' }).includes("broke")).to.be.false;
-    expect(RiTa.rhymes("stroke", { pos: 'vbd' }).includes("broke")).to.be.true;
-    expect(RiTa.rhymes("evolved", { pos: 'vb' }).includes("involved")).to.be.false;
-    expect(RiTa.rhymes("evolved", { pos: 'vbd' }).includes("involved")).to.be.true;
+    expect((await RiTa.rhymes("hit", { pos: 'vb' })).includes("bit")).to.be.false;
+    expect((await RiTa.rhymes("hit", { pos: 'vbd' })).includes("bit")).to.be.true;
+    expect((await RiTa.rhymes("stroke", { pos: 'vb' })).includes("broke")).to.be.false;
+    expect((await RiTa.rhymes("stroke", { pos: 'vbd' })).includes("broke")).to.be.true;
+    expect((await RiTa.rhymes("evolved", { pos: 'vb' })).includes("involved")).to.be.false;
+    expect((await RiTa.rhymes("evolved", { pos: 'vbd' })).includes("involved")).to.be.true;
   });
 
-  it('Should call rhymes.pos.nid', function () {
+  it('Should call rhymes.pos.nid', async function () {
 
     // special case, where word is not in dictionary
-    let rhymes = RiTa.rhymes("abated", { pos: 'vbd', limit: 1000 });
+    let rhymes = await RiTa.rhymes("abated", { pos: 'vbd', limit: 1000 });
     expect(rhymes.includes("allocated")).to.be.true;
     expect(rhymes.includes("annihilated")).to.be.true;
     expect(rhymes.includes("condensed")).to.be.false;
   });
 
-  it('Should call rhymes.numSyllables', function () {
+  it('Should call rhymes.numSyllables', async function () {
 
-    expect(RiTa.rhymes("cat", { numSyllables: 1 }).includes("hat")).to.be.true;
-    expect(RiTa.rhymes("cat", { numSyllables: 2 }).includes("hat")).to.be.false;
-    expect(RiTa.rhymes("cat", { numSyllables: 3 }).includes("hat")).to.be.false;
+    expect((await RiTa.rhymes("cat", { numSyllables: 1 })).includes("hat")).to.be.true;
+    expect((await RiTa.rhymes("cat", { numSyllables: 2 })).includes("hat")).to.be.false;
+    expect((await RiTa.rhymes("cat", { numSyllables: 3 })).includes("hat")).to.be.false;
 
-    expect(RiTa.rhymes("yellow", { numSyllables: 2 }).includes("mellow")).to.be.true;
-    expect(RiTa.rhymes("yellow", { numSyllables: 3 }).includes("mellow")).to.be.false;
+    expect((await RiTa.rhymes("yellow", { numSyllables: 2 })).includes("mellow")).to.be.true;
+    expect((await RiTa.rhymes("yellow", { numSyllables: 3 })).includes("mellow")).to.be.false;
 
     // special case, where word is not in dictionary
-    let rhymes = RiTa.rhymes("abated", { numSyllables: 3 });
+    let rhymes = await RiTa.rhymes("abated", { numSyllables: 3 });
     expect(rhymes.includes("elated")).to.be.true;
     expect(rhymes.includes("abated")).to.be.false;
     expect(rhymes.includes("allocated")).to.be.false;
     expect(rhymes.includes("condensed")).to.be.false;
   });
 
-  it('Should call rhymes.wordlength', function () {
+  it('Should call rhymes.wordlength', async function () {
 
-    expect(RiTa.rhymes("cat", { minLength: 4 }).includes("hat")).to.be.false;
-    expect(RiTa.rhymes("cat", { maxLength: 2 }).includes("hat")).to.be.false;
+    expect((await RiTa.rhymes("cat", { minLength: 4 })).includes("hat")).to.be.false;
+    expect((await RiTa.rhymes("cat", { maxLength: 2 })).includes("hat")).to.be.false;
 
     // special case, where word is not in dictionary
-    let rhymes = RiTa.rhymes("abated", { pos: 'vbd', maxLength: 9 });
+    let rhymes = await RiTa.rhymes("abated", { pos: 'vbd', maxLength: 9 });
     expect(rhymes.includes("allocated")).to.be.true;
     expect(rhymes.includes("annihilated")).to.be.false;
     expect(rhymes.includes("condensed")).to.be.false;
   });
 
-  it('Should call spellsLike', function () {
+  it('Should call spellsLike', async function () {
     let result;
 
-    result = RiTa.spellsLike("");
+    result = await RiTa.spellsLike("");
     eql(result, []);
 
-    result = RiTa.spellsLike("banana");
+    result = await RiTa.spellsLike("banana");
     eql(result, ["banal", "bonanza", "cabana", "manna"]);
 
-    result = RiTa.spellsLike("tornado");
+    result = await RiTa.spellsLike("tornado");
     eql(result, ["torpedo"]);
 
-    result = RiTa.spellsLike("ice");
+    result = await RiTa.spellsLike("ice");
     eql(result, [
       'ace', 'dice',
       'iced', 'icy',
@@ -1016,16 +1021,16 @@ describe('Lexicon', function () {
     ]);
   });
 
-  0 && it('Should call spellsLike.minLimit', function () { // not implemented
+  0 && it('Should call spellsLike.minLimit', async function () { // not implemented
     let result;
 
-    result = RiTa.spellsLike("");
+    result = await RiTa.spellsLike("");
     eql(result, []);
 
-    result = RiTa.spellsLike("banana", { minLimit: 5 });
+    result = await RiTa.spellsLike("banana", { minLimit: 5 });
     eql(result, ['angina', 'arena', 'bacon', 'balance', 'ban']);
 
-    result = RiTa.spellsLike("tornado", { minLimit: 10 });
+    result = await RiTa.spellsLike("tornado", { minLimit: 10 });
     eql(result, [
       'condo', 'forbade',
       'horned', 'ornate',
@@ -1033,7 +1038,7 @@ describe('Lexicon', function () {
       'toad', 'toenail',
       'tomato', 'tonal']);
 
-    result = RiTa.spellsLike("ice", { minLimit: 4 });
+    result = await RiTa.spellsLike("ice", { minLimit: 4 });
     eql(result, [
       'ace', 'dice',
       'iced', 'icy',
@@ -1043,54 +1048,54 @@ describe('Lexicon', function () {
     ]);
   });
 
-  it('Should call spellsLike.options', function () {
+  it('Should call spellsLike.options', async function () {
 
     let result;
 
-    result = RiTa.spellsLike("banana", { minLength: 6, maxLength: 6 });
+    result = await RiTa.spellsLike("banana", { minLength: 6, maxLength: 6 });
     eql(result, ["cabana"]);
 
-    result = RiTa.spellsLike("banana", { minLength: 6, maxLength: 6 });
+    result = await RiTa.spellsLike("banana", { minLength: 6, maxLength: 6 });
     eql(result, ["cabana"]);
 
-    result = RiTa.spellsLike("banana", { minDistance: 1 });
+    result = await RiTa.spellsLike("banana", { minDistance: 1 });
     eql(result, ["banal", "bonanza", "cabana", "manna"]);
 
-    result = RiTa.spellsLike("ice", { maxLength: 3 });
+    result = await RiTa.spellsLike("ice", { maxLength: 3 });
     eql(result, ['ace', 'icy', 'ire']);
 
-    result = RiTa.spellsLike("ice", {
+    result = await RiTa.spellsLike("ice", {
       minDistance: 2, minLength: 3, maxLength: 3, limit: 1000
     });
     result.forEach(r => expect(r.length == 3).to.be.true);
     expect(result.length > 10).to.be.true;
 
-    result = RiTa.spellsLike("ice", { minDistance: 0, minLength: 3, maxLength: 3 });
+    result = await RiTa.spellsLike("ice", { minDistance: 0, minLength: 3, maxLength: 3 });
     eql(result, ["ace", "icy", "ire"]);
 
-    result = RiTa.spellsLike("ice", { minLength: 3, maxLength: 3 });
+    result = await RiTa.spellsLike("ice", { minLength: 3, maxLength: 3 });
     result.forEach(r => expect(r.length === 3).to.be.true);
     eql(result, ["ace", "icy", "ire"]);
 
-    result = RiTa.spellsLike("ice", { minLength: 3, maxLength: 3, pos: 'n' });
+    result = await RiTa.spellsLike("ice", { minLength: 3, maxLength: 3, pos: 'n' });
     result.forEach(r => expect(r.length === 3).to.be.true);
     eql(result, ["ace", "ire"]);
 
     //console.log(RiTa.spellsLike("ice", {  minLength: 4, maxLength: 4, pos: 'nns', limit: 5 }));
 
-    result = RiTa.spellsLike("ice", {
+    result = await RiTa.spellsLike("ice", {
       minLength: 4, maxLength: 4, pos: 'v', limit: 5
     });
     result.forEach(r => expect(r.length === 4).to.be.true);
     eql(result, ['ache', 'bide', 'bite', 'cite', 'dine']);
 
-    result = RiTa.spellsLike("ice", { // dice, rice ??
+    result = await RiTa.spellsLike("ice", { // dice, rice ??
       minLength: 4, maxLength: 4, pos: 'nns', limit: 5
     });
     result.forEach(r => expect(r.length === 4).to.be.true);
     eql(result, ['dice', 'rice']);
 
-    result = RiTa.spellsLike("ice", {
+    result = await RiTa.spellsLike("ice", {
       minLength: 4, maxLength: 4, pos: 'nns', minDistance: 3, limit: 5
     });
 
@@ -1098,22 +1103,22 @@ describe('Lexicon', function () {
     eql(result, ['axes', 'beef', 'deer', 'dibs', 'fame']);
 
     // special case, where word is not in dictionary
-    result = RiTa.spellsLike("abated", { pos: 'vbd' });
+    result = await RiTa.spellsLike("abated", { pos: 'vbd' });
     expect(result.includes("abetted")).to.be.true;
     expect(result.includes("aborted")).to.be.true;
     expect(result.includes("condensed")).to.be.false;
 
     //https://github.com/dhowe/rita/issues/177
-    expect(RiTa.spellsLike("lined", { pos: 'vb' }).includes("lived")).to.be.false;
-    expect(RiTa.spellsLike("lined", { pos: 'vbd' }).includes("lived")).to.be.true;
-    expect(RiTa.spellsLike("let", { pos: 'vb' }).includes("led")).to.be.false;
-    expect(RiTa.spellsLike("let", { pos: 'vbd' }).includes("led")).to.be.true;
-    expect(RiTa.spellsLike("brake", { pos: 'vb' }).includes("broke")).to.be.false;
-    expect(RiTa.spellsLike("brake", { pos: 'vbd' }).includes("broke")).to.be.true;
-    expect(RiTa.spellsLike("overseas", { pos: 'vb' }).includes("oversaw")).to.be.false;
-    expect(RiTa.spellsLike("overseas", { pos: 'vbd' }).includes("oversaw")).to.be.true;
+    expect((await RiTa.spellsLike("lined", { pos: 'vb' })).includes("lived")).to.be.false;
+    expect((await RiTa.spellsLike("lined", { pos: 'vbd' })).includes("lived")).to.be.true;
+    expect((await RiTa.spellsLike("let", { pos: 'vb' })).includes("led")).to.be.false;
+    expect((await RiTa.spellsLike("let", { pos: 'vbd' })).includes("led")).to.be.true;
+    expect((await RiTa.spellsLike("brake", { pos: 'vb' })).includes("broke")).to.be.false;
+    expect((await RiTa.spellsLike("brake", { pos: 'vbd' })).includes("broke")).to.be.true;
+    expect((await RiTa.spellsLike("overseas", { pos: 'vb' })).includes("oversaw")).to.be.false;
+    expect((await RiTa.spellsLike("overseas", { pos: 'vbd' })).includes("oversaw")).to.be.true;
 
-    let rhyme = RiTa.spellsLike("spreads", { pos: 'vbz', limit: 1000 });
+    let rhyme = await RiTa.spellsLike("spreads", { pos: 'vbz', limit: 1000 });
     expect(rhyme.includes("discriminateds")).to.be.false;
     expect(rhyme.includes("endeds")).to.be.false;
     expect(rhyme.includes("finisheds")).to.be.false;
@@ -1123,24 +1128,24 @@ describe('Lexicon', function () {
     expect(rhyme.includes("lived")).to.be.false;
   });
 
-  it('Should call soundsLike', function () {
+  it('Should call soundsLike', async function () {
 
-    eql(RiTa.soundsLike("tornado", { type: 'sound' }), ["torpedo"]);
+    eql((await RiTa.soundsLike("tornado", { type: 'sound' })), ["torpedo"]);
 
-    let result = RiTa.soundsLike("try", { limit: 20 });
+    let result = await RiTa.soundsLike("try", { limit: 20 });
     let answer = ["cry", "dry", "fry", "pry", "rye", "tie", "tray", "tree", "tribe", "tried", "tripe", "trite", "true", "wry"];
     eql(result, answer);
 
-    result = RiTa.soundsLike("try", { minDistance: 2, limit: 20 });
+    result = await RiTa.soundsLike("try", { minDistance: 2, limit: 20 });
     expect(result.length > answer.length).to.be.true; // more
 
-    result = RiTa.soundsLike("happy");
+    result = await RiTa.soundsLike("happy");
     eql(result, answer = ["happier", "hippie"]);
 
-    result = RiTa.soundsLike("happy", { minDistance: 2 });
+    result = await RiTa.soundsLike("happy", { minDistance: 2 });
     expect(result.length > answer.length).to.be.true; // more
 
-    result = RiTa.soundsLike("cat", { type: 'sound' });
+    result = await RiTa.soundsLike("cat", { type: 'sound' });
     eql(result, [
       'bat', 'cab',
       'cache', 'calf',
@@ -1149,63 +1154,63 @@ describe('Lexicon', function () {
       'cash', 'cast'
     ]);
 
-    result = RiTa.soundsLike("cat", { type: 'sound', limit: 5 });
+    result = await RiTa.soundsLike("cat", { type: 'sound', limit: 5 });
     eql(result, ['bat', 'cab', 'cache', 'calf', 'calve']);
 
-    result = RiTa.soundsLike("cat", { type: 'sound', limit: 1000, minLength: 2, maxLength: 4 });
+    result = await RiTa.soundsLike("cat", { type: 'sound', limit: 1000, minLength: 2, maxLength: 4 });
     eql(result, ["at", "bat", "cab", "calf", "can", "cap", "cash", "cast", "chat", "coat", "cot", "curt", "cut", "fat", "hat", "kit", "kite", "mat", "matt", "pat", "rat", "sat", "that", "vat"]);
 
-    //console.log(RiTa.soundsLike("cat", { type: 'sound', minLength: 4, maxLength: 5, pos: 'jj', limit: 8 }));
+    //console.log(await RiTa.soundsLike("cat", { type: 'sound', minLength: 4, maxLength: 5, pos: 'jj', limit: 8 }));
 
-    result = RiTa.soundsLike("cat", { type: 'sound', minLength: 4, maxLength: 5, pos: 'jj' });
+    result = await RiTa.soundsLike("cat", { type: 'sound', minLength: 4, maxLength: 5, pos: 'jj' });
     eql(result, answer = ['catty', 'curt']);
 
-    result = RiTa.soundsLike("cat", { minDistance: 2 });
+    result = await RiTa.soundsLike("cat", { minDistance: 2 });
     expect(result.length > answer.length).to.be.true;
   });
 
-  it('Should call soundsLike.pos', function () {
+  it('Should call soundsLike.pos', async function () {
 
-    let result = RiTa.soundsLike("abated", { pos: 'vbd' });
+    let result = await RiTa.soundsLike("abated", { pos: 'vbd' });
     expect(result.includes("abetted")).to.be.true;
     expect(result.includes("debated")).to.be.true;
     expect(result.includes("condensed")).to.be.false;
 
     //https://github.com/dhowe/rita/issues/177
-    expect(RiTa.soundsLike("build", { pos: 'vb', limit: 1000 }).includes("built")).to.be.false;
-    expect(RiTa.soundsLike("computerize", { pos: 'vb', limit: 1000 }).includes("computerized")).to.be.false;
-    expect(RiTa.soundsLike("concern", { pos: 'vb' }).includes("concerned")).to.be.false;
-    expect(RiTa.soundsLike("commit", { pos: 'vb' }).includes("committed")).to.be.false;
-    expect(RiTa.soundsLike("involve", { pos: 'vb' }).includes("involved")).to.be.false;
-    expect(RiTa.soundsLike("grained", { pos: 'vb' }).includes("gained")).to.be.false;
+    expect((await RiTa.soundsLike("build", { pos: 'vb', limit: 1000 })).includes("built")).to.be.false;
+    expect((await RiTa.soundsLike("computerize", { pos: 'vb', limit: 1000 })).includes("computerized")).to.be.false;
+    expect((await RiTa.soundsLike("concern", { pos: 'vb' })).includes("concerned")).to.be.false;
+    expect((await RiTa.soundsLike("commit", { pos: 'vb' })).includes("committed")).to.be.false;
+    expect((await RiTa.soundsLike("involve", { pos: 'vb' })).includes("involved")).to.be.false;
+    expect((await RiTa.soundsLike("grained", { pos: 'vb' })).includes("gained")).to.be.false;
 
-    expect(RiTa.soundsLike("premade", { pos: 'vbd' }).includes("remade")).to.be.true;
-    expect(RiTa.soundsLike("incriminate", { pos: 'vbd' }).includes("discriminated")).to.be.true;
-    expect(RiTa.soundsLike("paunched", { pos: 'vbd' }).includes("launched")).to.be.true;
+    expect((await RiTa.soundsLike("premade", { pos: 'vbd' })).includes("remade")).to.be.true;
+    expect((await RiTa.soundsLike("incriminate", { pos: 'vbd' })).includes("discriminated")).to.be.true;
+    expect((await RiTa.soundsLike("paunched", { pos: 'vbd' })).includes("launched")).to.be.true;
   });
 
-  it('Should call soundsLike().matchSpelling', function () {
+  it('Should call soundsLike().matchSpelling', async function () {
 
     let result;
-    result = RiTa.soundsLike("try", { matchSpelling: true });
+    result = await RiTa.soundsLike("try", { matchSpelling: true });
     eql(result, ['cry', 'dry', 'fry', 'pry', 'tray']);
 
-    result = RiTa.soundsLike("try", { matchSpelling: true, maxLength: 3 });
+    result = await RiTa.soundsLike("try", { matchSpelling: true, maxLength: 3 });
     eql(result, ["cry", "dry", "fry", "pry", "wry"]);
 
-    result = RiTa.soundsLike("try", { matchSpelling: true, minLength: 4 });
+    result = await RiTa.soundsLike("try", { matchSpelling: true, minLength: 4 });
     eql(result, ["tray"]);
 
-    result = RiTa.soundsLike("try", { matchSpelling: true, limit: 3 });
+    result = await RiTa.soundsLike("try", { matchSpelling: true, limit: 3 });
     eql(result, ["cry", "dry", "fry"]);
 
-    result = RiTa.soundsLike("daddy", { matchSpelling: true });
+    result = await RiTa.soundsLike("daddy", { matchSpelling: true });
     eql(result, ["dandy", "paddy"]);
 
-    result = RiTa.soundsLike("banana", { matchSpelling: true });
+    result = await RiTa.soundsLike("banana", { matchSpelling: true });
     eql(result, ["bonanza"]);
 
-    result = RiTa.soundsLike("abated", { pos: 'vbd', matchSpelling: true });
+    result = await RiTa.soundsLike("abated", { pos: 'vbd', matchSpelling: true });
     expect(result.length).eql(2);
     expect(result.includes("abetted")).to.be.true;
     expect(result.includes("awaited")).to.be.true;

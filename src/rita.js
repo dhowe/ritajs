@@ -77,20 +77,20 @@ class RiTa {
     return s ? s[0].toUpperCase() + s.substring(1) : '';
   }
 
-  static randomWord() {
-    return RiTa.lexicon.randomWord(...arguments);
+  static async randomWord() {
+    return await RiTa.lexicon.randomWord(...arguments);
   }
 
-  static rhymes() {
-    return RiTa.lexicon.rhymes(...arguments);
+  static async rhymes() {
+    return await RiTa.lexicon.rhymes(...arguments);
   }
 
   static isRhyme() {
     return RiTa.lexicon.isRhyme(...arguments);
   }
 
-  static alliterations() {
-    return RiTa.lexicon.alliterations(...arguments);
+  static async alliterations() {
+    return await RiTa.lexicon.alliterations(...arguments);
   }
 
   static hasWord() {
@@ -108,12 +108,12 @@ class RiTa {
     return RiTa.lexicon.isAlliteration(...arguments);
   }
 
-  static spellsLike() {
-    return RiTa.lexicon.spellsLike(...arguments);
+  static async spellsLike() {
+    return await RiTa.lexicon.spellsLike(...arguments);
   }
 
-  static soundsLike() {
-    return RiTa.lexicon.soundsLike(...arguments);
+  static async soundsLike() {
+    return await RiTa.lexicon.soundsLike(...arguments);
   }
 
   static pos() {
@@ -152,8 +152,8 @@ class RiTa {
     return RiTa.inflector.pluralize(...arguments);
   }
 
-  static search() {
-    return RiTa.lexicon.search(...arguments);
+  static async search() {
+    return await RiTa.lexicon.search(...arguments);
   }
 
   static tokens() {
@@ -237,9 +237,6 @@ RiTa.inflector = new Inflector(RiTa);
 RiTa.randomizer = new RandGen(RiTa);
 RiTa.lexicon = new Lexicon(RiTa);
 RiTa.conjugator = new Conjugator(RiTa);
-
-RiTa.conjugator.verbsEndingInE = await RiTa.search(/e$/, { limit: -1, minLength: 1, pos: "vb" });
-RiTa.conjugator.verbsEndingInDoubles = await RiTa.search(/([a-z])\1+$/, { limit: -1, minLength: 1, pos: 'vb' });
 
 // MESSAGES
 RiTa.SILENT = false;

@@ -70,7 +70,17 @@ class Lexicon {
     return undefined;
   }*/
 
-  alliterations(theWord, opts = {}) {
+  async alliterations(theWord, opts = {}) {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this.alliterationsSync(theWord, opts));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  alliterationsSync(theWord, opts = {}) {
 
     this.parseArgs(opts);
     if (!theWord || typeof theWord !== 'string' || theWord.length < 2) {
@@ -130,7 +140,17 @@ class Lexicon {
     return result;
   }
 
-  rhymes(theWord, opts = {}) {
+  async rhymes(theWord, opts = {}) {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this.rhymesSync(theWord, opts));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+  async rhymesSync(theWord, opts = {}) {
 
     this.parseArgs(opts);
 
@@ -175,18 +195,18 @@ class Lexicon {
     return result;
   }
 
-  spellsLike(word, opts = {}) {
+  async spellsLike(word, opts = {}) {
     if (!word || !word.length) return [];
     opts.type = 'letter';
-    return this.similarByType(word, opts);
+    return await this.similarByType(word, opts);
   }
 
-  soundsLike(word, opts = {}) {
+  async soundsLike(word, opts = {}) {
     if (!word || !word.length) return [];
     opts.type = "sound";
-    return (opts.matchSpelling) ?
+    return await ((opts.matchSpelling) ?
       this.similarBySoundAndLetter(word, opts)
-      : this.similarByType(word, opts);
+      : this.similarByType(word, opts)); 
   }
 
   async randomWord(regex, opts) {
@@ -230,14 +250,14 @@ class Lexicon {
   async search(pattern, options) {
     return new Promise((resolve, reject) => {
       try {
-        resolve(this._search(pattern, options));
+        resolve(this.searchSync(pattern, options));
       } catch (e) {
         reject(e);
-      }   
+      }
     });
   }
 
-  _search(pattern, options) {
+  searchSync(pattern, options) {
 
     let words = Object.keys(this.data);
 
@@ -300,8 +320,17 @@ class Lexicon {
   }
 
   //////////////////////////// helpers /////////////////////////////////
+  async similarByType(pattern, options) {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this.similarByTypeSync(pattern, options));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
 
-  similarByType(theWord, opts) { // slow as we need to iterate through all
+  similarByTypeSync(theWord, opts) { // slow as we need to iterate through all
 
     this.parseArgs(opts); // TODO: add minLimit (minResultCount) ?
 
@@ -468,14 +497,15 @@ class Lexicon {
     }
   }
 
-  similarBySoundAndLetter(word, opts) {
+  async similarBySoundAndLetter(word, opts) {
 
+    // Do in parallel using Promise.allSettled()
     opts.type = 'letter';
-    const simLetter = this.similarByType(word, opts);
+    const simLetter = await this.similarByType(word, opts);
     if (simLetter.length < 1) return [];
 
     opts.type = 'sound';
-    const simSound = this.similarByType(word, opts);
+    const simSound = await this.similarByType(word, opts);
     if (simSound.length < 1) return [];
 
     return this._intersect(simSound, simLetter).slice(0, opts.limit);

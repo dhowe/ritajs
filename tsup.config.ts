@@ -1,4 +1,3 @@
-
 import type { Options } from 'tsup';
 import { defineConfig } from 'tsup';
 
@@ -11,46 +10,44 @@ const opts: Options = {
   outDir: 'dist',
   watch: false,
   clean: true,
-  minify: false, // tmp
+  minify: false,
   sourcemap: true,
   dts: false,
   bundle: true,
-  splitting: true,
-  target: 'es2020',
 }
 
-const esmOpts: Options = {
+const esm: Options = {
   format: ['esm'],
   ...opts,
+  target: 'es2020',
+  splitting: true,
+  skipNodeModulesBundle: true, // ?
+  outExtension({ format }) {
+    return {
+      js: `.js`,
+    }
+  },
 }
 
-const cjsOpts: Options = {
+const cjs: Options = {
   format: ['cjs'],
+  ...opts,
+  target: 'es2020', // ?
+  // skipNodeModulesBundle: true, // ?
   platform: "node",
-  ...opts
+  outExtension({ format }) {
+    return {
+      js: `.cjs`,
+    }
+  },
 }
 
-export default defineConfig([esmOpts, cjsOpts]);
+const iife: Options = {
+  format: ['iife'],
+  ...opts,
+  target: 'es2020', // ?
+  platform: "browser",
+  globalName: "RiTa",
+}
 
-
-// import type { Options } from 'tsup';
-
-// const env = process.env.NODE_ENV;
-
-// export const tsup: Options = {
-//   name: "rita",
-//   target: 'es2020',
-//   // noExternal: ['chevrotain'],
-//   entry: ['src/rita.js' ],
-//   format: [/*'cjs',*/ 'esm'], // generate cjs and esm files
-//   splitting: true,
-//   clean: true, // rm dist/*
-//   dts: false, // generate dts file for main module
-//   minify: env === 'prod',
-//   bundle: env === 'prod',
-//   sourcemap: env === 'prod', // source map is only available in prod
-//   skipNodeModulesBundle: true,
-//   watch: false,//env === 'development',
-//   outDir:  'dist',
-//   //format: ['cjs', 'esm'], // generate cjs and esm files
-// };
+export default defineConfig([cjs, esm]);
