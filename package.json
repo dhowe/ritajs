@@ -1,6 +1,6 @@
 {
   "name": "rjs3",
-  "version": "1.0.52",
+  "version": "1.0.53",
   "description": "",
   "main": "dist/rita.js",
   "engines": {
