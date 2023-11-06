@@ -17,8 +17,8 @@
   "scripts": {
     "test": "NODE_ENV=dev mocha",
     "test:dist": "NODE_ENV=dev mocha test/dist",
-    "build": "rm -rf dist/ && tsup",
-    "publish": "np patch --no-tests"
+    "build": "rm -rf dist/ && npx tsup",
+    "pub": "np patch --no-tests"
   },
   "files": [
     "dist"

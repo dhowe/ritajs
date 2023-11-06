@@ -2,14 +2,13 @@
 <html>
 
 <head>
-  <script src="../dist/rjs3.iife.js"></script>
+  <script src="../../dist/rita.iife.js"></script>
   <meta charset="utf-8" />
 </head>
 
 <body>
   <div id="content"></div>
   <script>
-    console.log(RiTa.VERSION);
     let html = '<h3>RiTa v' + RiTa.VERSION + '</h3>';
     Object.getOwnPropertyNames(RiTa)
       .filter(p => !p.startsWith('_')

@@ -27,7 +27,6 @@ const cjs: Options = {
   format: ['cjs'],
   ...opts,
   target: 'es2020', // ?
-  noExternal: ['chevrotain'], // ?
   // skipNodeModulesBundle: true, // ?
   platform: "node",
   splitting: true,
@@ -43,6 +42,7 @@ const iife: Options = {
   platform: "browser",
   globalName: "RiTa",
   outExtension({ format }) { return { js: `.iife.js` } },
+  footer: { js: "window.RiTa = RiTa.default" }
 }
 
 const testEsm: Options = {
@@ -60,4 +60,4 @@ const testEsm: Options = {
   bundle: false,
 }
 
-export default defineConfig([cjs, esm, iife, testEsm]);
+export default defineConfig([esm, cjs, iife, testEsm]);

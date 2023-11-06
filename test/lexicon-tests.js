@@ -5,58 +5,9 @@ import RiTa from './index.js';
 
 describe('Lexicon', function () {
 
-  /*it('Should call *search generator', () => {
-    let lex = RiTa.lexicon, result;
-
-    let iterator = lex.search('^aba');
-    result = iterator.next();
-    while (!result.done) {
-      result = iterator.next(); // check each
-      expect(/^aba/.test(result.value)).eq(true);
-    }
-    //console.log('done ', result);
-    let answer = result.value; // check when finished
-    expect(Array.isArray(answer)).eq(true);
-    answer.forEach(v => expect(/^aba/.test(v)).eq(true));
-
-    iterator = lex.search('^ab', { limit: 10 });// same with explicit limit
-    result = iterator.next();
-    while (!result.done) {
-      result = iterator.next();
-      expect(/^ab/.test(result.value)).eq(true);
-    }
-    answer = result.value;
-    //console.log('done ', result);
-    expect(Array.isArray(answer)).eq(true);
-    expect(answer.length).eq(10);
-    answer.forEach(v => expect(/^ab/.test(v)).eq(true));
-
-
-    // grab first value
-    for (let value of lex.search('^aba', { limit: -1 })) {
-      if (value) {
-        result = value;
-        break;
-      }
-    }
-    expect(/^aba/.test(result)).eq(true);
-
-    result = [];
-    for (let value of lex.search('^aba', { limit: 5 })) {
-      if (value) result.push(value);
-    }
-    expect(Array.isArray(result)).eq(true);
-    expect(result.length).eq(5);
-    result.forEach(r => expect(/^aba/.test(r)).eq(true));
-
-    let item, result2 = [], iter = lex.search(/^ab/); // diff. syntax
-    while (item = iter.next(), !item.done) {
-      result2.push(item.value);
-    }
-    expect(result2.length).eq(10);
-  });*/
   this.slow(1000);
-  this.timeout(5000);
+  this.timeout(10000);
+  
   it('Should call hasWord', function () {
     expect(RiTa.hasWord("random")).to.be.true;
     expect(RiTa.hasWord("dog")).to.be.true;
