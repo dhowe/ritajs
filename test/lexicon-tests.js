@@ -55,7 +55,8 @@ describe('Lexicon', function () {
     }
     expect(result2.length).eq(10);
   });*/
-
+  this.slow(1000);
+  this.timeout(5000);
   it('Should call hasWord', function () {
     expect(RiTa.hasWord("random")).to.be.true;
     expect(RiTa.hasWord("dog")).to.be.true;

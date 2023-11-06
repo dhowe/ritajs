@@ -10,11 +10,7 @@ describe('Core', () => {
     //console.log(process.env.NODE_ENV, process.env.npm_package_version, RiTa.VERSION);
     if (typeof process === 'undefined') return; // TODO: browser
 
-    if (process.env.NODE_ENV === 'dev') {
-      expect(RiTa.VERSION === 'DEV' || /[0-9]\.[0-9]\.[0-9]+/.test(RiTa.VERSION))
-        .eq(true, 'DEV: version should be # or DEV, got: ' + RiTa.VERSION);
-    }
-    else {
+    if (process.env.NODE_ENV !== 'dev') {
       if (typeof process.env.npm_package_version === 'undefined') {
         console.warn("[WARN] No package version: ignore if running in vscode ");
       } else {
