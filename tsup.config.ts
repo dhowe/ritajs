@@ -38,6 +38,7 @@ const iife: Options = {
   format: ['iife'],
   ...opts,
   bundle: true,
+  minify: true,
   target: 'es2020', // ?
   platform: "browser",
   globalName: "RiTa",
