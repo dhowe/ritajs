@@ -140,16 +140,6 @@ If all goes well, you should see a list of successful tests and find the library
 
 <br>
 
-During development it is faster to run tests directly on the source, rather then the built library:
-```sh
-$ npm run test.src
-```
-
-You can also watch the source code and build automatically on any change:
-```sh
-$ npm run watch.src
-```
-
 Please make contributions via [fork-and-pull](https://reflectoring.io/github-fork-and-pull/) - thanks!
 
 ---------------
