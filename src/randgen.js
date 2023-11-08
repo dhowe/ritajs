@@ -35,8 +35,8 @@ class SeededRandom {
     return o;
   }
 
-  seed(ts) {
-    this.mt[0] = ts >>> 0;
+  seed(num) {
+    this.mt[0] = num >>> 0;
     for (this.mti = 1; this.mti < this.N; this.mti++) {
       let s = this.mt[this.mti - 1] ^ (this.mt[this.mti - 1] >>> 30);
       this.mt[this.mti] = (((((s & 0xffff0000) >>> 16) * 1812433253) << 16) +
