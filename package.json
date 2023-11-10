@@ -27,7 +27,7 @@
   "unpkg": "./dist/riscript.iife.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/dhowe/ritajs.git"
+    "url": "https://github.com/dhowe/rjs3.git"
   },
   "engines": {
     "node": ">=14.0"
