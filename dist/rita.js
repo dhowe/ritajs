@@ -41787,8 +41787,8 @@ var SeededRandom = class {
     }
     return o;
   }
-  seed(ts) {
-    this.mt[0] = ts >>> 0;
+  seed(num) {
+    this.mt[0] = num >>> 0;
     for (this.mti = 1; this.mti < this.N; this.mti++) {
       let s = this.mt[this.mti - 1] ^ this.mt[this.mti - 1] >>> 30;
       this.mt[this.mti] = (((s & 4294901760) >>> 16) * 1812433253 << 16) + (s & 65535) * 1812433253 + this.mti;
@@ -42475,61 +42475,61 @@ var markov_default = RiMarkov;
 
 // src/rita.js
 var RiTa2 = class _RiTa {
-  static grammar() {
+  static grammar(rules, context, opts) {
     return new RiScript.Grammar(...arguments);
   }
-  static addTransform() {
+  static addTransform(name, definition) {
     return RiScript.addTransform(...arguments);
   }
-  static articlize() {
+  static articlize(word) {
     return RiScript.articlize(...arguments);
   }
-  static evaluate() {
+  static evaluate(script, context, opts) {
     return RiScript.evaluate(...arguments);
   }
   static getTransforms() {
     return RiScript.transforms;
   }
-  static markov() {
+  static markov(n, opts) {
     return new markov_default(...arguments);
   }
-  static kwic() {
+  static kwic(word, opts) {
     return _RiTa.concorder.kwic(...arguments);
   }
-  static concordance() {
+  static concordance(string, opts) {
     return _RiTa.concorder.concordance(...arguments);
   }
-  static randomOrdering() {
+  static randomOrdering(arrayOrInt) {
     return _RiTa.randomizer.randomOrdering(...arguments);
   }
-  static randomSeed() {
-    return _RiTa.randomizer.seed(...arguments);
+  static randomSeed(number) {
+    return _RiTa.randomizer.seed(number);
   }
   static isQuestion(sentence) {
     return _RiTa.QUESTIONS.includes(_RiTa.tokenize(sentence)[0].toLowerCase());
   }
-  static isVowel(c) {
-    return c && c.length === 1 && _RiTa.VOWELS.includes(c);
+  static isVowel(char) {
+    return char && char.length === 1 && _RiTa.VOWELS.includes(char);
   }
-  static isConsonant(c) {
-    return c && c.length === 1 && !_RiTa.VOWELS.includes(c) && IS_LETTER.test(c);
+  static isConsonant(char) {
+    return char && char.length === 1 && !_RiTa.VOWELS.includes(char) && IS_LETTER.test(char);
   }
-  static capitalize(s) {
-    return s ? s[0].toUpperCase() + s.substring(1) : "";
+  static capitalize(string) {
+    return string ? string[0].toUpperCase() + string.substring(1) : "";
   }
-  static async randomWord() {
+  static async randomWord(opts) {
     return await _RiTa.lexicon.randomWord(...arguments);
   }
-  static async rhymes() {
+  static async rhymes(word, opts) {
     return await _RiTa.lexicon.rhymes(...arguments);
   }
-  static isRhyme() {
+  static isRhyme(word1, word2) {
     return _RiTa.lexicon.isRhyme(...arguments);
   }
-  static async alliterations() {
+  static async alliterations(word, opts) {
     return await _RiTa.lexicon.alliterations(...arguments);
   }
-  static hasWord() {
+  static hasWord(word) {
     return _RiTa.lexicon.hasWord(...arguments);
   }
   static isAbbrev(input, { caseSensitive = false } = {}) {
@@ -42540,16 +42540,16 @@ var RiTa2 = class _RiTa {
       return _RiTa.ABRV.some((a) => a.toLowerCase() === check);
     }
   }
-  static isAlliteration() {
+  static isAlliteration(word1, word2) {
     return _RiTa.lexicon.isAlliteration(...arguments);
   }
-  static async spellsLike() {
+  static async spellsLike(word, opts) {
     return await _RiTa.lexicon.spellsLike(...arguments);
   }
-  static async soundsLike() {
+  static async soundsLike(word, opts) {
     return await _RiTa.lexicon.soundsLike(...arguments);
   }
-  static pos() {
+  static pos(word) {
     return _RiTa.tagger.tag(...arguments);
   }
   static isNoun(word) {
@@ -42571,59 +42571,59 @@ var RiTa2 = class _RiTa {
     opts.inline = true;
     return _RiTa.tagger.tag(words, opts);
   }
-  static singularize() {
+  static singularize(word) {
     return _RiTa.inflector.singularize(...arguments);
   }
-  static pluralize() {
+  static pluralize(word) {
     return _RiTa.inflector.pluralize(...arguments);
   }
-  static async search() {
+  static async search(pattern, opts) {
     return await _RiTa.lexicon.search(...arguments);
   }
-  static tokens() {
+  static tokens(string, opts) {
     return _RiTa.tokenizer.tokens(...arguments);
   }
-  static tokenize() {
+  static tokenize(string, opts) {
     return _RiTa.tokenizer.tokenize(...arguments);
   }
-  static untokenize() {
+  static untokenize(stringArray, delim) {
     return _RiTa.tokenizer.untokenize(...arguments);
   }
-  static sentences() {
+  static sentences(string) {
     return _RiTa.tokenizer.sentences(...arguments);
   }
   static isStopWord(w) {
     return _RiTa.STOP_WORDS.includes(w.toLowerCase());
   }
-  static stem() {
+  static stem(string) {
     return stemmer_default.stem(...arguments);
   }
-  static presentPart() {
+  static presentPart(verbWord) {
     return _RiTa.conjugator.presentPart(...arguments);
   }
-  static pastPart() {
+  static pastPart(verbWord) {
     return _RiTa.conjugator.pastPart(...arguments);
   }
-  static conjugate() {
+  static conjugate(verbWord, opts) {
     return _RiTa.conjugator.conjugate(...arguments);
   }
-  static stresses() {
+  static stresses(string) {
     return _RiTa.analyzer.analyze(...arguments).stresses;
   }
-  static syllables() {
+  static syllables(string) {
     return _RiTa.analyzer.analyze(...arguments).syllables;
   }
-  static phones() {
+  static phones(string) {
     return _RiTa.analyzer.analyze(...arguments).phones;
   }
-  static analyze() {
+  static analyze(string) {
     return _RiTa.analyzer.analyze(...arguments);
   }
   ////////////////////////////// niapa /////////////////////////////
-  static randi() {
+  static randi(opts) {
     return Math.floor(_RiTa.randomizer.random(...arguments));
   }
-  static random() {
+  static random(opts) {
     return _RiTa.randomizer.random(...arguments);
   }
 };
@@ -42644,7 +42644,7 @@ RiTa2.SILENT = false;
 RiTa2.SILENCE_LTS = false;
 RiTa2.CDN = "https://www.unpkg.com/rita/";
 RiTa2.PHONES = ["aa", "ae", "ah", "ao", "aw", "ay", "b", "ch", "d", "dh", "eh", "er", "ey", "f", "g", "hh", "ih", "iy", "jh", "k", "l", "m", "n", "ng", "ow", "oy", "p", "r", "s", "sh", "t", "th", "uh", "uw", "v", "w", "y", "z", "zh"];
-RiTa2.VERSION = "1.0.60";
+RiTa2.VERSION = "1.0.63";
 RiTa2.HAS_LEXICON = typeof __NOLEX__ === "undefined";
 RiTa2.FIRST = 1;
 RiTa2.SECOND = 2;
@@ -42662,11 +42662,11 @@ RiTa2.WORD_BOUNDARY = " ";
 RiTa2.SYLLABLE_BOUNDARY = "/";
 RiTa2.SENTENCE_BOUNDARY = "|";
 RiTa2.VOWELS = "aeiou";
+RiTa2.MODAL_EXCEPTIONS = ["hardness", "shortness"];
 RiTa2.ABRV = ["Adm.", "Capt.", "Cmdr.", "Col.", "Dr.", "Gen.", "Gov.", "Lt.", "Maj.", "Messrs.", "Mr.", "Mrs.", "Ms.", "Prof.", "Rep.", "Reps.", "Rev.", "Sen.", "Sens.", "Sgt.", "Sr.", "St.", "A.k.a.", "C.f.", "I.e.", "E.g.", "Vs.", "V.", "Jan.", "Feb.", "Mar.", "Apr.", "Mar.", "Jun.", "Jul.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];
 RiTa2.QUESTIONS = ["was", "what", "when", "where", "which", "why", "who", "will", "would", "who", "how", "if", "is", "could", "might", "does", "are", "have"];
 RiTa2.STOP_WORDS = ["and", "a", "of", "in", "i", "you", "is", "to", "that", "it", "for", "on", "have", "with", "this", "be", "not", "are", "as", "was", "but", "or", "from", "my", "at", "if", "they", "your", "all", "he", "by", "one", "me", "what", "so", "can", "will", "do", "an", "about", "we", "just", "would", "there", "no", "like", "out", "his", "has", "up", "more", "who", "when", "don't", "some", "had", "them", "any", "their", "it's", "only", "which", "i'm", "been", "other", "were", "how", "then", "now", "her", "than", "she", "well", "also", "us", "very", "because", "am", "here", "could", "even", "him", "into", "our", "much", "too", "did", "should", "over", "want", "these", "may", "where", "most", "many", "those", "does", "why", "please", "off", "going", "its", "i've", "down", "that's", "can't", "you're", "didn't", "another", "around", "must", "few", "doesn't", "the", "every", "yes", "each", "maybe", "i'll", "away", "doing", "oh", "else", "isn't", "he's", "there's", "hi", "won't", "ok", "they're", "yeah", "mine", "we're", "what's", "shall", "she's", "hello", "okay", "here's", "less", "didn't", "said", "over", "this", "that", "just", "then", "under", "some"];
 RiTa2.MASS_NOUNS = ["abalone", "asbestos", "barracks", "bathos", "breeches", "beef", "britches", "chaos", "chinese", "cognoscenti", "clippers", "corps", "cosmos", "crossroads", "diabetes", "ethos", "gallows", "graffiti", "herpes", "innings", "lens", "means", "measles", "mews", "mumps", "news", "pasta", "pathos", "pincers", "pliers", "proceedings", "rabies", "rhinoceros", "sassafras", "scissors", "series", "shears", "species", "tuna", "acoustics", "aesthetics", "aquatics", "basics", "ceramics", "classics", "cosmetics", "dialectics", "deer", "dynamics", "ethics", "harmonics", "heroics", "mechanics", "metrics", "ooze", "optics", "physics", "polemics", "pyrotechnics", "statistics", "tactics", "tropics", "bengalese", "bengali", "bonsai", "booze", "cellulose", "mess", "moose", "burmese", "chinese", "colossus", "congolese", "discus", "electrolysis", "emphasis", "expertise", "flu", "fructose", "gauze", "glucose", "grease", "guyanese", "haze", "incense", "japanese", "lebanese", "malaise", "mayonnaise", "maltese", "music", "money", "menopause", "merchandise", "olympics", "overuse", "paradise", "poise", "potash", "portuguese", "prose", "recompense", "remorse", "repose", "senegalese", "siamese", "singhalese", "sleaze", "sioux", "sudanese", "suspense", "swiss", "taiwanese", "vietnamese", "unease", "aircraft", "anise", "antifreeze", "applause", "archdiocese", "apparatus", "asparagus", "bellows", "bison", "bluefish", "bourgeois", "bream", "brill", "butterfingers", "cargo", "carp", "catfish", "chassis", "clone", "clones", "clothes", "chub", "cod", "codfish", "coley", "contretemps", "crawfish", "crayfish", "cuttlefish", "dice", "dogfish", "doings", "dory", "downstairs", "eldest", "earnings", "economics", "electronics", "firstborn", "fish", "flatfish", "flounder", "fowl", "fry", "fries", "works", "goldfish", "golf", "grand", "grief", "haddock", "hake", "halibut", "headquarters", "herring", "hertz", "honey", "horsepower", "goods", "hovercraft", "ironworks", "kilohertz", "ling", "shrimp", "swine", "lungfish", "mackerel", "macaroni", "megahertz", "moorfowl", "moorgame", "mullet", "nepalese", "offspring", "pants", "patois", "pekinese", "perch", "pickerel", "pike", "potpourri", "precis", "quid", "rand", "rendezvous", "roach", "salmon", "samurai", "seychelles", "shad", "sheep", "shellfish", "smelt", "spaghetti", "spacecraft", "starfish", "stockfish", "sunfish", "superficies", "sweepstakes", "smallpox", "swordfish", "tennis", "tobacco", "triceps", "trout", "tunafish", "turbot", "trousers", "turf", "dibs", "undersigned", "waterfowl", "waterworks", "waxworks", "wildfowl", "woodworm", "yen", "aries", "pisces", "forceps", "jeans", "mathematics", "odds", "politics", "remains", "aids", "wildlife", "shall", "would", "may", "might", "ought", "should", "acne", "admiration", "advice", "air", "anger", "anticipation", "assistance", "awareness", "bacon", "baggage", "blood", "bravery", "chess", "clay", "clothing", "coal", "compliance", "comprehension", "confusion", "consciousness", "cream", "darkness", "diligence", "dust", "education", "empathy", "enthusiasm", "envy", "equality", "equipment", "evidence", "feedback", "fitness", "flattery", "foliage", "fun", "furniture", "garbage", "gold", "gossip", "grammar", "gratitude", "gravel", "guilt", "happiness", "hardware", "hate", "hay", "health", "heat", "help", "hesitation", "homework", "honesty", "honor", "honour", "hospitality", "hostility", "humanity", "humility", "ice", "immortality", "independence", "information", "integrity", "intimidation", "jargon", "jealousy", "jewelry", "justice", "knowledge", "literacy", "logic", "luck", "lumber", "luggage", "mail", "management", "milk", "morale", "mud", "nonsense", "oppression", "optimism", "oxygen", "participation", "pay", "peace", "perseverance", "pessimism", "pneumonia", "poetry", "police", "pride", "privacy", "propaganda", "public", "punctuation", "recovery", "rice", "rust", "satisfaction", "schnapps", "shame", "slang", "software", "stamina", "starvation", "steam", "steel", "stuff", "support", "sweat", "thunder", "timber", "toil", "traffic", "tongs", "training", "trash", "valor", "vehemence", "violence", "warmth", "waste", "weather", "wheat", "wisdom", "work", "accommodation", "advertising", "aid", "art", "bread", "business", "butter", "calm", "cash", "cheese", "childhood", "clothing ", "coffee", "content", "corruption", "courage", "currency", "damage", "danger", "determination", "electricity", "employment", "energy", "entertainment", "failure", "fame", "fire", "flour", "food", "freedom", "friendship", "fuel", "genetics", "hair", "harm", "hospitality ", "housework", "humour", "imagination", "importance", "innocence", "intelligence", "juice", "kindness", "labour", "lack", "laughter", "leisure", "literature", "litter", "love", "magic", "metal", "motherhood", "motivation", "nature", "nutrition", "obesity", "oil", "old age", "paper", "patience", "permission", "pollution", "poverty", "power", "production", "progress", "pronunciation", "publicity", "quality", "quantity", "racism", "rain", "relaxation", "research", "respect", "room (space)", "rubbish", "safety", "salt", "sand", "seafood", "shopping", "silence", "smoke", "snow", "soup", "speed", "spelling", "stress ", "sugar", "sunshine", "tea", "time", "tolerance", "trade", "transportation", "travel", "trust", "understanding", "unemployment", "usage", "vision", "water", "wealth", "weight", "welfare", "width", "wood", "yoga", "youth", "homecare", "childcare", "fanfare", "healthcare", "medicare"];
-RiTa2.MODAL_EXCEPTIONS = ["hardness", "shortness"];
 RiTa2.INFINITIVE = 1;
 RiTa2.GERUND = 2;
 RiTa2.SPLIT_CONTRACTIONS = false;
