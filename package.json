@@ -1,18 +1,10 @@
 {
   "name": "rjs3",
   "version": "1.0.63",
-  "description": "",
-  "main": "dist/rita.js",
-  "engines": {
-    "node": ">=14.0"
-  },
-  "exports": {
-    ".": {
-      "import": "./dist/rita.js",
-      "require": "./dist/rita.cjs",
-      "types": "./dist/index.d.ts"
-    }
-  },
+  "author": "Daniel C Howe",
+  "description": "tools for generative natural language",
+  "homepage": "https://rednoise.org/rita",
+  "license": "GPL-3.0",
   "type": "module",
   "scripts": {
     "test": "NODE_ENV=dev mocha",
@@ -21,12 +13,33 @@
     "types": "npx tsc",
     "pub": "np patch --no-tests"
   },
+  "main": "dist/rita.js",
+  "exports": {
+    ".": {
+      "import": "./dist/rita.js",
+      "require": "./dist/rita.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
     "dist"
   ],
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "unpkg": "./dist/riscript.iife.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dhowe/ritajs.git"
+  },
+  "engines": {
+    "node": ">=14.0"
+  },
+  "keywords": [
+    "natural language",
+    "generative text",
+    "text analysis"
+  ],
+  "bugs": {
+    "url": "https://github.com/dhowe/ritajs/issues"
+  },
   "devDependencies": {
     "@types/chai": "^4.3.9",
     "@types/mocha": "^10.0.3",
