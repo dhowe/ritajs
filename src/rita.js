@@ -19,7 +19,7 @@ TODO:
 
 class RiTa {
 
-  static grammar(rules, context, opts) {
+  static grammar(rules, context) {
     return new RiScript.Grammar(...arguments);
   }
 
