@@ -11,7 +11,7 @@
     "test:dist": "NODE_ENV=dev mocha test/dist",
     "build": "rm -rf dist/ && npx tsup",
     "types": "npx tsc",
-    "pub": "np patch --no-tests"
+    "pub": "np patch"
   },
   "main": "dist/rita.js",
   "exports": {
