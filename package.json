@@ -39,8 +39,8 @@
   "bugs": {
     "url": "https://github.com/dhowe/ritajs/issues"
   },
-  "unpkg": "./dist/riscript.iife.js",
-  "jsdelivr": "./dist/riscript.iife.js",
+  "unpkg": "./dist/riscript.iife.min.js",
+  "jsdelivr": "./dist/riscript.iife.min.js",
   "devDependencies": {
     "@types/chai": "^4.3.9",
     "@types/mocha": "^10.0.3",
