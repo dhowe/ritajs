@@ -11,6 +11,9 @@ const opts: Options = {
   minify: false,
   sourcemap: true,
   dts: false,
+  bundle: true,
+  target: 'es2020',
+  metafile: false, // toggle for stats: https://esbuild.github.io/analyze/
   esbuildPlugins: [esbuildPluginVersionInjector()],
   outExtension({ format }) { return { js: `.js` } },
 }
@@ -18,18 +21,12 @@ const opts: Options = {
 const esm: Options = {
   format: ['esm'],
   ...opts,
-  target: 'es2020',
-  splitting: true,
-  skipNodeModulesBundle: true, // ?
 }
 
 const cjs: Options = {
   format: ['cjs'],
   ...opts,
-  target: 'es2020', // ?
-  // skipNodeModulesBundle: true, // ?
   platform: "node",
-  splitting: true,
   cjsInterop: true,
   outExtension({ format }) { return { js: `.cjs` } },
 }
@@ -37,18 +34,15 @@ const cjs: Options = {
 const iife: Options = {
   format: ['iife'],
   ...opts,
-  bundle: true,
   minify: true,
-  target: 'es2020', // ?
   platform: "browser",
   globalName: "RiTa",
-  outExtension({ format }) { return { js: `.iife.js` } },
+  outExtension({ format }) { return { js: `.iife.min.js` } },
   footer: { js: "window.RiTa = RiTa.default" }
 }
 
 const testEsm: Options = {
   format: ['esm'],
-  target: 'es2020', // ?
   platform: "node",
   name: "test",
   entry: ['test/[^i]*.js'],

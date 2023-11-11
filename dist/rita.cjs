@@ -1,12 +1,43 @@
-"use strict";Object.defineProperty(exports, "__esModule", {value: true}); function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }var __defProp = Object.defineProperty;
+var __create = Object.create;
+var __defProp = Object.defineProperty;
+var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
+var __getOwnPropNames = Object.getOwnPropertyNames;
+var __getProtoOf = Object.getPrototypeOf;
+var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __export = (target, all) => {
+  for (var name in all)
+    __defProp(target, name, { get: all[name], enumerable: true });
+};
+var __copyProps = (to, from, except, desc) => {
+  if (from && typeof from === "object" || typeof from === "function") {
+    for (let key of __getOwnPropNames(from))
+      if (!__hasOwnProp.call(to, key) && key !== except)
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+  }
+  return to;
+};
+var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
+  // If the importer is in node compatibility mode or this is not an ESM
+  // file that has been converted to a CommonJS file using a Babel-
+  // compatible transform (i.e. "__esModule" has not been set), then set
+  // "default" to the CommonJS "module.exports" for node compatibility.
+  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
+  mod
+));
+var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
 
 // src/rita.js
-var _riscript = require('riscript'); var _riscript2 = _interopRequireDefault(_riscript);
+var rita_exports = {};
+__export(rita_exports, {
+  default: () => rita_default
+});
+module.exports = __toCommonJS(rita_exports);
+var import_riscript = __toESM(require("riscript"), 1);
 
 // src/stemmer.js
 var SnowballStemmer = class {
@@ -41908,7 +41939,7 @@ var SeededRandom = class {
 var randgen_default = SeededRandom;
 
 // src/markov.js
-var _flatted = require('flatted');
+var import_flatted = require("flatted");
 var RiMarkov = class _RiMarkov {
   constructor(n, opts = {}) {
     this.n = n;
@@ -42139,10 +42170,10 @@ var RiMarkov = class _RiMarkov {
   toJSON() {
     let data = Object.keys(this).reduce((acc, k) => Object.assign(acc, { [k]: this[k] }), {});
     data.sentenceEnds = [...data.sentenceEnds];
-    return _flatted.stringify.call(void 0, data);
+    return (0, import_flatted.stringify)(data);
   }
   static fromJSON(json) {
-    let parsed = _flatted.parse.call(void 0, json);
+    let parsed = (0, import_flatted.parse)(json);
     let rm = Object.assign(new _RiMarkov(), parsed);
     rm.sentenceEnds = new Set(...parsed.sentenceEnds);
     if (!parsed.input)
@@ -42475,20 +42506,20 @@ var markov_default = RiMarkov;
 
 // src/rita.js
 var RiTa2 = class _RiTa {
-  static grammar(rules, context, opts) {
-    return new _riscript2.default.Grammar(...arguments);
+  static grammar(rules, context) {
+    return new import_riscript.default.Grammar(...arguments);
   }
   static addTransform(name, definition) {
-    return _riscript2.default.addTransform(...arguments);
+    return import_riscript.default.addTransform(...arguments);
   }
   static articlize(word) {
-    return _riscript2.default.articlize(...arguments);
+    return import_riscript.default.articlize(...arguments);
   }
   static evaluate(script, context, opts) {
-    return _riscript2.default.evaluate(...arguments);
+    return import_riscript.default.evaluate(...arguments);
   }
   static getTransforms() {
-    return _riscript2.default.transforms;
+    return import_riscript.default.transforms;
   }
   static markov(n, opts) {
     return new markov_default(...arguments);
@@ -42629,7 +42660,7 @@ var RiTa2 = class _RiTa {
 };
 markov_default.parent = RiTa2;
 stemmer_default.parent = RiTa2;
-RiTa2.RiGrammar = _riscript2.default.Grammar;
+RiTa2.RiGrammar = import_riscript.default.Grammar;
 RiTa2.RiMarkov = markov_default;
 RiTa2.Stemmer = stemmer_default;
 RiTa2.tagger = new tagger_default(RiTa2);
@@ -42644,7 +42675,7 @@ RiTa2.SILENT = false;
 RiTa2.SILENCE_LTS = false;
 RiTa2.CDN = "https://www.unpkg.com/rita/";
 RiTa2.PHONES = ["aa", "ae", "ah", "ao", "aw", "ay", "b", "ch", "d", "dh", "eh", "er", "ey", "f", "g", "hh", "ih", "iy", "jh", "k", "l", "m", "n", "ng", "ow", "oy", "p", "r", "s", "sh", "t", "th", "uh", "uw", "v", "w", "y", "z", "zh"];
-RiTa2.VERSION = "1.0.64";
+RiTa2.VERSION = "1.0.65";
 RiTa2.HAS_LEXICON = typeof __NOLEX__ === "undefined";
 RiTa2.FIRST = 1;
 RiTa2.SECOND = 2;
@@ -42672,11 +42703,7 @@ RiTa2.GERUND = 2;
 RiTa2.SPLIT_CONTRACTIONS = false;
 var ONLY_PUNCT = /^[\p{P}|\+|-|<|>|\^|\$|\ufffd|`]*$/u;
 var IS_LETTER = /^[a-z\u00C0-\u00ff]+$/;
-RiTa2.RiScript = _riscript2.default;
-_riscript2.default.RiTa = RiTa2;
+RiTa2.RiScript = import_riscript.default;
+import_riscript.default.RiTa = RiTa2;
 var rita_default = RiTa2;
-
-
-exports.default = rita_default;
-
-module.exports = exports.default//# sourceMappingURL=rita.cjs.map
+//# sourceMappingURL=rita.cjs.map
