@@ -42644,7 +42644,7 @@ RiTa2.SILENT = false;
 RiTa2.SILENCE_LTS = false;
 RiTa2.CDN = "https://www.unpkg.com/rita/";
 RiTa2.PHONES = ["aa", "ae", "ah", "ao", "aw", "ay", "b", "ch", "d", "dh", "eh", "er", "ey", "f", "g", "hh", "ih", "iy", "jh", "k", "l", "m", "n", "ng", "ow", "oy", "p", "r", "s", "sh", "t", "th", "uh", "uw", "v", "w", "y", "z", "zh"];
-RiTa2.VERSION = "1.0.65";
+RiTa2.VERSION = "1.0.66";
 RiTa2.HAS_LEXICON = typeof __NOLEX__ === "undefined";
 RiTa2.FIRST = 1;
 RiTa2.SECOND = 2;

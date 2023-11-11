@@ -28,6 +28,7 @@ const cjs: Options = {
   ...opts,
   platform: "node",
   cjsInterop: true,
+  splitting: true,
   outExtension({ format }) { return { js: `.cjs` } },
 }
 
