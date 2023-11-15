@@ -53,6 +53,6 @@
   },
   "dependencies": {
     "flatted": "^3.2.9",
-    "riscript": "^1.0.6"
+    "riscript": "^1.0.32"
   }
 }
