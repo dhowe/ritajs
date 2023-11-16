@@ -7,8 +7,8 @@
   "license": "GPL-3.0",
   "type": "module",
   "scripts": {
-    "test": "NODE_ENV=dev mocha",
-    "test:dist": "NODE_ENV=dev mocha test/dist",
+    "test": "NODE_ENV=dev npx mocha",
+    "test:dist": "NODE_ENV=dev npx mocha test/dist",
     "build": "rm -rf dist/ && npx tsup",
     "types": "npx tsc",
     "pub": "./npnb/source/cli.js --no-release-draft patch",
@@ -52,7 +52,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
-    "flatted": "^3.2.9",
+    "@ungap/structured-clone": "^1.2.0",
     "riscript": "^1.0.32"
   }
 }

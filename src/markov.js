@@ -1,4 +1,4 @@
-import { parse, stringify } from 'flatted';
+import { parse, stringify } from '@ungap/structured-clone/json';
 
 /*
  * See full set of options for RiMarkov (https://rednoise.org/rita/reference/RiTa/markov/index.html)
