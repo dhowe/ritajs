@@ -27,6 +27,14 @@ class RiTa {
     return RiScript.addTransform(...arguments);
   }
 
+  static removeTransform(name) {
+    return RiScript.removeTransform(...arguments);
+  }
+
+  static getTransforms() {
+    return RiScript.getTransforms();
+  }
+
   static articlize(word) {
     return RiScript.articlize(...arguments);
   }
@@ -35,14 +43,10 @@ class RiTa {
     return RiScript.evaluate(...arguments);
   }
 
-  static getTransforms() {
-    return RiScript.transforms;
-  }
-
   static markov(n, opts) {
     return new RiMarkov(...arguments);
   }
-  
+
   static kwic(word, opts) {
     return RiTa.concorder.kwic(...arguments);
   }
