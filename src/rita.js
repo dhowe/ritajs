@@ -213,23 +213,31 @@ class RiTa {
     return RiTa.analyzer.analyze(...arguments);
   }
 
-  ////////////////////////////// niapa /////////////////////////////
+  ////////////////////////////// lex-sync ////////////////////////////
+
+  static spellsLikeSync(word, opts) {
+    return RiTa.lexicon.spellsLikeSync(...arguments);
+  }
+
+  static sountsLikeSync(word, opts) {
+    return RiTa.lexicon.sountsLikeSync(...arguments);
+  }
 
   static rhymesSync(word, opts) {
     return RiTa.lexicon.rhymesSync(...arguments);
   }
 
+  // TODO: all need tests
+
   static searchSync(word, opts) {
     return RiTa.lexicon.rhymesSync(...arguments);
-  }
-
-  static similarByTypeSync(word, opts) {
-    return RiTa.lexicon.similarByTypeSync(...arguments);
   }
 
   static alliterationsSync(word, opts) {
     return RiTa.lexicon.alliterationsSync(...arguments);
   }
+
+  ////////////////////////////// niapa /////////////////////////////
 
   static randi(opts) {
     return Math.floor(RiTa.randomizer.random(...arguments));

@@ -82,7 +82,7 @@ class Lexicon {
 
   alliterationsSync(theWord, opts = {}) {
 
-    this.parseArgs(opts);
+    this._parseArgs(opts);
     if (!theWord || typeof theWord !== 'string' || theWord.length < 2) {
       return [];
     }
@@ -116,13 +116,13 @@ class Lexicon {
 
       let word = words[i];
       // check word length and syllables
-      if (word === theWord || !this.checkCriteria(word, dict[word], opts)) {
+      if (word === theWord || !this._checkCriteria(word, dict[word], opts)) {
         continue;
       }
 
       let data = dict[word];
       if (opts.targetPos) {
-        word = this.matchPos(word, data, opts);
+        word = this._matchPos(word, data, opts);
         if (!word) continue;
         // Note: we may have changed the word here (e.g. via conjugation)
         //       and it is also may no longer be in the dictionary
@@ -152,7 +152,7 @@ class Lexicon {
 
   rhymesSync(theWord, opts = {}) {
 
-    this.parseArgs(opts);
+    this._parseArgs(opts);
 
     if (!theWord || !theWord.length || theWord.length < 2) return [];
 
@@ -165,18 +165,18 @@ class Lexicon {
     // randomize list order if 'shuffle' is true
     if (opts.shuffle) words = this.RiTa.randomizer.shuffle(words);
 
-    let result = [];let i = 0
+    let result = []; let i = 0
     for (; i < words.length; i++) {
 
       let word = words[i], data = dict[word];
 
       // check word length and syllables
-      if (word === theWord || !this.checkCriteria(word, data, opts)) {
+      if (word === theWord || !this._checkCriteria(word, data, opts)) {
         continue;
       }
 
       if (opts.targetPos) {
-        word = this.matchPos(word, data, opts);
+        word = this._matchPos(word, data, opts);
         if (!word) continue;
         // Note: we may have changed the word here (e.g. via conjugation)
         // and it is also may no longer be in the dictionary
@@ -198,18 +198,54 @@ class Lexicon {
     return result;
   }
 
-  async spellsLike(word, opts = {}) {
-    if (!word || !word.length) return [];
-    opts.type = 'letter';
-    return await this.similarByType(word, opts);
+  async spellsLike(word, options = {}) {
+    // return await this.similarByType(word, options);
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this.spellsLikeSync(word, options));
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 
-  async soundsLike(word, opts = {}) {
+  spellsLikeSync(word, options = {}) {
     if (!word || !word.length) return [];
-    opts.type = "sound";
-    return await ((opts.matchSpelling) ?
-      this.similarBySoundAndLetter(word, opts)
-      : this.similarByType(word, opts));
+    options.type = 'letter';
+    return this._byTypeSync(word, options);
+  }
+
+
+  async soundsLike(word, options = {}) {
+    // if (!word || !word.length) return [];
+    // opts.type = "sound";
+    // return await ((opts.matchSpelling) ?
+    //   this.similarBySoundAndLetterSync(word, opts)
+    //   : this.similarByType(word, opts));
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(this.soundsLikeSync(word, options));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
+
+
+  soundsLikeSync(word, opts = {}) {
+    if (!word || !word.length) return [];
+    opts.type = 'sound';
+    return (opts.matchSpelling)
+      ? this._bySoundAndLetter(word, opts)
+      : this._byTypeSync(word, opts);
+    // return opts.matchSpelling ? this._bySoundAndLetter(word, opts)
+    //   : this.similarByTypeSync(word, opts);
+    // if (!word || !word.length) return [];
+    // opts.type = 'letter';
+    // return this.similarByTypeSync(word, opts);
+    // if (!word || !word.length) return [];
+    // options.type = 'letter';
+    // return this.similarByTypeSync(word, options);
   }
 
   randomWord(regex, opts) {
@@ -268,7 +304,7 @@ class Lexicon {
     if (!pattern && !options) return words;
 
     let { regex, opts } = this._parseRegex(pattern, options);
-    this.parseArgs(opts);
+    this._parseArgs(opts);
 
     // randomize list order if shuffle is true
     if (opts.shuffle) words = this.RiTa.randomizer.shuffle(words);
@@ -278,10 +314,10 @@ class Lexicon {
     for (let i = 0; i < words.length; i++) {
 
       let word = words[i], data = this.data[word];
-      if (!this.checkCriteria(word, data, opts)) continue;
+      if (!this._checkCriteria(word, data, opts)) continue;
 
       if (opts.targetPos) {
-        word = this.matchPos(word, data, opts, opts.strictPos);
+        word = this._matchPos(word, data, opts, opts.strictPos);
         if (!word) continue;
         if (word !== words[i]) data = this.data[word];
         /* Note: a) may have changed the word here via conjugation
@@ -323,19 +359,20 @@ class Lexicon {
   }
 
   //////////////////////////// helpers /////////////////////////////////
-  async similarByType(pattern, options) {
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(this.similarByTypeSync(pattern, options));
-      } catch (e) {
-        reject(e);
-      }
-    });
-  }
 
-  similarByTypeSync(theWord, opts) {
+  // async similarByType(pattern, options) {
+  //   return new Promise((resolve, reject) => {
+  //     try {
+  //       resolve(this.similarByTypeSync(pattern, options));
+  //     } catch (e) {
+  //       reject(e);
+  //     }
+  //   });
+  // }
 
-    this.parseArgs(opts); // TODO: add minLimit (minResultCount) ?
+  _byTypeSync(theWord, opts) {
+
+    this._parseArgs(opts); // TODO: add minLimit (minResultCount) ?
 
     const dict = this.data;
     const input = theWord.toLowerCase();
@@ -357,10 +394,10 @@ class Lexicon {
 
       if (variations.includes(word)) continue;
 
-      if (!this.checkCriteria(word, data, opts)) continue;
+      if (!this._checkCriteria(word, data, opts)) continue;
 
       if (opts.targetPos) {
-        word = this.matchPos(word, data, opts);
+        word = this._matchPos(word, data, opts);
         if (!word) continue;
         // Note: we may have changed the word here (e.g. via conjugation)
         // and it is also may no longer be in the dictionary
@@ -389,7 +426,7 @@ class Lexicon {
     return result.slice(0, opts.limit);
   }
 
-  matchPos(word, rdata, opts, strict) {
+  _matchPos(word, rdata, opts, strict) {
 
     let posArr = rdata[1].split(' ');
 
@@ -407,7 +444,7 @@ class Lexicon {
       if (!this.RiTa.isNoun(result)) return; // make sure its still a noun
     }
     else if (opts.conjugate) { // inflect
-      result = this.reconjugate(word, opts.pos);
+      result = this._reconjugate(word, opts.pos);
     }
 
     // verify we haven't changed syllable count
@@ -430,7 +467,7 @@ class Lexicon {
     return result;
   }
 
-  checkCriteria(word, rdata, opts) {
+  _checkCriteria(word, rdata, opts) {
 
     // check word length
     if (word.length > opts.maxLength) return false;
@@ -446,7 +483,7 @@ class Lexicon {
 
   // Handles: pos, limit, numSyllables, minLength, maxLength
   // potentially appends pluralize, conjugate, targetPos
-  parseArgs(opts) {
+  _parseArgs(opts) {
 
     opts.limit = opts.limit || 10;
     opts.minDistance = opts.minDistance || 1;
@@ -457,7 +494,7 @@ class Lexicon {
     if (typeof opts.limit !== 'number' || opts.limit < 1) {
       opts.limit = Number.MAX_SAFE_INTEGER;
     }
-    
+
     let tpos = opts.pos || false;
     if (tpos && tpos.length) {
       opts.pluralize = (tpos === "nns");
@@ -471,7 +508,7 @@ class Lexicon {
     opts.targetPos = tpos;
   }
 
-  reconjugate(word, pos) {
+  _reconjugate(word, pos) {
     const RiTa = this.RiTa;
     switch (pos) {
       /*  VBD 	Verb, past tense
@@ -501,15 +538,31 @@ class Lexicon {
     }
   }
 
-  async similarBySoundAndLetter(word, opts) {
+  async _bySoundAndLetter(word, opts) {
     // do in parallel
-    const prom1 = this.similarByType(word, { ...opts, type: 'letter' });
-    const prom2 = this.similarByType(word, { ...opts, type: 'sound' });
-    let results = await Promise.allSettled([prom1, prom2]);
+    let types = ['sound', 'letter'];
+    let promises = types.map(type => new Promise((resolve, reject) => {
+      try {
+        resolve(this._byTypeSync(word, { ...opts, type }));
+      } catch (e) {
+        reject(e);
+      }
+    }));
+    // const prom1 = new Promise((resolve, reject) => {
+    //   try {
+    //     resolve(this.similarByTypeSync(word, { ...opts, type: 'letter' }));
+    //   } catch (e) {
+    //     reject(e);
+    //   }
+    // });
+    // const prom1 = this.similarByType(word, { ...opts, type: 'letter' });
+    // const prom2 = this.similarByType(word, { ...opts, type: 'sound' });
+    let results = await Promise.allSettled(promises);
     let [bySound, byLetter] = results.map(r => r.value);
     if (bySound.length < 1 || byLetter.length < 1) return [];
     return this._intersect(bySound, byLetter).slice(0, opts.limit);
   }
+
 
   rawPhones(word, opts) {
 
