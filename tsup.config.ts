@@ -38,7 +38,7 @@ const iife: Options = {
   minify: true,
   platform: "browser",
   globalName: "RiTa",
-  outExtension({ format }) { return { js: `.iife.min.js` } },
+  outExtension({ format }) { return { js: `.min.js` } },
   footer: { js: "window.RiTa = RiTa.default" }
 }
 
