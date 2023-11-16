@@ -81,8 +81,8 @@ class RiTa {
     return string ? string[0].toUpperCase() + string.substring(1) : '';
   }
 
-  static async randomWord(opts) {
-    return await RiTa.lexicon.randomWord(...arguments);
+  static randomWord(opts) {
+    return RiTa.lexicon.randomWord(...arguments);
   }
 
   static async rhymes(word, opts) {
@@ -214,6 +214,22 @@ class RiTa {
   }
 
   ////////////////////////////// niapa /////////////////////////////
+
+  static rhymesSync(word, opts) {
+    return RiTa.lexicon.rhymesSync(...arguments);
+  }
+
+  static searchSync(word, opts) {
+    return RiTa.lexicon.rhymesSync(...arguments);
+  }
+
+  static similarByTypeSync(word, opts) {
+    return RiTa.lexicon.similarByTypeSync(...arguments);
+  }
+
+  static alliterationsSync(word, opts) {
+    return RiTa.lexicon.alliterationsSync(...arguments);
+  }
 
   static randi(opts) {
     return Math.floor(RiTa.randomizer.random(...arguments));

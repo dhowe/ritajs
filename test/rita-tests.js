@@ -21,18 +21,17 @@ describe('Core', () => {
   });
 
   it('Should call addTransform', function () {
-    let addRhyme = function(word) { 
-      let res = RiTa.rhymes(word);    // get the rhymes
-      return word + ' rhymes with ' + RiTa.random(res); // append a random one
+    let addRhyme = function (word) {
+      let res = RiTa.lexicon.rhymesSync(word, { limit: 1 });    // get the rhymes
+      return word + ' rhymes with ' + RiTa.random(res);  // append a random one
     }
     expect(RiTa.RiScript.transforms.rhymes).is.undefined;
-    RiScript.addTransform('rhymes', addRhyme);
-    expect(RiScript.transforms.rhymes).is.not.undefined;
-    let res = RiScript.evaluate('The [dog | dog | dog].rhymes');
-    console.log('got ',res);
-    expect(res).eq('The dog rhymes with bog');
-    RiScript.removeTransform('rhymes');
-    expect(RiScript.transforms.rhymes).is.undefined;
+    RiTa.addTransform('rhymes', addRhyme);
+    expect(RiTa.RiScript.transforms.rhymes).is.not.undefined;
+    let res = RiTa.evaluate('The [dog | dog | dog].rhymes');
+    expect(res).eq('The dog rhymes with cog');
+    RiTa.removeTransform('rhymes');
+    expect(RiTa.RiScript.transforms.rhymes).is.undefined;
   });
 
 

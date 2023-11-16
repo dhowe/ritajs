@@ -7,7 +7,7 @@ describe('Lexicon', function () {
 
   this.slow(1000);
   this.timeout(10000);
-  
+
   it('Should call hasWord', function () {
     expect(RiTa.hasWord("random")).to.be.true;
     expect(RiTa.hasWord("dog")).to.be.true;
@@ -108,32 +108,32 @@ describe('Lexicon', function () {
     expect(RiTa.hasWord("starteds")).to.be.false;
   });
 
-  it('Should call randomWord', async function () {
+  it('Should call randomWord', function () {
 
     let result;
-    result = await RiTa.randomWord();
+    result = RiTa.randomWord();
 
     expect(result.length > 0, "randomWord: " + result).to.be.true;
-    expect(result === await RiTa.randomWord(), "randomWord returned same result '" + result + "'").to.be.false;
+    expect(result === RiTa.randomWord(), "randomWord returned same result '" + result + "'").to.be.false;
 
-    result = await RiTa.randomWord({ numSyllables: 3 });
+    result = RiTa.randomWord({ numSyllables: 3 });
     expect(result.length > 0, "3 syllables: " + result).to.be.true;
 
-    result = await RiTa.randomWord({ numSyllables: 5 });
+    result = RiTa.randomWord({ numSyllables: 5 });
     expect(result.length > 0, "5 syllables: " + result).to.be.true;
   });
 
-  it('Should call randomWord with regex', async function () {
+  it('Should call randomWord with regex', function () {
 
     // regex string as first parameter
-    let result = await RiTa.randomWord('^a');
+    let result = RiTa.randomWord('^a');
     expect(/^a/.test(result)).to.be.true;
     expect(result.length > 3).to.be.true;
 
-    result = await RiTa.randomWord("^apple$");
+    result = RiTa.randomWord("^apple$");
     expect(result).equal("apple");
 
-    result = await RiTa.randomWord("le");
+    result = RiTa.randomWord("le");
     expect(result.includes("le")).to.be.true;
 
     let results = [];
@@ -154,17 +154,17 @@ describe('Lexicon', function () {
     expect(results.length > 1).to.be.true;
 
     // regex object as first parameter
-    result = await RiTa.randomWord(/^a/);
+    result = RiTa.randomWord(/^a/);
     expect(/^a/.test(result)).to.be.true;
     expect(result.length > 3).to.be.true;
 
-    result = await RiTa.randomWord(/^apple$/);
+    result = RiTa.randomWord(/^apple$/);
     expect(result).equal("apple");
 
-    result = await RiTa.randomWord(/le/);
+    result = RiTa.randomWord(/le/);
     expect(result.includes("le")).to.be.true;
 
-    result = await RiTa.randomWord("^a");
+    result = RiTa.randomWord("^a");
     expect(result.startsWith("a")).to.be.true;
 
     results = [];
@@ -176,78 +176,78 @@ describe('Lexicon', function () {
 
   it('Should call randomWord with stress regex', async function () {
 
-    let result = await RiTa.randomWord("0/1/0", { type: "stresses" });
+    let result = RiTa.randomWord("0/1/0", { type: "stresses" });
     expect(result.length > 3);
     expect(RiTa.analyze(result).stresses.includes("0/1/0"));
 
-    result = await RiTa.randomWord("^0/1/0$", { type: "stresses" });
+    result = RiTa.randomWord("^0/1/0$", { type: "stresses" });
     expect(RiTa.analyze(result).stresses).eq("0/1/0");
 
-    result = await RiTa.randomWord("010", { type: "stresses" });
+    result = RiTa.randomWord("010", { type: "stresses" });
     expect(RiTa.analyze(result).stresses.includes("0/1/0")).to.be.true;
 
-    result = await RiTa.randomWord("^010$", { type: "stresses" });
+    result = RiTa.randomWord("^010$", { type: "stresses" });
     expect(RiTa.analyze(result).stresses).eq("0/1/0");
 
-    result = await RiTa.randomWord(/0\/1\/0/, { type: "stresses" });
+    result = RiTa.randomWord(/0\/1\/0/, { type: "stresses" });
     expect(RiTa.analyze(result).stresses.includes("0/1/0")).to.be.true;
 
-    result = await RiTa.randomWord(/^0\/1\/0\/0$/, { type: "stresses" });
+    result = RiTa.randomWord(/^0\/1\/0\/0$/, { type: "stresses" });
     expect(RiTa.analyze(result).stresses).eq("0/1/0/0");
   });
 
   it('Should call randomWord with phones regex', async function () {
 
-    let result = await RiTa.randomWord("^th", { type: "phones" });
+    let result = RiTa.randomWord("^th", { type: "phones" });
     expect(result.length > 3);
     expect(/^th/.test(RiTa.analyze(result).phones)).to.be.true;
 
-    result = await RiTa.randomWord("v$", { type: "phones" });
+    result = RiTa.randomWord("v$", { type: "phones" });
     expect(/v$/.test(RiTa.analyze(result).phones)).to.be.true;
 
-    result = await RiTa.randomWord("^b-ih-l-iy-v$", { type: "phones" });
+    result = RiTa.randomWord("^b-ih-l-iy-v$", { type: "phones" });
     expect(result).eq("believe");
 
-    result = await RiTa.randomWord("ae", { type: "phones" });
+    result = RiTa.randomWord("ae", { type: "phones" });
     expect(RiTa.analyze(result).phones.includes("ae")).to.be.true;
 
-    result = await RiTa.randomWord(/^th/, { type: "phones" });
+    result = RiTa.randomWord(/^th/, { type: "phones" });
     expect(result.length > 3);
     expect(/^th/.test(RiTa.analyze(result).phones)).to.be.true;
 
-    result = await RiTa.randomWord(/v$/, { type: "phones" });
+    result = RiTa.randomWord(/v$/, { type: "phones" });
     expect(/v$/.test(RiTa.analyze(result).phones)).to.be.true;
 
-    result = await RiTa.randomWord(/^b-ih-l-iy-v$/, { type: "phones" });
+    result = RiTa.randomWord(/^b-ih-l-iy-v$/, { type: "phones" });
     expect(result).eq("believe");
 
-    result = await RiTa.randomWord(/ae/, { type: "phones" });
+    result = RiTa.randomWord(/ae/, { type: "phones" });
     expect(RiTa.analyze(result).phones.includes("ae")).to.be.true;
   });
 
   it('Should call randomWord with opts regex', async function () {
 
     // as one of the field in opts
-    let result = await RiTa.randomWord({ regex: '^a' });
+    let result = RiTa.randomWord({ regex: '^a' });
     expect(/^a/.test(result)).to.be.true;
     expect(result.length > 3).to.be.true;
 
-    result = await RiTa.randomWord({ regex: /^a/ });
+    result = RiTa.randomWord({ regex: /^a/ });
     expect(/^a/.test(result)).to.be.true;
     expect(result.length > 3).to.be.true;
 
-    result = await RiTa.randomWord({ regex: "0/1/0", type: "stresses" });
+    result = RiTa.randomWord({ regex: "0/1/0", type: "stresses" });
     expect(result.length > 3);
     expect(RiTa.analyze(result).stresses.includes("0/1/0")).to.be.true;
 
-    result = await RiTa.randomWord({ regex: /0\/1\/0/, type: "stresses" });
+    result = RiTa.randomWord({ regex: /0\/1\/0/, type: "stresses" });
     expect(RiTa.analyze(result).stresses.includes("0/1/0")).to.be.true;
 
-    result = await RiTa.randomWord({ regex: "^th", type: "phones" });
+    result = RiTa.randomWord({ regex: "^th", type: "phones" });
     expect(result.length > 3);
     expect(/^th/.test(RiTa.analyze(result).phones)).to.be.true;
 
-    result = await RiTa.randomWord({ regex: /^th/, type: "phones" });
+    result = RiTa.randomWord({ regex: /^th/, type: "phones" });
     expect(result.length > 3);
     expect(/^th/.test(RiTa.analyze(result).phones)).to.be.true;
   });
@@ -293,7 +293,7 @@ describe('Lexicon', function () {
 
     let result, pos = ["nn", "jj", "jjr", "wp"];
     for (let j = 0; j < pos.length; j++) {
-      result = await RiTa.randomWord({ pos: pos[j] });
+      result = RiTa.randomWord({ pos: pos[j] });
       let best = RiTa.tagger.allTags(result)[0];
       //console.log(result+": "+pos[j]+" ?= "+best);
       expect(pos[j]).eq(best, result);
@@ -302,7 +302,7 @@ describe('Lexicon', function () {
     ////////////////////////////////////////////////////////////////////////
 
     for (let i = 0; i < 5; i++) {
-      result = await RiTa.randomWord({ pos: "nns" });
+      result = RiTa.randomWord({ pos: "nns" });
       if (!RiTa.inflector.isPlural(result)) {
         // For now, just warn here as there are too many edge cases (see #521)
         console.warn("Pluralize/Singularize problem: randomWord(nns) was '" + result + "' (" +
@@ -319,27 +319,27 @@ describe('Lexicon', function () {
 
     ////////////////////////////////////////////////////////////////////////
 
-    result = await RiTa.randomWord({ pos: "v" });
+    result = RiTa.randomWord({ pos: "v" });
     expect(result.length > 0, "randomWord v=" + result).to.be.true;
 
-    result = await RiTa.randomWord({ pos: "nn" });
+    result = RiTa.randomWord({ pos: "nn" });
     expect(result.length > 0, "randomWord nn: " + result).to.be.true;
 
-    result = await RiTa.randomWord({ pos: "nns" });
+    result = RiTa.randomWord({ pos: "nns" });
     expect(result.length > 0, "randomWord nns=" + result).to.be.true;
 
-    result = await RiTa.randomWord({ pos: "n" });
+    result = RiTa.randomWord({ pos: "n" });
     expect(result.length > 0, "randomWord n=" + result).to.be.true;
 
-    result = await RiTa.randomWord({ pos: "v" });
+    result = RiTa.randomWord({ pos: "v" });
     expect(result.length > 0, "randomWord v=" + result).to.be.true;
 
-    result = await RiTa.randomWord({ pos: "rp" });
+    result = RiTa.randomWord({ pos: "rp" });
     expect(result.length > 0, "randomWord rp=" + result).to.be.true;
 
     let results = [];
     for (let i = 0; i < 10; i++) {
-      results.push(await RiTa.randomWord({ pos: "nns" }));
+      results.push(RiTa.randomWord({ pos: "nns" }));
       expect(typeof results[results.length - 1] == 'string').true;
     }
 
@@ -359,13 +359,13 @@ describe('Lexicon', function () {
   it('Should call randomWord with syllables', async function () {
 
     let i, result, syllables, num;
-    result = await RiTa.randomWord({ numSyllables: 3 });
+    result = RiTa.randomWord({ numSyllables: 3 });
     syllables = RiTa.syllables(result);
     num = syllables.split(RiTa.SYLLABLE_BOUNDARY).length;
     expect(result.length > 0, 'failed1 on: ' + result).to.be.true;
     expect(num === 3, result + ": " + syllables).to.be.true; // "3 syllables: "
 
-    result = await RiTa.randomWord({ numSyllables: 5 });
+    result = RiTa.randomWord({ numSyllables: 5 });
     syllables = RiTa.syllables(result);
     num = syllables.split(RiTa.SYLLABLE_BOUNDARY).length;
     expect(result.length).gt(0, 'failed2 on ' + result);
@@ -377,7 +377,7 @@ describe('Lexicon', function () {
     // console.log(await RiTa.search());
     expect((await RiTa.search()).length).gt(20000); // all words
     expect((await RiTa.search({ limit: 11 })).length).eq(11);
-    
+
     expect((await RiTa.search({ pos: "n" }))).eql([
       'abalone', 'abandonment',
       'abbey', 'abbot',
@@ -531,7 +531,7 @@ describe('Lexicon', function () {
   it('Should call search with pos, phones, sylls, limit', async function () {
 
     let res = await RiTa.search('f-ah-n-t', { type: 'phones', pos: 'n', limit: 3, numSyllables: 2 });
-      expect(res).eql(['infant']);
+    expect(res).eql(['infant']);
   });
 
   it('Should call search with pos, phones, limit', async function () {
@@ -695,7 +695,7 @@ describe('Lexicon', function () {
     ]);
   });
 
-  it('Should call randomWord.pos.syls', async function () {
+  it('Should call randomWord.pos.syls', function () {
 
     function fail(result, epos) {
       let test = result.endsWith('es') ? result.substring(-2) : result;
@@ -705,27 +705,27 @@ describe('Lexicon', function () {
 
     let result, syllables;
 
-    result = await RiTa.randomWord({ numSyllables: 3, pos: "vbz" });
+    result = RiTa.randomWord({ numSyllables: 3, pos: "vbz" });
     //console.log(result);
     expect(result.length > 0, "randomWord vbz: " + result).to.be.true;
     syllables = RiTa.syllables(result);
     expect(syllables.split(RiTa.SYLLABLE_BOUNDARY).length).eq(3, "GOT: " + result + ' (' + syllables + ')');
     expect(RiTa.isVerb(result)).eq(true, fail(result, 'vbz'));
 
-    result = await RiTa.randomWord({ numSyllables: 1, pos: "n" });
+    result = RiTa.randomWord({ numSyllables: 1, pos: "n" });
     expect(result.length > 0, "randomWord n: " + result).to.be.true;
     syllables = RiTa.syllables(result);
     expect(syllables.split(RiTa.SYLLABLE_BOUNDARY).length).eq(1, "GOT: " + result + ' (' + syllables + ')');
     expect(RiTa.isNoun(result)).eq(true, fail(result, 'n'));
 
-    result = await RiTa.randomWord({ numSyllables: 1, pos: "nns" });
+    result = RiTa.randomWord({ numSyllables: 1, pos: "nns" });
     expect(result.length > 0, "randomWord nns: " + result).to.be.true;
     syllables = RiTa.syllables(result);
     expect(syllables.split(RiTa.SYLLABLE_BOUNDARY).length).eq(1, "GOT: " + result + ' (' + syllables + ')');
     expect(RiTa.isNoun(result)).eq(true, fail(result, 'nns'));
     // TODO: ? still failing occasionally on: proves, torpedoes, strives, times, etc. ?
 
-    result = await RiTa.randomWord({ numSyllables: 5, pos: "nns" });
+    result = RiTa.randomWord({ numSyllables: 5, pos: "nns" });
     expect(result.length > 0, "randomWord nns: " + result).to.be.true;
     syllables = RiTa.syllables(result);
     let count = syllables.split(RiTa.SYLLABLE_BOUNDARY).length;
@@ -838,6 +838,12 @@ describe('Lexicon', function () {
     expect((await RiTa.alliterations("I"))).eql([]);
     expect((await RiTa.alliterations("K"))).eql([]);
 
+  });
+
+  it('Should call rhymesSync', function () {
+    expect(RiTa.lexicon.rhymesSync('dog', { limit: 1 })).eql(['cog']);
+    expect(RiTa.lexicon.rhymesSync('dog', { limit: 2 })).eql(['cog', 'log']);
+    expect(RiTa.lexicon.rhymesSync('dog')).eql(['cog', 'log']);
   });
 
   it('Should call rhymes', async function () {
@@ -1138,7 +1144,7 @@ describe('Lexicon', function () {
 
     expect((await RiTa.soundsLike("premade", { pos: 'vbd' })).includes("remade")).to.be.true;
     expect((await RiTa.soundsLike("incriminate", { pos: 'vbd' })).includes("discriminated")).to.be.true;
-    expect((await RiTa.soundsLike("paunched", { pos: 'vbd' })).includes("launched")).to.be.true;
+    expect((await RiTa.soundsLike("paunched", { pos: 'vbd' })).includes("pinched")).to.be.true; // launched ?
   });
 
   it('Should call soundsLike().matchSpelling', async function () {

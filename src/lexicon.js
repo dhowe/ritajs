@@ -150,7 +150,7 @@ class Lexicon {
     });
   }
 
-  async rhymesSync(theWord, opts = {}) {
+  rhymesSync(theWord, opts = {}) {
 
     this.parseArgs(opts);
 
@@ -165,8 +165,8 @@ class Lexicon {
     // randomize list order if 'shuffle' is true
     if (opts.shuffle) words = this.RiTa.randomizer.shuffle(words);
 
-    let result = [];
-    for (let i = 0; i < words.length; i++) {
+    let result = [];let i = 0
+    for (; i < words.length; i++) {
 
       let word = words[i], data = dict[word];
 
@@ -187,11 +187,14 @@ class Lexicon {
       let phones = data ? data[0] : this.rawPhones(word);
 
       // check for the rhyme
-      if (phones.endsWith(phone)) result.push(word);
+      if (phones.endsWith(phone)) {
+        result.push(word);
+      }
 
-      if (result.length === opts.limit) break;
+      if (result.length === opts.limit) {
+        break;
+      }
     }
-
     return result;
   }
 
@@ -209,7 +212,7 @@ class Lexicon {
       : this.similarByType(word, opts));
   }
 
-  async randomWord(regex, opts) {
+  randomWord(regex, opts) {
 
     // no arguments, just return
     if (!regex && !opts) {
@@ -230,12 +233,12 @@ class Lexicon {
     opts.shuffle = true;
     opts.limit = 1;
 
-    let result = await this.search(regex, opts);
+    let result = this.searchSync(regex, opts);
 
     // relax our pos constraints if we got nothing
     if (result.length < 1 && opts.hasOwnProperty('pos')) {
       opts.strictPos = false;
-      result = await this.search(regex, opts);
+      result = this.searchSync(regex, opts);
     }
 
     // we've still got nothing, throw
@@ -449,7 +452,7 @@ class Lexicon {
     opts.minDistance = opts.minDistance || 1;
     opts.numSyllables = opts.numSyllables || 0;
     opts.maxLength = opts.maxLength || Number.MAX_SAFE_INTEGER;
-    opts.minLength = opts.minLength || (opts.limit > 1 ? 3 : 4); // 4 for randomWord
+    opts.minLength = opts.minLength || 3;//(opts.limit > 1 ? 3 : 4); // 4 for randomWord
 
     if (typeof opts.limit !== 'number' || opts.limit < 1) {
       opts.limit = Number.MAX_SAFE_INTEGER;
