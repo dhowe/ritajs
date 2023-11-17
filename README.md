@@ -10,7 +10,7 @@ RiTa is implemented in JavaScript and Java, with a common [API](https://github.c
 * Smart lexicon search for words matching part-of-speech, syllable, stress and rhyme patterns
 * Fast, heuristic algorithms for inflection, conjugation, stemming, tokenization, and more
 * Letter-to-sound engine for feature analysis of arbitrary words (with/without lexicon)
-* Integration of the [RiScript](https://observablehq.com/@dhowe/riscript) scripting language, designed for writers
+* Integration of the [RiScript](https://observablehq.com/@dhowe/riscript) scripting language, designed for writers, now built with the blazing fast [Chevrotain](https://chevrotain.io/) parser
 * New options for generation via grammars and Markov chains
 * Published in ESM, CommonJS and as an IIFE
 
