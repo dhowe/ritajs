@@ -16306,8 +16306,6 @@ export default {
   "restructure": ["r-iy s-t-r-ah1-k ch-er", "vb vbp nn"],
   "restructured": ["r-iy s-t-r-ah1-k ch-er-d", "vbn vbd jj"],
   "restructuring": ["r-iy s-t-r-ah1-k ch-er ih-ng", "vbg nn"],
-  "restyle": ["r-iy-s-t-ay1-l", "vb"],
-  "restyled": ["r-iy s-t-ay1-l-d", "vbn jj"],
   "resubmit": ["r-iy s-ah-b m-ih1-t", "vb"],
   "result": ["r-ih z-ah1-l-t", "nn vbp vb"],
   "resultant": ["r-iy z-ah1-l t-ah-n-t", "jj nn"],
