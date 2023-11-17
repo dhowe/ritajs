@@ -32,7 +32,7 @@ let data = RiTa.analyze("The elephant took a bite!");
 console.log(data);
 
 // to load a grammar
-let grammar = RiTa.grammar(jsonRules);
+let grammar = RiTa.grammar(rulesObjectOrJSON);
 console.log(grammar.expand());
 ```
 
