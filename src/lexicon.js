@@ -489,7 +489,7 @@ class Lexicon {
     opts.minDistance = opts.minDistance || 1;
     opts.numSyllables = opts.numSyllables || 0;
     opts.maxLength = opts.maxLength || Number.MAX_SAFE_INTEGER;
-    opts.minLength = opts.minLength || 3;//(opts.limit > 1 ? 3 : 4); // 4 for randomWord
+    opts.minLength = opts.minLength || opts.limit > 1 ? 3 : 4; // 4 for randomWord
 
     if (typeof opts.limit !== 'number' || opts.limit < 1) {
       opts.limit = Number.MAX_SAFE_INTEGER;
