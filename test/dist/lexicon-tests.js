@@ -114,7 +114,7 @@ describe("Lexicon", function() {
     expect(results.length > 1).to.be.true;
     result = RiTa.randomWord(/^a/);
     expect(/^a/.test(result)).to.be.true;
-    expect(result.length >= 3).to.be.true;
+    expect(result.length > 3).to.be.true;
     result = RiTa.randomWord(/^apple$/);
     expect(result).equal("apple");
     result = RiTa.randomWord(/le/);
