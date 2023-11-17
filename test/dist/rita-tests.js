@@ -19,12 +19,16 @@ describe("Core", () => {
       return word + " rhymes with " + RiTa.random(res2);
     };
     expect(RiTa.RiScript.transforms.rhymes).is.undefined;
+    expect(RiTa.RiScript.transforms.hasOwnProperty("rhymes")).false;
     RiTa.addTransform("rhymes", addRhyme);
     expect(RiTa.RiScript.transforms.rhymes).is.not.undefined;
+    expect(RiTa.RiScript.transforms.hasOwnProperty("rhymes")).true;
     let res = RiTa.evaluate("The [dog | dog | dog].rhymes");
     expect(res).eq("The dog rhymes with cog");
     RiTa.removeTransform("rhymes");
-    expect(RiTa.RiScript.transforms.rhymes).is.undefined;
+    expect(RiTa.RiScript.transforms.hasOwnProperty("rhymes")).false;
+    res = RiTa.evaluate("The [dog | dog | dog].rhymes", 0, { silent: true });
+    expect(res).eq("The dog.rhymes");
   });
   it("Should call random", function() {
     expect(RiTa.random(10)).to.be.within(0, 10);

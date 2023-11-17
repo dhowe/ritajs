@@ -1,3 +1,4 @@
+import Util from './util.js';
 
 class Tagger {
 
@@ -354,7 +355,7 @@ class Tagger {
       // transform 2: convert a noun to a number (cd) if it is
       // all digits and/or a decimal "."
       if (tag.startsWith("n")) { //choices[i] always exist (from allTags())
-        if (isNum(word)) {
+        if (Util.isNum(word)) {
           tag = "cd";
           //dbug && this._log(2, word, tag);
         } // mods: dch (add choice check above) <---- ? >
@@ -693,9 +694,5 @@ const VERB_PREFIX = ["de", "over", "re", "dis", "un", "mis", "out", "pre", "post
 const NOUN_PREFIX = ["anti", "auto", "de", "dis", "un", "non", "co", "over", "under", "up", "down", "hyper", "mono", "bi", "uni", "di", "semi", "omni", "mega", "mini", "macro", "micro", "counter", "ex", "mal", "neo", "out", "poly", "pseudo", "super", "sub", "sur", "tele", "tri", "ultra", "vice"];
 //const ADJECTIVE_PREFIX = ["dis", "non", "semi", "un"]; // JC: not used?
 const ARTICLES = ['the', 'a', 'an', 'some'];
-
-function isNum(n) {
-  return !isNaN(parseFloat(n)) && isFinite(n);
-}
 
 export default Tagger;

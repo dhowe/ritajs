@@ -1,5 +1,5 @@
 {
-  "name": "rjs3",
+  "name": "rita",
   "version": "3.0.6",
   "author": "Daniel C Howe",
   "description": "tools for generative natural language",
@@ -27,7 +27,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dhowe/rjs3.git"
+    "url": "https://github.com/dhowe/ritajs.git"
   },
   "engines": {
     "node": ">=14.0"

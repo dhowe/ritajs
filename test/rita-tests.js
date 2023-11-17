@@ -34,7 +34,8 @@ describe('Core', () => {
     expect(res).eq('The dog rhymes with cog');
     RiTa.removeTransform('rhymes');
     expect(RiTa.RiScript.transforms.hasOwnProperty('rhymes')).false;
-    res = RiTa.evaluate('The [dog | dog | dog].rhymes');
+
+    res = RiTa.evaluate('The [dog | dog | dog].rhymes', 0, { silent: true });
     expect(res).eq('The dog.rhymes');
   });
 

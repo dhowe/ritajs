@@ -11,16 +11,12 @@ import Concorder from './concorder.js';
 import RandGen from './randgen.js';
 import RiMarkov from './markov.js';
 
-/*
-TODO: 
-  -- lexicon performance
-  -- optional lexicon
-*/
+const { Grammar: RiGrammar } = RiScript;
 
 class RiTa {
 
   static grammar(rules, context) {
-    return new RiScript.Grammar(...arguments);
+    return new RiGrammar(...arguments);
   }
 
   static addTransform(name, definition) {
@@ -253,7 +249,7 @@ RiMarkov.parent = RiTa; // remove
 Stemmer.parent = RiTa; // remove
 
 // CLASSES
-RiTa.RiGrammar = RiScript.Grammar;
+RiTa.RiGrammar = RiGrammar;
 RiTa.RiMarkov = RiMarkov;
 RiTa.Stemmer = Stemmer;
 
