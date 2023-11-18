@@ -3,7 +3,7 @@
 
 ## RiTa: tools for generative natural language
 
-RiTa is implemented in JavaScript and Java, with a common [API](https://github.com/dhowe/rita4j/blob/master/README.md#api) for both, and is free/libre/open-source via the GPL license.
+RiTa is implemented in JavaScript and Java, with a common [API](https://github.com/dhowe/rita4j/blob/master/README.md#api) for both, and is free/libre/open-source.
 
 ### Features in v3.0
 
