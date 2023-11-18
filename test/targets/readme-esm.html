@@ -1,0 +1,10 @@
+<html>
+<body>
+  <div id="content" width=200 height=200></div>
+  <script type="module">
+    import { RiTa } from "https://esm.sh/rita";
+    let words = RiTa.tokenize("The elephant took a bite!");
+    document.getElementById("content").innerHTML = words;
+  </script>
+</body>
+<html>

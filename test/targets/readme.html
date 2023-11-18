@@ -1,10 +1,9 @@
 <html>
-  <script src="https://unpkg.com/jquery"></script>
   <script src="https://unpkg.com/rita"></script>
   <script>
     window.onload = function() {
       let words = RiTa.tokenize("The elephant took a bite!");
-      $('#content').text(words);
+      document.getElementById("content").innerHTML = words;
     };
   </script>
   <div id="content" width=200 height=200></div>
