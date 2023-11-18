@@ -119,7 +119,7 @@ console.log(grammar.expand());
 
 ## RiScript
 
-RiScript is a small language designed for writers working in computational media. RiScript primitives (choices, symbols, gates, transforms, etc.) can be used as part of any RiTa [grammar](https://rednoise.org/rita/reference/RiTa/grammar/) or executed directly using [RiTa.evaluate()](https://rednoise.org/rita/reference/RiTa/evaluate/). For more info, see [this interactive notebook](https://observablehq.com/@dhowe/riscript).
+RiScript is a small language designed for writers working in computational media. RiScript primitives (choices, symbols, gates, transforms, etc.) can be used as part of any RiTa [grammar](https://rednoise.org/rita/reference/RiTa/grammar/) or executed directly using RiTa.[evaluate](https://rednoise.org/rita/reference/RiTa/evaluate/). For more info, see [this interactive notebook](https://observablehq.com/@dhowe/riscript).
 
 <br>
 
