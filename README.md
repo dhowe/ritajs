@@ -18,9 +18,9 @@ Note: version 3.0 contains breaking changes -- please check the [release notes](
 
 ### Installation
 
+* For [esm](#an-esm-browser-sketch): ```import { RiTa } from "https://esm.sh/rita";```
 * For [node](#with-nodejs-and-npm): `$ npm install rita` and then ```let { RiTa }  = require('rita');```
 * For [browsers](#a-simple-browser-sketch): ```<script src="https://unpkg.com/rita"></script>```
-* For [esm](#an-esm-browser-sketch): ```import { RiTa } from "https://esm.sh/rita";```
 * For [developers](#developing)
 
 
