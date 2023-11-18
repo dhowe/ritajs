@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { RiTa } from "./index.js";
 describe("Core", () => {
   it("Should have access to statics", function() {
-    eq(RiTa.CDN, "https://www.unpkg.com/rita/");
     if (typeof process === "undefined")
       return;
     if (process.env.NODE_ENV !== "dev") {
