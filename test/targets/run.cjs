@@ -1,4 +1,4 @@
-let RiTa = require('../../dist/rita.cjs');
+let {RiTa} = require('../../dist/rita.cjs');
 
 let str = '\nRiTa v' + RiTa.VERSION + ' (RiScript v' + RiTa.RiScript.VERSION + ')\n\n';
 Object.getOwnPropertyNames(RiTa)

@@ -306,4 +306,4 @@ const IS_LETTER = /^[a-z\u00C0-\u00ff]+$/;
 RiTa.RiScript = RiScript;
 RiScript.RiTa = RiTa;
 
-export default RiTa;
+export { RiTa };

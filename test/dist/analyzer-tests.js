@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import RiTa from "./index.js";
+import { RiTa } from "./index.js";
 describe("Analyzer", function() {
   let hasLex = true;
   it("Should call analyzeWord", function() {

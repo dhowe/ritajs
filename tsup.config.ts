@@ -37,9 +37,10 @@ const iife: Options = {
   ...opts,
   minify: true,
   platform: "browser",
-  globalName: "RiTa",
+  globalName: "iife",
+  footer: { js: "RiTa = iife.RiTa" },
   outExtension({ format }) { return { js: `.min.js` } },
-  footer: { js: "window.RiTa = RiTa.default" }
+
 }
 
 const testEsm: Options = {

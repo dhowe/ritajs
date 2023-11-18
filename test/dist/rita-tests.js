@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import RiTa from "./index.js";
+import { RiTa } from "./index.js";
 describe("Core", () => {
   it("Should have access to statics", function() {
     eq(RiTa.CDN, "https://www.unpkg.com/rita/");

@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import RiTa from "./index.js";
+import { RiTa } from "./index.js";
 describe("Tokenizer", () => {
   it("Should call tokens", function() {
     let tokens, input = `She wrote: "I don't paint anymore. For a while she thought it was just a phase that she'd get over."`;

@@ -9,7 +9,7 @@
   <div id="content"></div>
 
   <script type="module">
-    import RiTa from "https://esm.sh/rita";
+    import { RiTa } from "https://esm.sh/rita";
     let html = '<h3>RiTa v' + RiTa.VERSION + '</h3>';
     Object.getOwnPropertyNames(RiTa)
       .filter(p => !p.startsWith('_') && typeof RiTa[p] === "function")

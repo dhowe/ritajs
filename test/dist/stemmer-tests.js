@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import RiTa from "./index.js";
+import { RiTa } from "./index.js";
 describe("Stemmer", function() {
   it("Should test stem1", function() {
     test("accompanying", "accompani");

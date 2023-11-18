@@ -1,4 +1,4 @@
-import RiTa from  '../../dist/rita.js';
+import { RiTa } from '../../dist/rita.js';
 
 let str = '\nRiTa v' + RiTa.VERSION + ' (RiScript v' + RiTa.RiScript.VERSION + ')\n\n';
 Object.getOwnPropertyNames(RiTa)

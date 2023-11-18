@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 
-import RiTa from './index.js';
+import { RiTa } from './index.js';
 
 let hasLex = true;
 

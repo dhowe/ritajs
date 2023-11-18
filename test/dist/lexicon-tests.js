@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import RiTa from "./index.js";
+import { RiTa } from "./index.js";
 describe("Lexicon", function() {
   this.slow(1e3);
   this.timeout(1e4);

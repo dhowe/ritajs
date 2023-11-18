@@ -1,7 +1,7 @@
 
 import { expect } from 'chai';
 
-import RiTa from './index.js';
+import { RiTa } from './index.js';
 
 describe('Lexicon', function () {
 

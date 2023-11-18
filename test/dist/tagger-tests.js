@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import RiTa from "./index.js";
+import { RiTa } from "./index.js";
 describe("Tagger", () => {
   let hasLex = true;
   it("Should call pos.array", function() {
