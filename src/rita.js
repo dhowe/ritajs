@@ -1,5 +1,3 @@
-
-import RiScript from 'riscript';
 import Stemmer from './stemmer.js';
 import Tokenizer from './tokenizer.js';
 import Conjugator from './conjugator.js';
@@ -11,6 +9,7 @@ import Concorder from './concorder.js';
 import RandGen from './randgen.js';
 import RiMarkov from './markov.js';
 
+import { RiScript } from 'riscript';
 const { Grammar: RiGrammar } = RiScript;
 
 class RiTa {
