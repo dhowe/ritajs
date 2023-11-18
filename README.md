@@ -14,7 +14,7 @@ RiTa is implemented in JavaScript and Java, with a common [API](https://github.c
 * New options for generation via grammars and Markov chains
 * Published in ESM, CommonJS and as an IIFE
 
-Note: version 3.0 contains breaking changes -- please check the [release notes](https://rednoise.org/rita/#whats-new-wrapper)
+Note: version 3.0 contains breaking changes -- please check the [release notes](https://rednoise.org/rita/#whats-new)
 
 ### Installation
 
@@ -171,6 +171,7 @@ Here you can see the tests in the VSCode _Testing_ view
 * Github Repo:       [https://github.com/dhowe/rita](https://github.com/dhowe/rita)
 * Issues:       [https://github.com/dhowe/rita/issues](https://github.com/dhowe/rita/issues)
 * Reference:    [https://rednoise.org/rita/reference](http://rednoise.org/rita/reference)
+* RiScript:    [https://github.com/dhowe/riscript](https://github.com/dhowe/riscript)
 
 &nbsp;
 
