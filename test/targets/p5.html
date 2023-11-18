@@ -1,0 +1,18 @@
+<html>
+  <script src="https://unpkg.com/p5"></script>
+  <script src="https://unpkg.com/rita"></script>
+  <script>
+  function setup() {
+
+    createCanvas(200,200);
+    background(245);
+    textAlign(CENTER);
+    textSize(20);
+
+    let words = RiTa.tokenize("The elephant took a bite!")
+    for (let i=0; i < words.length; i++) {
+        text(words[i], 100, 50 + i*20);
+    }
+  }
+  </script>
+</html>
