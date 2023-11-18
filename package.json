@@ -40,7 +40,7 @@
   "bugs": {
     "url": "https://github.com/dhowe/ritajs/issues"
   },
-  "browser": "./dist/rita.iife.min.js",
+  "browser": "./dist/rita.min.js",
   "devDependencies": {
     "@types/chai": "^4.3.9",
     "@types/mocha": "^10.0.3",
