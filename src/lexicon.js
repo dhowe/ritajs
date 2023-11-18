@@ -42,42 +42,8 @@ class Lexicon {
     return false;
   }
 
-  /*findStem(word) { // JC: what is this function doing?
-
-    let part = word;
-    let dict = this.data;
-    let words = Object.keys(dict);
-
-    while (part.length > 1) {
-
-      let pattern = new RegExp('^' + part);
-      let guess = words.filter(w => pattern.test(w));
-      if (guess && guess.length) {
-
-        // always look for shorter words first
-        guess.sort((a, b) => a.length - b.length);
-
-        // look for words stem(b)===a
-        for (let i = 0; i < guess.length; i++) {
-          if (this.RiTa.stem(guess[i]) === word) {
-            return guess[i];
-          }
-        }
-      }
-      part = part.slice(0, -1);
-    }
-
-    return undefined;
-  }*/
-
-  async alliterations(theWord, opts = {}) {
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(this.alliterationsSync(theWord, opts));
-      } catch (e) {
-        reject(e);
-      }
-    });
+  async alliterations(word, options = {}) {
+    return this._promise(this.alliterationsSync, [word, options]);
   }
 
   alliterationsSync(theWord, opts = {}) {
@@ -140,14 +106,9 @@ class Lexicon {
     return result;
   }
 
-  async rhymes(theWord, opts = {}) {
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(this.rhymesSync(theWord, opts));
-      } catch (e) {
-        reject(e);
-      }
-    });
+  async rhymes(word, options = {}) {
+    return this._promise(this.rhymesSync, [word, options]);
+
   }
 
   rhymesSync(theWord, opts = {}) {
@@ -199,14 +160,7 @@ class Lexicon {
   }
 
   async spellsLike(word, options = {}) {
-    // return await this.similarByType(word, options);
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(this.spellsLikeSync(word, options));
-      } catch (e) {
-        reject(e);
-      }
-    });
+    return this._promise(this.spellsLikeSync, [word, options]);
   }
 
   spellsLikeSync(word, options = {}) {
@@ -215,22 +169,9 @@ class Lexicon {
     return this._byTypeSync(word, options);
   }
 
-
   async soundsLike(word, options = {}) {
-    // if (!word || !word.length) return [];
-    // opts.type = "sound";
-    // return await ((opts.matchSpelling) ?
-    //   this.similarBySoundAndLetterSync(word, opts)
-    //   : this.similarByType(word, opts));
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(this.soundsLikeSync(word, options));
-      } catch (e) {
-        reject(e);
-      }
-    });
+    return this._promise(this.soundsLikeSync, [word, options]);
   }
-
 
   soundsLikeSync(word, opts = {}) {
     if (!word || !word.length) return [];
@@ -238,14 +179,6 @@ class Lexicon {
     return (opts.matchSpelling)
       ? this._bySoundAndLetter(word, opts)
       : this._byTypeSync(word, opts);
-    // return opts.matchSpelling ? this._bySoundAndLetter(word, opts)
-    //   : this.similarByTypeSync(word, opts);
-    // if (!word || !word.length) return [];
-    // opts.type = 'letter';
-    // return this.similarByTypeSync(word, opts);
-    // if (!word || !word.length) return [];
-    // options.type = 'letter';
-    // return this.similarByTypeSync(word, options);
   }
 
   randomWord(regex, opts) {
@@ -263,11 +196,12 @@ class Lexicon {
       }
     }
 
-    // delegate to search {limit=1, shuffle=true, strictPos=true}  
-    opts = opts || {};
-    opts.strictPos = true;
-    opts.shuffle = true;
+    // delegate to search {limit=1, shuffle=true, strictPos=true, minLength=4}  
+    opts = opts || {}; // keep
     opts.limit = 1;
+    opts.shuffle = true;
+    opts.strictPos = true;
+    opts.minLength = Util.numOpt(opts, 'minLength', 4);
 
     let result = this.searchSync(regex, opts);
 
@@ -287,13 +221,7 @@ class Lexicon {
   }
 
   async search(pattern, options) {
-    return new Promise((resolve, reject) => {
-      try {
-        resolve(this.searchSync(pattern, options));
-      } catch (e) {
-        reject(e);
-      }
-    });
+    return this._promise(this.searchSync, [pattern, options]);
   }
 
   searchSync(pattern, options) {
@@ -359,16 +287,6 @@ class Lexicon {
   }
 
   //////////////////////////// helpers /////////////////////////////////
-
-  // async similarByType(pattern, options) {
-  //   return new Promise((resolve, reject) => {
-  //     try {
-  //       resolve(this.similarByTypeSync(pattern, options));
-  //     } catch (e) {
-  //       reject(e);
-  //     }
-  //   });
-  // }
 
   _byTypeSync(theWord, opts) {
 
@@ -485,15 +403,13 @@ class Lexicon {
   // potentially appends pluralize, conjugate, targetPos
   _parseArgs(opts) {
 
-    opts.limit = opts.limit || 10;
-    opts.minDistance = opts.minDistance || 1;
-    opts.numSyllables = opts.numSyllables || 0;
-    opts.maxLength = opts.maxLength || Number.MAX_SAFE_INTEGER;
-    opts.minLength = opts.minLength || opts.limit > 1 ? 3 : 4; // 4 for randomWord
+    opts.limit = Util.numOpt(opts, 'limit', 10);
+    opts.minDistance = Util.numOpt(opts, 'minDistance', 1);
+    opts.numSyllables = Util.numOpt(opts, 'numSyllables', 0);
+    opts.maxLength = Util.numOpt(opts, 'maxLength', Number.MAX_SAFE_INTEGER);
+    opts.minLength = Util.numOpt(opts, 'minLength', 3);
 
-    if (typeof opts.limit !== 'number' || opts.limit < 1) {
-      opts.limit = Number.MAX_SAFE_INTEGER;
-    }
+    if (opts.limit < 1) opts.limit = Number.MAX_SAFE_INTEGER;
 
     let tpos = opts.pos || false;
     if (tpos && tpos.length) {
@@ -539,27 +455,14 @@ class Lexicon {
   }
 
   async _bySoundAndLetter(word, opts) {
-    // do in parallel
-    let types = ['sound', 'letter'];
-    let promises = types.map(type => new Promise((resolve, reject) => {
-      try {
-        resolve(this._byTypeSync(word, { ...opts, type }));
-      } catch (e) {
-        reject(e);
-      }
-    }));
-    // const prom1 = new Promise((resolve, reject) => {
-    //   try {
-    //     resolve(this.similarByTypeSync(word, { ...opts, type: 'letter' }));
-    //   } catch (e) {
-    //     reject(e);
-    //   }
-    // });
-    // const prom1 = this.similarByType(word, { ...opts, type: 'letter' });
-    // const prom2 = this.similarByType(word, { ...opts, type: 'sound' });
+    let types = ['sound', 'letter']; // in parallel
+    let promises = types.map(type => this._promise
+      (this._byTypeSync, [word, { ...opts, type }]));
+
     let results = await Promise.allSettled(promises);
     let [bySound, byLetter] = results.map(r => r.value);
     if (bySound.length < 1 || byLetter.length < 1) return [];
+
     return this._intersect(bySound, byLetter).slice(0, opts.limit);
   }
 
@@ -631,6 +534,16 @@ class Lexicon {
   }
 
   // helpers ---------------------------------------------------------------
+
+  _promise(fun, args) {
+    return new Promise((resolve, reject) => {
+      try {
+        resolve(fun.apply(this, args));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  }
 
   _parseRegex(regex, opts) {
     // handle regex passed as part of opts
@@ -767,5 +680,7 @@ class Lexicon {
     return this.data[word];
   }
 }
+
+
 
 export default Lexicon;

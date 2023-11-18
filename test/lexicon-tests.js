@@ -1147,7 +1147,7 @@ describe('Lexicon', function () {
     expect((await RiTa.soundsLike("paunched", { pos: 'vbd' })).includes("pinched")).to.be.true; // launched ?
   });
 
-  it('Should call soundsLike().matchSpelling', async function () {
+  it('Should call soundsLike.matchSpelling', async function () {
 
     let result;
     result = await RiTa.soundsLike("try", { matchSpelling: true });
