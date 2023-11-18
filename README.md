@@ -1,4 +1,4 @@
-<a href="https://github.com/dhowe/rjs3/actions"><img src="https://github.com/dhowe/rjs3/actions/workflows/node.js.yml/badge.svg" alt="ci tests"></a> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/badge/license-GPL-orange.svg" alt="license"></a> <a href="https://www.npmjs.com/package/rita"><img src="https://img.shields.io/npm/v/rita.svg" alt="npm version"></a> <!--[![](https://data.jsdelivr.com/v1/package/npm/rita/badge)](https://www.jsdelivr.com/package/npm/rita)--> [![CDNJS](https://img.shields.io/cdnjs/v/rita.svg)](https://cdnjs.com/libraries/rita/) 
+<a href="https://github.com/dhowe/rjs3/actions"><img src="https://github.com/dhowe/rjs3/actions/workflows/node.js.yml/badge.svg" alt="ci tests"></a> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/badge/license-GPL-orange.svg" alt="license"></a> <a href="https://www.npmjs.com/package/rita"><img src="https://img.shields.io/npm/v/rita.svg" alt="npm version"></a>[![CDNJS](https://img.shields.io/cdnjs/v/rita.svg)](https://cdnjs.com/libraries/rita/) 
 
 
 ## RiTa: tools for generative natural language
@@ -18,14 +18,16 @@ Note: version 3.0 contains breaking changes -- please check the [release notes](
 
 ### Installation
 
-* For node: `npm install rita`
-* For [browsers](#a-simple-sketch): ```<script src="https://unpkg.com/rita"></script>```
+* For [node](#with-nodejs-and-npm): `$ npm install rita` and then ```let { RiTa }  = require('rita');```
+* For [browsers](#a-simple-browser-sketch): ```<script src="https://unpkg.com/rita"></script>```
+* For [esm](#an-esm-browser-sketch): ```import { RiTa } from "https://esm.sh/rita";```
 * For [developers](#developing)
 
-### Example (node)
+
+### Example
 
 ```javascript
-let RiTa = require('rita');
+import { RiTa } from "https://esm.sh/rita";
 
 // to analyze a sentence
 let data = RiTa.analyze("The elephant took a bite!");
@@ -148,7 +150,7 @@ Please make contributions via [fork-and-pull](https://reflectoring.io/github-for
 
 ### Visual Studio Code
 
-Once you have things running with npm/mocha, you might also try [VSCode](https://code.visualstudio.com/).
+Once you have things running with npm/mocha/tsup, you might also try [VSCode](https://code.visualstudio.com/).
 
 Some of the following extensions may also be useful:
 
@@ -174,27 +176,43 @@ Here you can see the tests in the VSCode _Testing_ view
 
 ## Quick Start 
 
-#### A simple sketch
+#### A simple browser sketch
  
 Create a new file on your desktop called 'test.html' with the following lines, save and drag it into a browser:
 
 ```html
 <html>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://unpkg.com/rita"></script>
   <script>
     window.onload = function() {
       let words = RiTa.tokenize("The elephant took a bite!");
-      $('#content').text(words);
+      document.getElementById("content").innerHTML = words;
     };
   </script>
   <div id="content" width=200 height=200></div>
 <html>
 ```
 
+#### An ESM browser sketch
+ 
+Create a new file on your desktop called 'test.html' with the following lines, save and drag it into a browser:
+
+```html
+<html>
+<body>
+  <div id="content" width=200 height=200></div>
+  <script type="module">
+    import { RiTa } from "https://esm.sh/rita";
+    let words = RiTa.tokenize("The elephant took a bite!");
+    document.getElementById("content").innerHTML = words;
+  </script>
+</body>
+<html>
+```
+
 #### With [p5.js](http://p5js.org/)
  
-Create a new file on your desktop called 'test.html' and download the latest rita.js from [here](http://rednoise.org/rita/download/rita.min.js), add the following lines, save and drag it into a browser:
+Create a new file on your desktop called 'test.html' with the following lines, save and drag it into a browser:
 
 ```html
 <html>
@@ -204,13 +222,13 @@ Create a new file on your desktop called 'test.html' and download the latest rit
   function setup() {
 
     createCanvas(200,200);
-    background(50);
+    background(245);
+    textAlign(CENTER);
     textSize(20);
-    noStroke();
 
     let words = RiTa.tokenize("The elephant took a bite!")
     for (let i=0; i < words.length; i++) {
-        text(words[i], 50, 50 + i*20);
+        text(words[i], 100, 50 + i*20);
     }
   }
   </script>
