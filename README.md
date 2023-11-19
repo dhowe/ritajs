@@ -136,7 +136,7 @@ $ git clone https://github.com/dhowe/ritajs.git
 $ cd ritajs 
 $ npm install
 $ npm run build 
-$ npm run test
+$ npm test
 
 ```
 If all goes well, you should see a list of successful tests and find the library built in 'dist'
