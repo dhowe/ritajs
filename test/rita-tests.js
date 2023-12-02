@@ -19,20 +19,28 @@ describe('Core', () => {
 
   });
 
+  it('Should call evaluate', function () {
+    let res;
+    res = RiTa.evaluate('The [ox | ox | ox].pluralize run', 0);
+    expect(res).eq('The oxen run');
+    res = RiTa.evaluate('It was [honor].art to meet you', 0);
+    expect(res).eq('It was an honor to meet you');
+  });
+
   it('Should call addTransform', function () {
     let addRhyme = function (word) {
       let res = RiTa.lexicon.rhymesSync(word, { limit: 1 });    // get the rhymes
       return word + ' rhymes with ' + RiTa.random(res);  // append a random one
     }
-    expect(RiTa.RiScript.transforms.rhymes).is.undefined;
-    expect(RiTa.RiScript.transforms.hasOwnProperty('rhymes')).false;
+    expect(RiTa.riscript.transforms.rhymes).is.undefined;
+    expect(RiTa.riscript.transforms.hasOwnProperty('rhymes')).false;
     RiTa.addTransform('rhymes', addRhyme);
-    expect(RiTa.RiScript.transforms.rhymes).is.not.undefined;
-    expect(RiTa.RiScript.transforms.hasOwnProperty('rhymes')).true;
+    expect(RiTa.riscript.transforms.rhymes).is.not.undefined;
+    expect(RiTa.riscript.transforms.hasOwnProperty('rhymes')).true;
     let res = RiTa.evaluate('The [dog | dog | dog].rhymes');
     expect(res).eq('The dog rhymes with cog');
     RiTa.removeTransform('rhymes');
-    expect(RiTa.RiScript.transforms.hasOwnProperty('rhymes')).false;
+    expect(RiTa.riscript.transforms.hasOwnProperty('rhymes')).false;
 
     res = RiTa.evaluate('The [dog | dog | dog].rhymes', 0, { silent: true });
     expect(res).eq('The dog.rhymes');
@@ -93,11 +101,9 @@ describe('Core', () => {
       "dog", "a dog",
       "ant", "an ant",
       "eagle", "an eagle",
-      "ermintrout", "an ermintrout"
+      "ermintrout", "an ermintrout",
+      "honor", "an honor"
     ];
-    if (RiTa.lexicon.size() > 0) {
-      data.push("honor", "an honor");
-    }
     for (let i = 0; i < data.length; i += 2) {
       expect(RiTa.articlize(data[i])).eq(data[i + 1]);
     }
@@ -107,7 +113,8 @@ describe('Core', () => {
     let data = [
       "black dog", "a black dog",
       "black ant", "a black ant",
-      "orange ant", "an orange ant"
+      "orange ant", "an orange ant",
+      "great honor", "a great honor"
     ];
     for (let i = 0; i < data.length; i += 2) {
       expect(RiTa.articlize(data[i])).eq(data[i + 1]);

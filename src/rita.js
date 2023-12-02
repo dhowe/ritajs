@@ -8,8 +8,8 @@ import Analyzer from './analyzer.js';
 import Concorder from './concorder.js';
 import RandGen from './randgen.js';
 import RiMarkov from './markov.js';
-
 import { RiScript } from 'riscript';
+
 const { Grammar: RiGrammar } = RiScript;
 
 class RiTa {
@@ -19,15 +19,15 @@ class RiTa {
   }
 
   static addTransform(name, definition) {
-    return RiScript.addTransform(...arguments);
+    return RiTa.riscript.addTransform(...arguments);
   }
 
   static removeTransform(name) {
-    return RiScript.removeTransform(...arguments);
+    return RiTa.riscript.removeTransform(...arguments);
   }
 
   static getTransforms() {
-    return RiScript.getTransforms();
+    return RiTa.riscript.getTransforms();
   }
 
   static articlize(word) {
@@ -35,7 +35,7 @@ class RiTa {
   }
 
   static evaluate(script, context, opts) {
-    return RiScript.evaluate(...arguments);
+    return RiTa.riscript.evaluate(...arguments);
   }
 
   static markov(n, opts) {
@@ -303,5 +303,7 @@ const IS_LETTER = /^[a-z\u00C0-\u00ff]+$/;
 
 RiTa.RiScript = RiScript;
 RiScript.RiTa = RiTa;
+
+RiTa.riscript = new RiScript({ RiTa });
 
 export { RiTa };
