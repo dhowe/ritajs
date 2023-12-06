@@ -1,5 +1,9 @@
 import Util from './util.js';
 
+/**
+ * @class Inflector
+ * @memberof module:rita
+ */
 class Inflector {
 
   constructor(parent) {

@@ -1,3 +1,5 @@
+  
+/** @type {object} */
 export default {
   "a": ["ey1", "dt"],
   "abalone": ["ae b-ah l-ow1 n-iy", "nn"],

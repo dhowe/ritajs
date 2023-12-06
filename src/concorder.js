@@ -1,3 +1,7 @@
+/**
+ * @class Concorder
+ * @memberof module:rita
+ */
 class Concorder {
 
   constructor(parent) {

@@ -3,6 +3,10 @@ import LetterToSound from "./rita_lts.js";
 
 const SP = ' ', E = '';
 
+/**
+ * @class Analyzer
+ * @memberof module:rita
+ */
 class Analyzer {
 
   constructor(parent) {
@@ -64,7 +68,7 @@ class Analyzer {
         || this._computeRawPhones(word, lex, opts);
 
       if (rawPhones) {
-        
+
         // compute phones, syllables and stresses
         if (typeof rawPhones === 'string') {
           let sp = rawPhones.replace(/1/g, E).replace(/ /g, delim) + SP;
@@ -72,7 +76,7 @@ class Analyzer {
           let ss = rawPhones.replace(/ /g, slash).replace(/1/g, E) + SP;
           syllables = (ss === 'dh ') ? 'dh-ah ' : ss;
           stresses = this.phonesToStress(rawPhones);
-        } 
+        }
         else {
           // hyphenated #HWF
           let ps = [], syls = [], strs = [];

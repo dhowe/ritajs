@@ -1,3 +1,7 @@
+/**
+ * @class Tokenizer
+ * @memberof module:rita
+ */
 class Tokenizer {
 
   constructor(parent) {

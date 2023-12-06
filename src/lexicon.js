@@ -1,6 +1,10 @@
 import Util from './util.js';
 import dict from './rita_dict.js';
 
+/**
+ * @class Lexicon
+ * @memberof module:rita
+ */
 class Lexicon {
 
   constructor(parent, custom) {
@@ -460,6 +464,7 @@ class Lexicon {
       (this._byTypeSync, [word, { ...opts, type }]));
 
     let results = await Promise.allSettled(promises);
+    // @ts-ignore
     let [bySound, byLetter] = results.map(r => r.value);
     if (bySound.length < 1 || byLetter.length < 1) return [];
 
@@ -485,6 +490,9 @@ class Lexicon {
 
     let cost; // cost
     let i, j;
+    /**
+     * @type {number[][]}
+     */
     let matrix = []; // matrix
     let sI; // ith character of s
     let tJ; // jth character of t
@@ -518,7 +526,8 @@ class Lexicon {
         matrix[i][j] = Math.min(
           matrix[i - 1][j] + 1,
           matrix[i][j - 1] + 1,
-          matrix[i - 1][j - 1] + cost);
+          matrix[i - 1][j - 1] + cost
+        );
       }
     }
 

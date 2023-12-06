@@ -142,7 +142,7 @@ describe('Analyzer', function () {
      
     //become
     feats = RiTa.analyze("She becomes a companion to a foreigner.");
-    expect(feats.pos).eq("prp vbz dt jj to dt nn .");
+    expect(feats.pos).eq("prp vbz dt nn to dt nn .");
     feats = RiTa.analyze("She has become a companion to a foreigner.");
     0 && expect(feats.pos).eq("prp vbz vbn dt jj to dt nn .");
   });

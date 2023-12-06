@@ -1,3 +1,8 @@
+
+/**
+ * @class Util
+ * @memberof module:rita
+ */
 class Util {
 
   // Takes a syllabification and turns it into a string of phonemes,
@@ -119,6 +124,10 @@ class Util {
 
 // CLASSES ////////////////////////////////////////////////////////////////////
 
+/**
+ * @class RE
+ * @memberof module:rita
+ */
 class RE {
 
   constructor(regex, offset, suffix) {

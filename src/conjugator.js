@@ -27,6 +27,10 @@ class RegularExpression {
 
 const RE = (a, b, c, _/*??*/) => new RegularExpression(a, b, c);
 
+/**
+ * @class Conjugator
+ * @memberof module:rita
+ */
 class Conjugator {
 
   constructor(parent) {

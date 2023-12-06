@@ -1,5 +1,9 @@
 import Util from './util.js';
 
+/**
+ * @class Tagger
+ * @memberof module:rita
+ */
 class Tagger {
 
   /**
@@ -85,26 +89,38 @@ class Tagger {
   }
 
   /**
-   * Tags an array of words
-   * @overload
-   * @param {string[]} words - an array of words
-   * @return {string[]} or an array of pos-tags, one per word
+   * Tags an array of words with their part-of-speech
+   * @param {(string|string[])} input - The input containing a word or words
    * @param {object} opts - options for the tagging {inline, simple}
-   * @overload
-   * @param {string} words - The string containing a word
-   * @param {object} opts - options for the tagging {inline, simple}
-   * @return {string} the pos tag
+   * @param {boolean} opts.inline - tags are returned inline with words
+   * @param {boolean} opts.simple - use simple tags (noun=n,verb=v,adverb=a,adjective=r)
+   * @param {boolean} opts.dbug - debug mode
+   * @return {(string|string[])} the pos tag(s)
    */
-  tag(words, opts = {}) {
+  tag(input, opts = {
+    inline: false,
+    simple: false,
+    dbug: false
+  }) {
 
-    let dbug = 0, result = [], choices2d = [];
-    if (opts && opts.dbug) dbug = 1;
+    let dbug = false, result = [], choices2d = [];
+    if (opts && opts.dbug) dbug = true;
 
-    if (!words || !words.length) return opts.inline ? '' : [];
+    if (!input || !input.length) return opts.inline ? '' : [];
 
-    if (!Array.isArray(words)) { // likely a string
-      if (!words.trim().length) return opts.inline ? '' : [];
-      words = this.RiTa.tokenizer.tokenize(words);
+    /** @type {string[]} */
+    let words;
+    if (!Array.isArray(input)) {
+
+      // likely a string
+      if (!input.trim().length) { // empty string
+        return opts.inline ? '' : [];
+      }
+      // else tokenize to array
+      words = this.RiTa.tokenizer.tokenize(input);
+    }
+    else {
+      words = input;
     }
 
     for (let i = 0, l = words.length; i < l; i++) {
@@ -328,7 +344,14 @@ class Tagger {
     console.log("\n  Custom(" + i + ") tagged '" + frm + "' -> '" + to + "'\n\n");
   }// debug only: not available in built version since 'dbug' in tag() is 0
 
-  // Applies a customized subset of the Brill transformations
+  /**
+   * Applies a customized subset of the Brill transformations
+   * @param {string[]} words 
+   * @param {string[]} result 
+   * @param {string[]} choices 
+   * @param {boolean} dbug 
+   * @returns 
+   */
   _applyContext(words, result, choices, dbug) {
 
     // Apply transformations
@@ -490,7 +513,7 @@ class Tagger {
         let idx = result.slice(i + 1).indexOf("nn");
         let allJJ = true; // between nn and nn are all jj
         for (let k = 0; k < idx; k++) {
-          if (!result[i + 1 + k] === "jj") {
+          if (result[i + 1 + k] !== "jj") {
             allJJ = false;
             break;
           }
@@ -679,7 +702,7 @@ class Tagger {
         if (pos === 'n' && NOUNS.includes(tags[j]) ||
           pos === 'v' && VERBS.includes(tags[j]) ||
           pos === 'r' && ADVS.includes(tags[j]) ||
-          pos === 'a' && ADJS.includes.isAdjTag(tags[j])) {
+          pos === 'a' && ADJS.includes/*.isAdjTag*/(tags[j])) {
           return true;
         }
       }

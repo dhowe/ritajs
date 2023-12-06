@@ -813,7 +813,10 @@ function r_postlude() {
   }
 }
 
-
+/**
+ * @class Stemmer
+ * @memberof module:rita
+ */
 class Stemmer {
 
   static tokenizer;

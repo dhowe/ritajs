@@ -1,5 +1,9 @@
 import Util from './util.js';
 
+/**
+ * @class SeededRandom
+ * @memberof module:rita
+ */
 class SeededRandom {
 
   // see https://github.com/bmurray7/mersenne-twister-examples/blob/master/javascript-mersenne-twister.js

@@ -6,6 +6,8 @@ import Util from './util.js';
  * which are based on the Black, Lenzo, and Pagel paper, "Issues in Building
  * General Letter-to-Sound Rules." Proceedings of ECSA Workshop on Speech
  * Synthesis, pages 77-80, Australia, 1998.
+ * @class LetterToSound
+ * @memberof module:rita
  */
 class LetterToSound {
 

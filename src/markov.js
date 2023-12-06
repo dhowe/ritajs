@@ -1,8 +1,11 @@
 import { parse, stringify } from '@ungap/structured-clone/json';
 
-/*
+/**
  * See full set of options for RiMarkov (https://rednoise.org/rita/reference/RiTa/markov/index.html)
  * and RiMarkov.generate (https://rednoise.org/rita/reference/RiMarkov/generate/index.html)
+ * 
+ * @class RiMarkov
+ * @memberof module:rita
  */
 class RiMarkov {
 
@@ -19,6 +22,7 @@ class RiMarkov {
     this.untokenize = opts.untokenize || RiMarkov.parent.untokenize;
     this.disableInputChecks = opts.disableInputChecks;
     this.sentenceStarts = []; // allow duplicates for prob
+    /** @type {Set} */
     this.sentenceEnds = new Set(); // no duplicates    
 
     if (this.n < 2) throw Error('minimum N is 2');
@@ -304,6 +308,7 @@ class RiMarkov {
   toJSON() {
     let data = Object.keys(this).reduce
       ((acc, k) => Object.assign(acc, { [k]: this[k] }), {});
+    // @ts-ignore
     data.sentenceEnds = [...data.sentenceEnds]; // set -> []
     return stringify(data);
   }
