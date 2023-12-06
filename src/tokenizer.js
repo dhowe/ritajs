@@ -54,7 +54,7 @@ class Tokenizer {
   tokenize(input, opts = {}) {
     if (typeof input !== 'string') return [];
 
-    if (opts.regex) return input.split(regex);
+    if (opts.regex) return input.split(opts.regex); // TODO: Needs test
 
     let { tags, text } = this.pushTags(input.trim());//.replace(/\r\n/, '\n'));
 

@@ -816,6 +816,7 @@ function r_postlude() {
 
 class Stemmer {
 
+  static tokenizer;
   static impl = new SnowballStemmer();
 
   static stem(input) {
@@ -827,9 +828,9 @@ class Stemmer {
     }
 
     // multiple words, tokenize then untokenize
-    const words = Stemmer.parent.tokenize(input); // requires backref - yuck
+    const words = Stemmer.tokenizer.tokenize(input); // requires backref - yuck
     const stems = Stemmer.stemAll(words);
-    return Stemmer.parent.untokenize(stems);
+    return Stemmer.tokenizer.untokenize(stems);
   }
 
   static stemAll(input) {

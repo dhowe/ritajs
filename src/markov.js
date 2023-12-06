@@ -4,7 +4,9 @@ import { parse, stringify } from '@ungap/structured-clone/json';
  * See full set of options for RiMarkov (https://rednoise.org/rita/reference/RiTa/markov/index.html)
  * and RiMarkov.generate (https://rednoise.org/rita/reference/RiMarkov/generate/index.html)
  */
-class RiMarkov { 
+class RiMarkov {
+
+  static parent; // RiTa
 
   constructor(n, opts = {}) {
 
@@ -13,8 +15,8 @@ class RiMarkov {
     this.trace = opts.trace;
     this.mlm = opts.maxLengthMatch;
     this.maxAttempts = opts.maxAttempts || 999;
-    this.tokenize = opts.tokenize || RiTa().tokenize;
-    this.untokenize = opts.untokenize || RiTa().untokenize;
+    this.tokenize = opts.tokenize || RiMarkov.parent.tokenize;
+    this.untokenize = opts.untokenize || RiMarkov.parent.untokenize;
     this.disableInputChecks = opts.disableInputChecks;
     this.sentenceStarts = []; // allow duplicates for prob
     this.sentenceEnds = new Set(); // no duplicates    
@@ -32,7 +34,7 @@ class RiMarkov {
 
   addText(text, multiplier = 1) {
 
-    let sents = Array.isArray(text) ? text : RiTa().sentences(text);
+    let sents = Array.isArray(text) ? text : RiMarkov.parent.sentences(text);
 
     // add new tokens for each sentence start/end
     let wrap, allWords = [];
@@ -200,7 +202,7 @@ class RiMarkov {
 
             if (this.trace) console.log('case 4: back at start of sentence'
               + ' or 0: ' + tokens.length, sentenceIdxs);
-              
+
             if (!tokens.length) {
               sentenceIdxs = [];
               return selectStart();
@@ -246,10 +248,10 @@ class RiMarkov {
 
       // we need a new sentence-start
       else if (!tokens.length || this._isEnd(tokens[tokens.length - 1])) {
-        
+
         let usableStarts = this.sentenceStarts.filter(ss => notMarked(this.root.child(ss)));
         if (!usableStarts.length) throw Error('No valid sentence-starts remaining');
-        let start = RiTa().random(usableStarts);
+        let start = RiMarkov.parent.random(usableStarts);
         let startTok = this.root.child(start);
         markNode(startTok);
         usableStarts = this.sentenceStarts.filter(ss => notMarked(this.root.child(ss)));
@@ -288,9 +290,9 @@ class RiMarkov {
 
       tokens.push(next);
 
-      if (this.trace) console.log(tokens.length - sentIdx, next.token, 
+      if (this.trace) console.log(tokens.length - sentIdx, next.token,
         '[' + parent.childNodes({ filter: notMarked }) // print unmarked kids
-        .filter(t => t !== next).map(t => t.token) + ']'); 
+          .filter(t => t !== next).map(t => t.token) + ']');
     }
 
     unmarkNodes();
@@ -332,7 +334,7 @@ class RiMarkov {
       if (pre.length + post.length > this.n) throw Error
         ('Sum of pre.length && post.length must be <= N, was ' + (pre.length + post.length));
       if (!(tn = this._pathTo(pre))) {
-        if (!RiTa().SILENT) console.warn('Unable to find nodes in pre: ' + pre);
+        if (!RiMarkov.parent.SILENT) console.warn('Unable to find nodes in pre: ' + pre);
         return;
       }
       const nexts = tn.childNodes();
@@ -520,6 +522,7 @@ class Node {
     this.count = count || 0;
     this.numChildren = -1; // for cache
     this.marked = false;
+    this.hidden = false; // hidden
   }
 
   // Find a (direct) child node with matching token, given a word or node
@@ -642,8 +645,6 @@ function populate(objNode, jsonNode) {
     populate(newNode, child); // recurse
   }
 }
-
-function RiTa() { return RiMarkov.parent; }
 
 function throwError(tries, oks) {
   throw Error('Failed after ' + tries + ' tries'

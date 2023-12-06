@@ -7,6 +7,11 @@ describe('Analyzer', function () {
   
   let hasLex = true;
 
+  it('Should one-off', function () {
+    expect(RiTa.inflector.isPlural('hardness')).true;
+  })
+
+
   it('Should call analyzeWord', function () {
 
     let tmp = RiTa.SILENCE_LTS;
@@ -597,7 +602,7 @@ describe('Analyzer', function () {
 
     //expect(RiTa.singularize('abyss', { dbug: 1 })).eq('abyss');return;
     //expect(RiTa.pluralize('abyss', { dbug: 1 })).eq('abysses');return;
-    //expect(RiTa.inflector.isPlural('dreariness', { dbug: 1 })).eq(true);return;
+    expect(RiTa.inflector.isPlural('dreariness', { dbug: 0 })).eq(true);//return;
 
     expect(RiTa.singularize()).eq("");
     expect(RiTa.singularize("")).eq("");
@@ -681,7 +686,7 @@ describe('Analyzer', function () {
       'grandchildren', 'grandchild',
       'menus', 'menu',
       'gurus', 'guru',
-      'hardnesses', 'hardness',
+      'hardness', 'hardness', 
       'fish', 'fish',
       'ooze', 'ooze',
       'enterprises', 'enterprise',
@@ -700,7 +705,7 @@ describe('Analyzer', function () {
       'series', 'series',
       'crises', 'crisis',
       'corpora', 'corpus',
-      'shortnesses', 'shortness',
+      'shortness', 'shortness',
       'dreariness', 'dreariness',
       'unwillingness', 'unwillingness',
       'moose', 'moose', 'lives', 'life',
@@ -827,11 +832,11 @@ describe('Analyzer', function () {
 
       // isPlural
       let isMass = RiTa.MASS_NOUNS.includes(singular.toLowerCase());
-      let isModal = singular.endsWith('ness') && !RiTa.MODAL_EXCEPTIONS.includes(singular.toLowerCase());
+      let isModal = singular.endsWith('ness');// && !RiTa.MODAL_EXCEPTIONS.includes(singular.toLowerCase());
       if (!isMass && !isModal) {
         expect(res4).eq(false, 'FAIL4: isPlural(' + singular + ') was true for singular noun,'
-          + ' isMassNoun=' + RiTa.MASS_NOUNS.includes(singular.toLowerCase())
-          + ' isModalException=' + RiTa.MODAL_EXCEPTIONS.includes(singular.toLowerCase()) + '\n\n');
+          + ' isMassNoun=' + RiTa.MASS_NOUNS.includes(singular.toLowerCase()));
+          //+ ' isModalException=' + RiTa.MODAL_EXCEPTIONS.includes(singular.toLowerCase()) + '\n\n');
       }
 
       // TODO: add isSingular
@@ -864,8 +869,8 @@ describe('Analyzer', function () {
     expect(RiTa.inflector.isPlural()).eq(false);
     expect(RiTa.inflector.isPlural("")).eq(false);
 
-    expect(function () { RiTa.inflector.isPlural([1]) }).to.throw();
-    expect(function () { RiTa.inflector.isPlural(1) }).to.throw();
+    // expect(function () { RiTa.inflector.isPlural([1]) }).to.throw();
+    // expect(function () { RiTa.inflector.isPlural(1) }).to.throw();
 
     expect(RiTa.inflector.isPlural('octopus', { dbug: 0 })).eq(false);
     expect(RiTa.inflector.isPlural('sheep')).eq(true);

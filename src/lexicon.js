@@ -214,7 +214,7 @@ class Lexicon {
     // we've still got nothing, throw
     if (result.length < 1) {
       ['strictPos', 'shuffle', 'targetPos'].forEach(k => delete opts[k]);
-      throw Error("No words matching constraints:\n" + JSON.stringify(opts, 0, 2));
+      throw Error("No words matching constraints:\n" + JSON.stringify(opts, undefined, 2));
     }
 
     return result[0];
@@ -484,7 +484,8 @@ class Lexicon {
   minEditDist(source, target) {
 
     let cost; // cost
-    let i, j, matrix = []; // matrix
+    let i, j;
+    let matrix = []; // matrix
     let sI; // ith character of s
     let tJ; // jth character of t
 
@@ -526,11 +527,10 @@ class Lexicon {
     return matrix[source.length][target.length];
   }
 
-  isMassNoun(w, pos) { // not used?
+  isMassNoun(w) {
     return w.endsWith("ness")
       || w.endsWith("ism")
-      || pos.indexOf("vbg") > 0
-      || Util.MASS_NOUNS.includes(w);
+      || this.RiTa.MASS_NOUNS.includes(w);
   }
 
   // helpers ---------------------------------------------------------------

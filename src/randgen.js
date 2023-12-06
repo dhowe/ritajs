@@ -30,7 +30,7 @@ class SeededRandom {
   randomOrdering(arg) {
     if (!(Array.isArray(arg) || Util.isNum(arg))) throw Error('Expects [] or int');
     let o = Array.isArray(arg) ? arg : Array.from(Array(arg).keys());
-    for (let j, x, i = o.length; i; j = parseInt(this.random() * i),
+    for (let j, x, i = o.length; i; j = Math.floor(this.random() * i),
       x = o[--i], o[i] = o[j], o[j] = x) { /* shuffle */ }
     return o;
   }

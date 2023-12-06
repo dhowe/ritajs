@@ -41,7 +41,7 @@ class LetterToSound {
     this.tokenizer.tokenize(line, ' ');
     let type = this.tokenizer.nextToken();
     if (type === "S" || type === "P") {
-      this.stateMachine[this.numStates++] = this.createState(type, this.tokenizer);
+      this.stateMachine[this.numStates++] = this.createState(type/*, this.tokenizer*/);
     } else if (type === "I") {
       let index = parseInt(this.tokenizer.nextToken());
       if (index != this.numStates) {
@@ -78,7 +78,7 @@ class LetterToSound {
 
     if (Util.isNum(word)) {
       if (/^[0-9]+$/.test(word)) {
-        if (RiTa.HAS_LEXICON) {
+        //if (RiTa.HAS_LEXICON) {
           word = (word.length > 1) ? word.split('') : [word];
           for (let k = 0; k < word.length; k++) {
             let asWord = Util.Numbers.toWords[parseInt(word[k])];
@@ -87,7 +87,7 @@ class LetterToSound {
             phoneList.push(...phs.split('-'));
           }
           return phoneList;
-        }
+        //}
       }
       // else use Util.numbToWords()
     }
@@ -136,7 +136,7 @@ class LetterToSound {
       return state;
     } else {
       this.tokenizer.tokenize(i);
-      return this.getState(this.tokenizer.nextToken(), this.tokenizer);
+      return this.getState(this.tokenizer.nextToken())//, this.tokenizer);
     }
   }
 }

@@ -885,7 +885,7 @@ describe('Tagger', () => {
 
   });
 
-  it('Should handle hyphenated words in sentence', () => {
+  it('Should handle hyphenated words', () => {
     let pool = [
       'He is my father-in-law.',
       'We have a off-site meeting yesterday.',
