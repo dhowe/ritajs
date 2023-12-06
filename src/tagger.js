@@ -2,6 +2,10 @@ import Util from './util.js';
 
 class Tagger {
 
+  /**
+   * Create a Tagger.
+   * @param {any} parent - RiTa parent class.
+   */
   constructor(parent) {
     this.RiTa = parent;
   }
@@ -80,17 +84,26 @@ class Tagger {
     return []; // empty array
   }
 
-  tag(words, opts) {
+  /**
+   * Tags an array of words
+   * @overload
+   * @param {string[]} words - an array of words
+   * @return {string[]} or an array of pos-tags, one per word
+   * @param {object} opts - options for the tagging {inline, simple}
+   * @overload
+   * @param {string} words - The string containing a word
+   * @param {object} opts - options for the tagging {inline, simple}
+   * @return {string} the pos tag
+   */
+  tag(words, opts = {}) {
 
-    let simple = opts && opts.simple;
-    let inline = opts && opts.inline;
     let dbug = 0, result = [], choices2d = [];
     if (opts && opts.dbug) dbug = 1;
 
-    if (!words || !words.length) return inline ? '' : [];
+    if (!words || !words.length) return opts.inline ? '' : [];
 
     if (!Array.isArray(words)) { // likely a string
-      if (!words.trim().length) return inline ? '' : [];
+      if (!words.trim().length) return opts.inline ? '' : [];
       words = this.RiTa.tokenizer.tokenize(words);
     }
 
@@ -116,7 +129,7 @@ class Tagger {
     // Adjust pos according to transformation rules
     let tags = this._applyContext(words, result, choices2d, dbug);
 
-    if (simple) { // convert to simple tags
+    if (opts.simple) { // convert to simple tags
       for (let i = 0; i < tags.length; i++) {
         if (NOUNS.includes(tags[i])) tags[i] = 'n';
         else if (VERBS.includes(tags[i])) tags[i] = 'v';
@@ -126,7 +139,7 @@ class Tagger {
       }
     }
 
-    return inline ? this.inlineTags(words, tags) : tags;
+    return opts.inline ? this.inlineTags(words, tags) : tags;
   }
 
   //////////////////////////////////////////////////////////////////

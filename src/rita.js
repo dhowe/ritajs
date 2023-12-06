@@ -116,9 +116,10 @@ class RiTa {
     return await RiTa.lexicon.soundsLike(...arguments);
   }
 
-  static pos(word) {
-    return RiTa.tagger.tag(...arguments);
+  static pos(word, opts) {
+    return RiTa.tagger.tag(word, opts);
   }
+  
   static isNoun(word) {
     return RiTa.tagger.isNoun(word);
   }

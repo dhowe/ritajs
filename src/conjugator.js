@@ -25,7 +25,7 @@ class RegularExpression {
   }
 }
 
-const RE = (a, b, c) => new RegularExpression(a, b, c);
+const RE = (a, b, c, _/*??*/) => new RegularExpression(a, b, c);
 
 class Conjugator {
 
