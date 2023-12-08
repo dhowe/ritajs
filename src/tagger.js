@@ -94,17 +94,16 @@ class Tagger {
    * @param {object} opts - options for the tagging {inline, simple}
    * @param {boolean} opts.inline - tags are returned inline with words
    * @param {boolean} opts.simple - use simple tags (noun=n,verb=v,adverb=a,adjective=r)
-   * @param {boolean} opts.dbug - debug mode
-   * @return {(string|string[])} the pos tag(s)
+   * @return {any} the pos tag(s) or string with tags inline
    */
   tag(input, opts = {
     inline: false,
     simple: false,
-    dbug: false
   }) {
 
-    let dbug = false, result = [], choices2d = [];
-    if (opts && opts.dbug) dbug = true;
+    let result = [], choices2d = [];
+    // @ts-ignore
+    let dbug = opts?.dbug || false;
 
     if (!input || !input.length) return opts.inline ? '' : [];
 

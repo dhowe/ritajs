@@ -9,9 +9,25 @@ class Tokenizer {
     this.splitter = /(\S.+?[.!?]["\u201D]?)(?=\s+|$)/g;
   }
 
-  tokens(text, opts = {}) {
-
-    // opts: {includePunct, caseSensitive, sort, ignoreStopWords} ?
+  /**
+   * Returns an array containing all unique alphabetical words (tokens) in the text.
+   * Punctuation and case are ignored unless specified otherwise.
+   * @param {string} text - The text from which to extract the tokens
+   * @param {object} [opts] - The options
+   * @param {boolean} opts.caseSensitive=false - Whether to pay attention to case
+   * @param {boolean} opts.ignoreStopWords=false - Whether to ignore words like 'the', 'and', 'a', 'of', etc, as specified in RiTa.STOP_WORDS
+   * @param {boolean} opts.splitContractions=false - Whether to convert contractions (e.g., "I'd" or "she'll") into multiple individual tokens
+   * @param {boolean} opts.includePunct=false - Whether to include punctuation in the results
+   * @param {boolean} opts.sort=false - Whether to sort the tokens before returning them
+   * @returns {string[]} Array of tokens
+   */
+  tokens(text, opts = {
+    caseSensitive: false,
+    ignoreStopWords: false,
+    splitContractions: false,
+    includePunct: false,
+    sort: false,
+  }) {
     let words = this.tokenize(text, opts), map = {};
     words.forEach(w => {
       if (!opts.caseSensitive) w = w.toLowerCase();
@@ -22,6 +38,12 @@ class Tokenizer {
     return opts.sort ? tokens.sort() : tokens;
   }
 
+  /**
+   * Split the input text into sentences according to the options
+   * @param {string} text - The text to split
+   * @param {RegExp} [regex] - An optional custom regex to split on
+   * @returns {string[]} An array of sentences
+   */
   sentences(text, regex) {
     if (!text || !text.length) return [text];
 
@@ -52,33 +74,44 @@ class Tokenizer {
     }
 
     let arr = escapeAbbrevs(clean).match(pattern);
-    return arr && arr.length ? unescapeAbbrevs(arr) : [text];
+    return arr?.length ? unescapeAbbrevs(arr) : [text];
   }
 
-  tokenize(input, opts = {}) {
+
+  /**
+   * Tokenizes a string (into words) according to the Penn Treebank conventions
+   * @param {string} input - The text to tokenize
+   * @param {object} [opts] - The options
+   * @param {RegExp} opts.regex=null - An optional custom regex to split on
+   * @param {boolean} opts.splitHyphens=false - Whether to split hyphenated words (e.g., "mother-in-law") into multiple individual tokens
+   * @param {boolean} opts.splitContractions=false - Whether to split contractions (e.g., "I'd" or "she'll") into multiple individual tokens
+   * @returns {string[]} Array of tokens
+   */
+  tokenize(input, opts = {
+    regex: null,
+    splitHyphens: false,
+    splitContractions: false
+  }) {
     if (typeof input !== 'string') return [];
 
-    if (opts.regex) return input.split(opts.regex); // TODO: Needs test
+    if (opts.regex) return input.split(opts.regex); // TODO: tests
 
-    let { tags, text } = this.pushTags(input.trim());//.replace(/\r\n/, '\n'));
+    let { tags, text } = this.pushTags(input.trim());
 
-    //console.time('tokenize: '+input);
     for (let i = 0; i < TOKENIZE_RE.length; i += 2) {
-      //console.time('tokenize'+i+' '+TOKENIZE_RE[i]);
       text = text.replace(TOKENIZE_RE[i], TOKENIZE_RE[i + 1]);
-      //console.timeEnd('tokenize'+i  + ' '+TOKENIZE_RE[i]);
     }
-    //console.timeEnd('tokenize: '+input);
 
     // https://github.com/dhowe/rita/issues/65
     // default behavior is to keep hyphen
-    if (opts.splitHyphen) {
+    if (opts.splitHyphens) {
       text = text.replace(/([a-zA-Z]+)-([a-zA-Z]+)/g, "$1 - $2");
     }
 
     if (this.RiTa.SPLIT_CONTRACTIONS || opts.splitContractions) {
       for (let i = 0; i < CONTRACTS_RE.length; i += 2) {
         text = text.replace(CONTRACTS_RE[i], CONTRACTS_RE[i + 1]);
+        //if (pre !== text) console.log('splitCon: ' + pre + '->' + text);
       }
     }
 
@@ -317,7 +350,7 @@ const TOKENIZE_RE = [
   /([Cc])([Oo])([Rr]?)([Pp]?)[\.]/g, "_$1$2$3$4_", // Corp. and Co.
   /([Ll])([Tt])([Dd])[\.]/g, "_$1$2$3_", // ltd.
   /(prof|Prof|PROF)[\.]/g, "_$1_", //Prof. 
-   //   /(\w+([\.-_]?\w+)*)@(\w+([\.-_]?\w+)*)\.(\w{2,3})/g, "$1__AT__$3.$5", //email addresses
+  //   /(\w+([\.-_]?\w+)*)@(\w+([\.-_]?\w+)*)\.(\w{2,3})/g, "$1__AT__$3.$5", //email addresses
   // /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/g, "$1__AT__$2", //email addresses
   /([\w.]+)@(\w+\.\w+)/g, "$1__AT__$2",
   /((http[s]?):(\/\/))([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b)([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/g, "$2COLON$3$4$5", //urls with http(s)
@@ -384,8 +417,8 @@ const TOKENIZE_RE = [
   /_([\-]?[0-9]+)\DECIMALDOT([0-9]+)POWERE([\-]?[0-9]+)_/g, "$1.$2e$3", //(-)1.2e(-)9
   /_DECIMALCOMMA_/g, ",", // large numbers like 200,000,000.13
   /_DECIMALDOT_/g, ".",
-      // /(\w+([\.-]?\w+)*)__AT__(\w+([\.-]?\w+)*)\.(\w{2,3})/g, "$1@$3.$5",
-      /__AT__/g, "@",
+  // /(\w+([\.-]?\w+)*)__AT__(\w+([\.-]?\w+)*)\.(\w{2,3})/g, "$1@$3.$5",
+  /__AT__/g, "@",
   /((http[s]?)COLON(\/\/))([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b)([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/g, "$2:$3$4$5",
   /_LINEFEED_/g, "\n", // LF
   /_CARRIAGERETURN_/g, "\r", // CR
@@ -395,13 +428,14 @@ const TOKENIZE_RE = [
 ];
 
 const CONTRACTS_RE = [
+  // TODO: 'She'd have wanted' -> 'She would have wanted'
   /([Cc])an['\u2019]t/g, "$1an not",
   /([Dd])idn['\u2019]t/g, "$1id not",
   /([CcWw])ouldn['\u2019]t/g, "$1ould not",
   /([Ss])houldn['\u2019]t/g, "$1hould not",
   /([Ii])t['\u2019]s/g, "$1t is",
   /([tT]hat)['\u2019]s/g, "$1 is",
-  /(she|he|you|they|i)['\u2019]d/gi, "$1 would",
+  /(she|he|you|they|i)['\u2019]d/gi, "$1 had", // changed from would, 12/8/23
   /(she|he|you|they|i)['\u2019]ll/gi, "$1 will",
   /n['\u2019]t /g, " not ",
   /['\u2019]ve /g, " have ",

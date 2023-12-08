@@ -6,7 +6,15 @@ describe('Tokenizer', () => {
 
   it('Should call tokens', function () {
 
-    let tokens, input = "She wrote: \"I don't paint anymore. For a while she thought it was just a phase that she'd get over.\"";
+    let tokens;
+
+    tokens = RiTa.tokens("A small one is like a big one.");
+    expect(tokens).eql(['a', 'small', 'one', 'is', 'like', 'big']);
+
+    tokens = RiTa.tokens("One escaped, she'd thought.", { splitContractions: true });
+    expect(tokens).eql([ 'one', 'escaped', 'she', 'had', 'thought' ]);
+
+    let input = "She wrote: \"I don't paint anymore. For a while she thought it was just a phase that she'd gotten over.\"";
 
     tokens = RiTa.tokens(input);
     expect(tokens).eql([
@@ -15,13 +23,23 @@ describe('Tokenizer', () => {
       'for', 'a', 'while',
       'thought', 'it', 'was',
       'just', 'phase', 'that',
-      "she'd", 'get', 'over'
+      "she'd", 'gotten', 'over'
+    ]);
+
+    tokens = RiTa.tokens(input);
+    expect(tokens).eql([
+      'she', 'wrote', 'i',
+      "don't", 'paint', 'anymore',
+      'for', 'a', 'while',
+      'thought', 'it', 'was',
+      'just', 'phase', 'that',
+      "she'd", 'gotten', 'over'
     ]);
 
     tokens = RiTa.tokens(input, { sort: true });
     expect(tokens).eql([
       'a', 'anymore', "don't",
-      'for', 'get', 'i',
+      'for', 'gotten', 'i',
       'it', 'just',
       'over', 'paint', 'phase',
       'she', "she'd", 'that', 'thought',
@@ -35,15 +53,16 @@ describe('Tokenizer', () => {
       'For', 'a', 'while',
       'she', 'thought', 'it',
       'was', 'just', 'phase',
-      'that', "she'd", 'get',
+      'that', "she'd", 'gotten',
       'over'
     ]);
+
 
     tokens = RiTa.tokens(input, { caseSensitive: true, sort: true });
     expect(tokens).eql([
       'For', 'I', 'She',
       'a', 'anymore', "don't",
-      'get', 'it', 'just',
+      'gotten', 'it', 'just',
       'over', 'paint', 'phase',
       'she', "she'd", 'that',
       'thought', 'was', 'while',
@@ -55,7 +74,7 @@ describe('Tokenizer', () => {
       'wrote', 'paint',
       'anymore', 'while',
       'thought', 'phase',
-      "she'd", 'get'
+      "she'd", 'gotten'
     ]);
 
     tokens = RiTa.tokens(input, { splitContractions: true });
@@ -65,18 +84,18 @@ describe('Tokenizer', () => {
       'for', 'a', 'while',
       'thought', 'it', 'was',
       'just', 'phase', 'that',
-      'would', 'get', 'over'
+      'had', 'gotten', 'over'
     ]);
 
 
     tokens = RiTa.tokens(input, { splitContractions: true, sort: true });
     expect(tokens).eql([
       'a', 'anymore', 'do',
-      'for', 'get', 'i',
+      'for', 'gotten', 'had',  'i',
       'it', 'just', 'not',
       'over', 'paint', 'phase',
       'she', 'that', 'thought',
-      'was', 'while', 'would',
+      'was', 'while',
       'wrote'
     ]);
 
@@ -89,7 +108,7 @@ describe('Tokenizer', () => {
       '.', 'for', 'a',
       'while', 'thought', 'it',
       'was', 'just', 'phase',
-      'that', 'would', 'get',
+      'that', 'had', 'gotten',
       'over'
     ]);
 
@@ -147,12 +166,12 @@ describe('Tokenizer', () => {
     let inputs = [
       "That's why this is our place.",
       "that's why he'll win.",
-      "that's why I'd lose."
+      "that's why I'd lost."
     ]
     let outputs = [
       ["That", "is", "why", "this", "is", "our", "place", "."],
       ["that", "is", "why", "he", "will", "win", "."],
-      ["that", "is", "why", "I", "would", "lose", "."]
+      ["that", "is", "why", "I", "had", "lost", "."]
     ]
     for (let i = 0; i < inputs.length; i++) {
       let res = RiTa.tokenize(inputs[i], { splitContractions: 1 });
@@ -515,82 +534,82 @@ describe('Tokenizer', () => {
     var input = "Stealth's Open Frame, OEM style LCD monitors are designed for special mounting applications. The slim profile packaging provides an excellent solution for building into kiosks, consoles, machines and control panels. If you cannot find an off the shelf solution call us today about designing a custom solution to fit your exact needs.";
     var expected = ["Stealth's Open Frame, OEM style LCD monitors are designed for special mounting applications.", "The slim profile packaging provides an excellent solution for building into kiosks, consoles, machines and control panels.", "If you cannot find an off the shelf solution call us today about designing a custom solution to fit your exact needs."];
     var output = RiTa.sentences(input);
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = "Stealth's Open Frame, OEM style LCD monitors are designed for special mounting applications.\n\nThe slim profile packaging provides an excellent solution for building into kiosks, consoles, machines and control panels.\r\n If you cannot find an off the shelf solution call us today about designing a custom solution to fit your exact needs.";
     var expected = ["Stealth's Open Frame, OEM style LCD monitors are designed for special mounting applications.", "The slim profile packaging provides an excellent solution for building into kiosks, consoles, machines and control panels.", "If you cannot find an off the shelf solution call us today about designing a custom solution to fit your exact needs."];
     var output = RiTa.sentences(input);
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = "\"The boy went fishing.\", he said. Then he went away.";
     var expected = ["\"The boy went fishing.\", he said.", "Then he went away."];
     var output = RiTa.sentences(input);
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = "The dog";
     var output = RiTa.sentences(input);
-    expect(output).eql( [input]);
+    expect(output).eql([input]);
 
     var input = "I guess the dog ate the baby.";
     var output = RiTa.sentences(input);
-    expect(output).eql( [input]);
+    expect(output).eql([input]);
 
     var input = "Oh my god, the dog ate the baby!";
     var output = RiTa.sentences(input);
     var expected = ["Oh my god, the dog ate the baby!"];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = "Which dog ate the baby?"
     var output = RiTa.sentences(input);
     var expected = ["Which dog ate the baby?"];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = "'Yes, it was a dog that ate the baby', he said."
     var output = RiTa.sentences(input);
     var expected = ["\'Yes, it was a dog that ate the baby\', he said."];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = "The baby belonged to Mr. and Mrs. Stevens. They will be very sad.";
     var output = RiTa.sentences(input);
     var expected = ["The baby belonged to Mr. and Mrs. Stevens.", "They will be very sad."];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     // More quotation marks
     var input = "\"The baby belonged to Mr. and Mrs. Stevens. They will be very sad.\"";
     var output = RiTa.sentences(input);
     var expected = ["\"The baby belonged to Mr. and Mrs. Stevens.", "They will be very sad.\""];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = "\u201CThe baby belonged to Mr. and Mrs. Stevens. They will be very sad.\u201D";
     var output = RiTa.sentences(input);
     var expected = ["\u201CThe baby belonged to Mr. and Mrs. Stevens.", "They will be very sad.\u201D"];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     //https://github.com/dhowe/RiTa/issues/498
     var input = "\"My dear Mr. Bennet. Netherfield Park is let at last.\"";
     var output = RiTa.sentences(input);
     var expected = ["\"My dear Mr. Bennet.", "Netherfield Park is let at last.\""];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = "\u201CMy dear Mr. Bennet. Netherfield Park is let at last.\u201D";
     var output = RiTa.sentences(input);
     var expected = ["\u201CMy dear Mr. Bennet.", "Netherfield Park is let at last.\u201D"];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
     /*******************************************/
 
     var input = "She wrote: \"I don't paint anymore. For a while I thought it was just a phase that I'd get over.\"";
     var output = RiTa.sentences(input);
     var expected = ["She wrote: \"I don't paint anymore.", "For a while I thought it was just a phase that I'd get over.\""];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     var input = " I had a visit from my \"friend\" the tax man.";
     var output = RiTa.sentences(input);
     var expected = ["I had a visit from my \"friend\" the tax man."];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
-    expect(RiTa.sentences("")).eql( [""]);
+    expect(RiTa.sentences("")).eql([""]);
 
-    expect(RiTa.sentences("Today I would make something. A 4.7 inch gun. It was noon.")).eql( ["Today I would make something.", "A 4.7 inch gun.", "It was noon."]);
+    expect(RiTa.sentences("Today I would make something. A 4.7 inch gun. It was noon.")).eql(["Today I would make something.", "A 4.7 inch gun.", "It was noon."]);
   });
 
 
@@ -599,12 +618,12 @@ describe('Tokenizer', () => {
     var input = "Type two hyphens—without a space before, after, or between them.";
     var output = RiTa.sentences(input);
     var expected = ["Type two hyphens—without a space before, after, or between them."];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     input = "After a split second of hesitation, the second baseman leaped for the ball—or, rather, limped for it.";
     output = RiTa.sentences(input);
     expected = ["After a split second of hesitation, the second baseman leaped for the ball—or, rather, limped for it."];
-    expect(output).eql( expected);
+    expect(output).eql(expected);
 
     //tokenize and untokenize
     var sentence = "Type two hyphens--without a space—before, after, or between them.";
