@@ -32,7 +32,7 @@ class RiTa {
   }
 
   /**
-   * Add a transform to the RiScript parser
+   * Add a transform function to the RiScript parser
    * @param {string} name - the name of the transform
    * @param {function} definition - the transform function
    */
@@ -41,7 +41,7 @@ class RiTa {
   }
 
   /**
-   * Remove a transform from the RiScript parser
+   * Remove a transform function from the RiScript parser
    * @param {string} name - the name of the transform to remove
    */
   static removeTransform(name) {
@@ -49,7 +49,7 @@ class RiTa {
   }
 
   /**
-   * Returns the names of all current transforms
+   * Returns the names of all current transform functions
    * @returns {string[]} the names of all transforms
    */
   static getTransforms() {
@@ -57,9 +57,9 @@ class RiTa {
   }
 
   /**
-   * Adds an article to the word
+   * Adds the appropriate article ('a' or 'an') to the word, according to its phonemes (useful as a transform function)
    * @param {string} word - the word to transform
-   * @returns the word with an article
+   * @returns the word with an article, e.g., 'honor' -> 'an honor'
    */
   static articlize(word) {
     return RiScript.articlize(...arguments);
@@ -88,24 +88,36 @@ class RiTa {
   }
 
   /**
-   * Creates a new Keyword-in-Context model
-   * @param {string} word 
-   * @param {object} [options] 
+   * Return a list of occurrences of the key word in the Key-Word-In-Context (KWIC) model.
+   * @overload
+   * @param {string} keyword 
+   * @param {object} [options]  
    * @param {number} options.numWords - the number of words to include in the context
-   * @returns 
+   * @param {string} options.text - the text as input for the KWIC model
+   * @param {string[]} options.words - the array of words to be used as input for the KWIC model
+   * @overload
+   * @param {string} keyword
+   * @param {number} text - the number of words to include in the context
+   * @returns {string[]} all the occurrences of the keyword in the model, each with no more 
+   * than 'numWords' words of context on either side
    */
-  //TODO:
-  static kwic(word, options) {
-    return RiTa.concorder.kwic(...arguments);
+  static kwic(keyword, options) {
+    return RiTa.concorder.kwic(keyword, options);
   }
+
   /**
-   * 
-   * @param {*} string 
-   * @param {object} [options]
-   * @returns 
+   * Creates a concordance, a list of words with their frequency of occurence, from the given text and options.
+   * @param {string} text - the text from which to create the concordance
+   * @param {object} [options] - options for the concordance
+   * @param {boolean} options.ignoreCase=false - whether to ignore case when creating the concordance
+   * @param {boolean} options.ignoreStopWords=false - whether to ignore stop words like
+   *  'the', 'and', 'a', 'of', etc, as specified in RiTa.STOP_WORDS
+   * @param {boolean} options.ignorePunctuation=false - whether to ignore punctuation when creating the concordance
+   * @param {string[]} options.wordsToIgnore=null - words to ignore when creating the concordance (alternate stop-words)
+   * @returns {object} the concordance, an object with words as keys and frequencies as values
    */
-  static concordance(string, options) {
-    return RiTa.concorder.concordance(...arguments);
+  static concordance(text, options) {
+    return RiTa.concorder.concordance(text, options);
   }
 
   /**
@@ -118,11 +130,11 @@ class RiTa {
    * @returns {number[]} an array of arrays of integers from 1 to k in random order 
    */
   static randomOrdering(arrayOrInt) {
-    return RiTa.randomizer.randomOrdering(...arguments);
+    return RiTa.randomizer.randomOrdering(arrayOrInt);
   }
 
   /**
-   * Sets the seed for the random number generator
+   * Sets the seed for the RiTa random number generator
    * @param {number} seed - the seed to set 
    */
   static randomSeed(seed) {
@@ -168,39 +180,23 @@ class RiTa {
   }
 
   /**
-   * Return a random word match the criteria in the options object
+   * Return a random word from the lexicon matching the specified criteria 
+   * (length, syllable-count, phonemic pattern, stress pattern, part-of-speech, etc.).
+   * @param {(string|RegExp)} [pattern] - the pattern to match
    * @param {object} [options] 
    * @param {number} options.minLength=4 - the minimum length of the word
-   * @param {number} options.maxLength - the maximum length of the word
-   * @param {number} options.numSyllables - the number of syllables in the word 
+   * @param {number} options.maxLength=-1 - the maximum length of the word
+   * @param {number} options.numSyllables=null - the number of syllables in the word 
    * @param {number} options.limit=10 - the maximum number of results to retur   
-   * @param {string} options.pos - the part-of-speech of the word to return, either from the Penn tag set or the simplified tag set [a, r, v, n]
+   * @param {string} options.pos=null - the part-of-speech of the word to return,
+   *  either from the Penn tag set or the simplified tag set [a, r, v, n]
+   * @param {RegExp} options.pattern=null - the spelling or phonemic pattern to match
+   * @param {string} options.type=null - the type of regex or string pattern to match, 
+   * options are 'stresses' or 'phones' or 'letters' (the default)
    * @returns {string} a random word matching the criteria in the options object 
    */
-  /* {int} options.minLength:
-minimum number of characters in target word (default=4)
-
-{int} options.maxLength:
-maximum number of characters in target word
-
-{int} options.numSyllables:
-target # of syllables in the word
-
-{int} options.limit:
-maximum # of results to return (default=10)
-
-{String} options.type:
-use "stresses" to indicate that the regex is for matching stress patterns
-use "phones" to indicate that the regex is for matching phonemes
-
-{String} options.pos:
-the target part-of-speech for the word
-either from the Penn tag set or the simplified tag set [a, r, v, n]
-
-  * @returns {string} a random word from the lexicon
-  */
-  static randomWord(options) {
-    return RiTa.lexicon.randomWord(...arguments);
+  static randomWord(pattern, options) {
+    return RiTa.lexicon.randomWord(pattern, options);
   }
 
   /**
@@ -268,13 +264,15 @@ either from the Penn tag set or the simplified tag set [a, r, v, n]
   }
 
   /**
-   * Compares the letters of the input word (using a version of the Levenstein min-edit distance algorithm) to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
+   * Compares the letters of the input word (using a version of the Levenstein min-edit distance algorithm) 
+   * to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
    * @param {(string|RegExp)} pattern - the spelling pattern to match
    * @param {object} [options] - options for the search
    * @param {number} options.minLength=4 - the minimum length of the words
    * @param {number} options.maxLength - the maximum length of the words
    * @param {number} options.numSyllables - the number of syllables in the words 
    * @param {number} options.limit=10 - the maximum number of results to return  (pass -1 to return all matches) 
+   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
    * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set or the simplified tag set [a, r, v, n]
    * @returns {Promise<string[]>} an array of words matching the spelling pattern and criteria in the options object 
    */
@@ -283,14 +281,17 @@ either from the Penn tag set or the simplified tag set [a, r, v, n]
   }
 
   /**
-   * Compares the phonemes of the input pattern (using a version of the Levenstein min-edit distance algorithm) to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
+   * Compares the phonemes of the input pattern (using a version of the Levenstein min-edit distance algorithm)
+   *  to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
    * @param {(string|RegExp)} pattern - the phonemic pattern to match
    * @param {object} [options] - options for the search
    * @param {number} options.minLength=4 - the minimum length of the words
    * @param {number} options.maxLength - the maximum length of the words
    * @param {number} options.numSyllables - the number of syllables in the words 
    * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set or the simplified tag set [a, r, v, n]
+   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
+   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   *  or the simplified tag set [a, r, v, n]
    * @returns {Promise<string[]>} an array of words matching the phonemic pattern and criteria in the options object 
    */
   static async soundsLike(word, options) {
@@ -395,6 +396,7 @@ either from the Penn tag set or the simplified tag set [a, r, v, n]
    * @param {number} options.maxLength - the maximum length of the words
    * @param {number} options.numSyllables - the number of syllables in the words 
    * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
    * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
    *  or the simplified tag set [a, r, v, n]
    * @param {string} options.type - the type of regex or string pattern to match, options are 'stresses'

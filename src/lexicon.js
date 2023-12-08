@@ -185,18 +185,18 @@ class Lexicon {
       : this._byTypeSync(word, opts);
   }
 
-  randomWord(regex, opts) {
+  randomWord(pattern, opts) {
 
     // no arguments, just return
-    if (!regex && !opts) {
+    if (!pattern && !opts) {
       return this.RiTa.random(Object.keys(this.data));
     }
 
     // handle different parameter options
-    if (!(regex instanceof RegExp)) {
-      if (typeof regex === 'object' && !opts) {
-        opts = regex;  // single argument which is opts
-        regex = undefined;
+    if (!(pattern instanceof RegExp)) {
+      if (typeof pattern === 'object' && !opts) {
+        opts = pattern;  // single argument which is opts
+        pattern = undefined;
       }
     }
 
@@ -207,12 +207,12 @@ class Lexicon {
     opts.strictPos = true;
     opts.minLength = Util.numOpt(opts, 'minLength', 4);
 
-    let result = this.searchSync(regex, opts);
+    let result = this.searchSync(pattern, opts);
 
     // relax our pos constraints if we got nothing
     if (result.length < 1 && opts.hasOwnProperty('pos')) {
       opts.strictPos = false;
-      result = this.searchSync(regex, opts);
+      result = this.searchSync(pattern, opts);
     }
 
     // we've still got nothing, throw
