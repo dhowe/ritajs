@@ -69,7 +69,7 @@ class RiTa {
    * Evaluates the input script via the RiScript parser
    * @param {string} script - the script to evaluate
    * @param {object} context - the context to evaluate the script in
-   * @param {object} options - options for the evaluation
+   * @param {object} [options] - options for the evaluation
    * @param {boolean} options.trace - whether to trace the evaluation
    * @returns {string} the result of the evaluation
    */
@@ -80,7 +80,7 @@ class RiTa {
   /**
    * Creates a new RiMarkov object
    * @param {number} n - an int representing the n-factor of the markov chain 
-   * @param {object} options - options for the markov chain
+   * @param {object} [options] - options for the markov chain
    * @returns {RiMarkov}
    */
   static markov(n, options) {
@@ -90,7 +90,7 @@ class RiTa {
   /**
    * Creates a new Keyword-in-Context model
    * @param {string} word 
-   * @param {object} options 
+   * @param {object} [options] 
    * @param {number} options.numWords - the number of words to include in the context
    * @returns 
    */
@@ -169,7 +169,7 @@ class RiTa {
 
   /**
    * Return a random word match the criteria in the options object
-   * @param {object} options 
+   * @param {object} [options] 
    * @param {number} options.minLength=4 - the minimum length of the word
    * @param {number} options.maxLength - the maximum length of the word
    * @param {number} options.numSyllables - the number of syllables in the word 
@@ -268,20 +268,30 @@ either from the Penn tag set or the simplified tag set [a, r, v, n]
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @param {object} [options]
-   * @returns 
+   * Compares the letters of the input word (using a version of the Levenstein min-edit distance algorithm) to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
+   * @param {(string|RegExp)} pattern - the spelling pattern to match
+   * @param {object} [options] - options for the search
+   * @param {number} options.minLength=4 - the minimum length of the words
+   * @param {number} options.maxLength - the maximum length of the words
+   * @param {number} options.numSyllables - the number of syllables in the words 
+   * @param {number} options.limit=10 - the maximum number of results to return  (pass -1 to return all matches) 
+   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set or the simplified tag set [a, r, v, n]
+   * @returns {Promise<string[]>} an array of words matching the spelling pattern and criteria in the options object 
    */
   static async spellsLike(word, options) {
     return await RiTa.lexicon.spellsLike(...arguments);
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @param {object} [options]
-   * @returns 
+   * Compares the phonemes of the input pattern (using a version of the Levenstein min-edit distance algorithm) to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
+   * @param {(string|RegExp)} pattern - the phonemic pattern to match
+   * @param {object} [options] - options for the search
+   * @param {number} options.minLength=4 - the minimum length of the words
+   * @param {number} options.maxLength - the maximum length of the words
+   * @param {number} options.numSyllables - the number of syllables in the words 
+   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
+   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set or the simplified tag set [a, r, v, n]
+   * @returns {Promise<string[]>} an array of words matching the phonemic pattern and criteria in the options object 
    */
   static async soundsLike(word, options) {
     return await RiTa.lexicon.soundsLike(...arguments);
@@ -345,7 +355,7 @@ either from the Penn tag set or the simplified tag set [a, r, v, n]
   /**
    * Tags the input string with part-of-speech tags
    * @param {string} sentence - the sentence to tag
-   * @param {object} options - options for the tagging
+   * @param {object} [options] - options for the tagging
    * @param {boolean} options.simple=false - use the simplified tag set [a, r, v, n]
    * @param {boolean} options.inline=true - return the tags inline with the words
    * @returns {string} the tagged sentence
@@ -377,47 +387,59 @@ either from the Penn tag set or the simplified tag set [a, r, v, n]
   }
 
   /**
-   * Return an array of words matching the criteria in the pattern and options object
-   * @param {(string|RegExp)} pattern - the pattern to match
-   * @param {object} options - options for the search
+   * Searches for words in the lexicon matching the given criteria, either by length, syllable-count, 
+   * spelling, phonemes, stresses, part-of-speech, etc. If no regex or options are supplied, the full set of words is returned.
+   * @param {(string|RegExp)} [pattern] - the pattern to match
+   * @param {object} [options] - options for the search
    * @param {number} options.minLength=4 - the minimum length of the words
    * @param {number} options.maxLength - the maximum length of the words
    * @param {number} options.numSyllables - the number of syllables in the words 
-   * @param {number} options.limit=10 - the maximum number of results to return  
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set or the simplified tag set [a, r, v, n]
-   * @param {string} options.type - the type of regex or string pattern to match, options are 'stresses' or 'phones' or 'letters' (the default)
-   * @returns {Promise<string[]>} an array of words matching the criteria in the pattern and options object 
+   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
+   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   *  or the simplified tag set [a, r, v, n]
+   * @param {string} options.type - the type of regex or string pattern to match, options are 'stresses'
+   *  or 'phones' or 'letters' (the default)
+   * @returns {Promise<string[]>} an array of words matching the criteria in both the pattern and the options object 
    */
   static async search(pattern, options) {
     return await RiTa.lexicon.search(...arguments);
   }
 
- /**
-   * Returns an array containing all unique alphabetical words (tokens) in the text.
-   * Punctuation and case are ignored unless specified otherwise.
-   * @param {string} text - The text from which to extract the tokens
-   * @param {object} [opts] - The options
-   * @param {boolean} opts.caseSensitive=false - Whether to pay attention to case
-   * @param {boolean} opts.ignoreStopWords=false - Whether to ignore words like 'the', 'and', 'a', 'of', etc, as specified in RiTa.STOP_WORDS
-   * @param {boolean} opts.splitContractions=false - Whether to convert contractions (e.g., "I'd" or "she'll") into multiple individual tokens
-   * @param {boolean} opts.includePunct=false - Whether to include punctuation in the results
-   * @param {boolean} opts.sort=false - Whether to sort the tokens before returning them
-   * @returns {string[]} Array of tokens
-   */
-  static tokens(text, opts = {
+  /**
+    * Returns an array containing all unique alphabetical words (tokens) in the text.
+    * Punctuation and case are ignored unless specified otherwise.
+    * @param {string} text - The text from which to extract the tokens
+    * @param {object} [options] - The options
+    * @param {boolean} options.caseSensitive=false - Whether to pay attention to case
+    * @param {boolean} options.ignoreStopWords=false - Whether to ignore words such as 'the', 'and', 'a', 'of', etc,
+    *  as specified in RiTa.STOP_WORDS
+    * @param {boolean} options.splitContractions=false - Whether to convert contractions
+    *  (e.g., "I'd" or "she'll") into multiple individual tokens
+    * @param {boolean} options.includePunct=false - Whether to include punctuation in the results
+    * @param {boolean} options.sort=false - Whether to sort the tokens before returning them
+    * @returns {string[]} Array of tokens
+    */
+  static tokens(text, options = {
     caseSensitive: false,
     ignoreStopWords: false,
     splitContractions: false,
     includePunct: false,
-    sort: false}) {
-    return RiTa.tokenizer.tokens(text, opts);
+    sort: false
+  }) {
+    return RiTa.tokenizer.tokens(text, options);
   }
 
+
   /**
-   * 
-   * @param {*} string 
-   * @param {object} [options]
-   * @returns 
+   * Tokenizes an input string into words, according to the Penn Treebank conventions
+   * @param {string} input - The text to tokenize
+   * @param {object} [options] - The options
+   * @param {RegExp} options.regex=null - An optional custom regex to split on
+   * @param {boolean} options.splitHyphens=false - Whether to split hyphenated words 
+   * (e.g., "mother-in-law") into multiple individual tokens
+   * @param {boolean} options.splitContractions=false - Whether to split contractions 
+   * (e.g., "I'd" or "she'll") into multiple individual tokens
+   * @returns {string[]} Array of tokens
    */
   static tokenize(string, options) {
     return RiTa.tokenizer.tokenize(...arguments);

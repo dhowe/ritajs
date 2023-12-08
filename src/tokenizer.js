@@ -38,59 +38,10 @@ class Tokenizer {
     return opts.sort ? tokens.sort() : tokens;
   }
 
-  /**
-   * Split the input text into sentences according to the options
-   * @param {string} text - The text to split
-   * @param {RegExp} [regex] - An optional custom regex to split on
-   * @returns {string[]} An array of sentences
-   */
-  sentences(text, regex) {
-    if (!text || !text.length) return [text];
-
-    let clean = text.replace(NL_RE, ' ')
-
-    let delim = '___';
-    let re = new RegExp(delim, 'g');
-    let pattern = regex || this.splitter;
-
-    let unescapeAbbrevs = (arr) => {
-      for (let i = 0; i < arr.length; i++) {
-        arr[i] = arr[i].replace(re, ".");
-      }
-      return arr;
-    }
-
-    let escapeAbbrevs = (text) => {
-      let abbrevs = this.RiTa.ABRV;
-      for (let i = 0; i < abbrevs.length; i++) {
-        let abv = abbrevs[i];
-        let idx = text.indexOf(abv);
-        while (idx > -1) {
-          text = text.replace(abv, abv.replace('.', delim));
-          idx = text.indexOf(abv);
-        }
-      }
-      return text;
-    }
-
-    let arr = escapeAbbrevs(clean).match(pattern);
-    return arr?.length ? unescapeAbbrevs(arr) : [text];
-  }
-
-
-  /**
-   * Tokenizes a string (into words) according to the Penn Treebank conventions
-   * @param {string} input - The text to tokenize
-   * @param {object} [opts] - The options
-   * @param {RegExp} opts.regex=null - An optional custom regex to split on
-   * @param {boolean} opts.splitHyphens=false - Whether to split hyphenated words (e.g., "mother-in-law") into multiple individual tokens
-   * @param {boolean} opts.splitContractions=false - Whether to split contractions (e.g., "I'd" or "she'll") into multiple individual tokens
-   * @returns {string[]} Array of tokens
-   */
   tokenize(input, opts = {
-    regex: null,
-    splitHyphens: false,
-    splitContractions: false
+    // regex: null,
+    // splitHyphens: false,
+    // splitContractions: false
   }) {
     if (typeof input !== 'string') return [];
 
@@ -211,6 +162,46 @@ class Tokenizer {
 
     return result.trim();
   }
+
+  /**
+   * Split the input text into sentences according to the options
+   * @param {string} text - The text to split
+   * @param {RegExp} [regex] - An optional custom regex to split on
+   * @returns {string[]} An array of sentences
+   */
+  sentences(text, regex) {
+    if (!text || !text.length) return [text];
+
+    let clean = text.replace(NL_RE, ' ')
+
+    let delim = '___';
+    let re = new RegExp(delim, 'g');
+    let pattern = regex || this.splitter;
+
+    let unescapeAbbrevs = (arr) => {
+      for (let i = 0; i < arr.length; i++) {
+        arr[i] = arr[i].replace(re, ".");
+      }
+      return arr;
+    }
+
+    let escapeAbbrevs = (text) => {
+      let abbrevs = this.RiTa.ABRV;
+      for (let i = 0; i < abbrevs.length; i++) {
+        let abv = abbrevs[i];
+        let idx = text.indexOf(abv);
+        while (idx > -1) {
+          text = text.replace(abv, abv.replace('.', delim));
+          idx = text.indexOf(abv);
+        }
+      }
+      return text;
+    }
+
+    let arr = escapeAbbrevs(clean).match(pattern);
+    return arr?.length ? unescapeAbbrevs(arr) : [text];
+  }
+
 
   pushTags(text) {
     let tags = [], tagIdx = 0;
