@@ -91,10 +91,10 @@ class Tagger {
   /**
    * Tags an array of words with their part-of-speech
    * @param {(string|string[])} input - The input containing a word or words
-   * @param {object} opts - options for the tagging {inline, simple}
-   * @param {boolean} opts.inline - tags are returned inline with words
-   * @param {boolean} opts.simple - use simple tags (noun=n,verb=v,adverb=a,adjective=r)
-   * @return {any} the pos tag(s) or string with tags inline
+   * @param {object} [opts] - options for the tagging {inline, simple}
+   * @param {boolean} [opts.inline] - tags are returned inline with words
+   * @param {boolean} [opts.simple] - use simple tags (noun=n,verb=v,adverb=a,adjective=r)
+   * @returns {any} the pos tag(s) or string with tags inline
    */
   tag(input, opts = {
     inline: false,

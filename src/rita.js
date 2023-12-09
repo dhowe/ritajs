@@ -14,7 +14,6 @@ import { RiScript } from 'riscript';
 
 const { Grammar: RiGrammar } = RiScript;
 
-
 /**
  * @class RiTa
  * @memberof module:rita  
@@ -28,7 +27,7 @@ class RiTa {
    * @returns {RiGrammar}
    */
   static grammar(rules, context) {
-    return new RiGrammar(...arguments);
+    return new RiGrammar(rules, context);
   }
 
   /**
@@ -37,7 +36,7 @@ class RiTa {
    * @param {function} definition - the transform function
    */
   static addTransform(name, definition) {
-    RiTa.riscript.addTransform(...arguments);
+    RiTa.riscript.addTransform(name, definition);
   }
 
   /**
@@ -45,7 +44,7 @@ class RiTa {
    * @param {string} name - the name of the transform to remove
    */
   static removeTransform(name) {
-    RiTa.riscript.removeTransform(...arguments);
+    RiTa.riscript.removeTransform(name);
   }
 
   /**
@@ -62,7 +61,7 @@ class RiTa {
    * @returns the word with an article, e.g., 'honor' -> 'an honor'
    */
   static articlize(word) {
-    return RiScript.articlize(...arguments);
+    return RiScript.articlize(word);
   }
 
   /**
@@ -74,7 +73,7 @@ class RiTa {
    * @returns {string} the result of the evaluation
    */
   static evaluate(script, context, options) {
-    return RiTa.riscript.evaluate(...arguments);
+    return RiTa.riscript.evaluate(script, context, options);
   }
 
   /**
@@ -84,7 +83,7 @@ class RiTa {
    * @returns {RiMarkov}
    */
   static markov(n, options) {
-    return new RiMarkov(...arguments);
+    return new RiMarkov(n, options);
   }
 
   /**
@@ -200,34 +199,51 @@ class RiTa {
   }
 
   /**
-   * 
-   * @param {*} word 
+   * Returns words that rhyme with the given word. Two words are considered as rhyming if
+   * their final stressed vowel and all following phonemes are identical.
+   * @param {string} word 
    * @param {object} [options]
-   * @returns 
+   * @param {number} options.minLength=4 - the minimum length of the words
+   * @param {number} options.maxLength - the maximum length of the words
+   * @param {number} options.numSyllables - the number of syllables in the words 
+   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
+   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   *  or the simplified tag set [a, r, v, n]
+   * @returns {Promise<string[]>} an array of rhymes that match criteria in the options object 
    */
   static async rhymes(word, options) {
-    return await RiTa.lexicon.rhymes(...arguments);
+    return await RiTa.lexicon.rhymes(word, options);
   }
 
   /**
-   * 
-   * @param {*} word1 
-   * @param {*} word2 
-   * @returns 
+   * Returns words that rhyme with the given word. Two words are considered as rhyming if
+   * their final stressed vowel and all following phonemes are identical.
+   * @param {string} word1 - the first word to compare
+   * @param {string} word2 - the second word to compare
+   * @returns {boolean}  true if the two words rhyme, else false
    */
   static isRhyme(word1, word2) {
-    return RiTa.lexicon.isRhyme(...arguments);
+    return RiTa.lexicon.isRhyme(word1, word2);
   }
 
 
   /**
-   * 
-   * @param {*} word 
+   * Finds alliterations by comparing the phonemes of the input string to those
+   *  of each word in the lexicon via a minimum-edit-distance metric.
+   * @param {string} word 
    * @param {object} [options]
-   * @returns 
+   * @param {number} options.minLength=4 - the minimum length of the words
+   * @param {number} options.maxLength - the maximum length of the words
+   * @param {number} options.numSyllables - the number of syllables in the words 
+   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
+   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   *  or the simplified tag set [a, r, v, n]
+   * @returns {Promise<string[]>} an array of alliterations matching criteria in the options object 
    */
   static async alliterations(word, options) {
-    return await RiTa.lexicon.alliterations(...arguments);
+    return await RiTa.lexicon.alliterations(word, options);
   }
 
   /**
@@ -236,7 +252,7 @@ class RiTa {
    * @returns 
    */
   static hasWord(word) {
-    return RiTa.lexicon.hasWord(...arguments);
+    return RiTa.lexicon.hasWord(word);
   }
 
   /**
@@ -254,19 +270,20 @@ class RiTa {
   }
 
   /**
-   * 
-   * @param {*} word1 
-   * @param {*} word2 
-   * @returns 
+   * Returns true if the two words are an alliteration (if their first stressed consonants match). 
+   * Note: returns true if wordA.equals(wordB) and false if either (or both) are null.
+   * @param {string} word1 - the first word to compare
+   * @param {string} word2 - the second word to compare
+   * @returns {boolean}  true if the two words are an alliteration, else false
    */
   static isAlliteration(word1, word2) {
-    return RiTa.lexicon.isAlliteration(...arguments);
+    return RiTa.lexicon.isAlliteration(word1, word2);
   }
 
   /**
    * Compares the letters of the input word (using a version of the Levenstein min-edit distance algorithm) 
    * to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
-   * @param {(string|RegExp)} pattern - the spelling pattern to match
+   * @param {string} word - the word to match
    * @param {object} [options] - options for the search
    * @param {number} options.minLength=4 - the minimum length of the words
    * @param {number} options.maxLength - the maximum length of the words
@@ -277,13 +294,13 @@ class RiTa {
    * @returns {Promise<string[]>} an array of words matching the spelling pattern and criteria in the options object 
    */
   static async spellsLike(word, options) {
-    return await RiTa.lexicon.spellsLike(...arguments);
+    return await RiTa.lexicon.spellsLike(word, options);
   }
 
   /**
    * Compares the phonemes of the input pattern (using a version of the Levenstein min-edit distance algorithm)
    *  to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
-   * @param {(string|RegExp)} pattern - the phonemic pattern to match
+   * @param {string} word - the word to match
    * @param {object} [options] - options for the search
    * @param {number} options.minLength=4 - the minimum length of the words
    * @param {number} options.maxLength - the maximum length of the words
@@ -295,66 +312,74 @@ class RiTa {
    * @returns {Promise<string[]>} an array of words matching the phonemic pattern and criteria in the options object 
    */
   static async soundsLike(word, options) {
-    return await RiTa.lexicon.soundsLike(...arguments);
+    return await RiTa.lexicon.soundsLike(word, options);
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @param {object} [options]
-   * @returns 
+   * Generates part-of-speech tags for each word in the input with tags 
+   * from the Penn tag set or the simplified tag set [a, r, v, n].
+   * @param {(string|string[])} word - the word or words to tag
+   * @param {object} [options] - options for the tagging
+   * @param {boolean} [options.inline] - tags are returned inline with words
+   * @param {boolean} [options.simple] - use simple tags (noun=n,verb=v,adverb=a,adjective=r)
+   * @returns {string|string[]} - an array of part-of-speech tags for each word in the input
    */
   static pos(word, options) {
     return RiTa.tagger.tag(word, options);
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @returns 
+   * Returns true if the word has a noun form. That is, if any of its possible
+   *  parts of speech are any variant of a noun in the Penn tag set(e.g. nn, nns, nnp, nnps).
+   * @param {string} word - the word to check
+   * @returns {string} - true if the word is a noun, else false
    */
   static isNoun(word) {
     return RiTa.tagger.isNoun(word);
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @returns 
+   * Returns true if word has an adjective form. That is, if any of its possible parts of speech
+   *  are any variant of an adjective in the Penn tag set (e.g. jj, jjr, jjs).
+   * @param {string} word - the word to check
+   * @returns {string} - true if the word is an adjective, else false
    */
   static isAdjective(word) {
     return RiTa.tagger.isAdjective(word);
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @returns 
+   * Returns true if the word has an adverb form. That is, if any of its possible parts of speech 
+   * are any variant of an adverb in the Penn tag set (e.g. rb, rbr, rbs).
+   * @param {string} word - the word to check
+   * @returns {string} - true if the word is an adverb, else false
    */
   static isAdverb(word) {
     return RiTa.tagger.isAdverb(word);
   }
 
   /**
-   * 
-   * @param {*} text 
-   * @returns 
-   */
-  static isPunct(text) {
-    return text && text.length && ONLY_PUNCT.test(text);
-  }
-
-  /**
-   * 
-   * @param {*} word 
-   * @returns 
+   * Returns true for if word has a verb form. That is, if any of its possible 
+   * parts of speech are any variant of a verb in the Penn tag set (e.g. vb, vbg, vbd, vbp, vbz).
+   * @param {string} word - the word to check
+   * @returns {string} - true if the word is a verb, else false
    */
   static isVerb(word) {
     return RiTa.tagger.isVerb(word);
   }
 
   /**
-   * Tags the input string with part-of-speech tags
+   * Returns true if every character of 'text' is a punctuation character.
+   * @param {string} text 
+   * @returns {boolean} true if every character of 'text' is punctuation, else false
+   */
+  static isPunct(text) {
+    return text && text.length && ONLY_PUNCT.test(text);
+  }
+
+
+  /**
+   * Tags the input string with part-of-speech tags, either from the Penn tag set or the simplified tag set [a, r, v, n].
    * @param {string} sentence - the sentence to tag
    * @param {object} [options] - options for the tagging
    * @param {boolean} options.simple=false - use the simplified tag set [a, r, v, n]
@@ -375,7 +400,7 @@ class RiTa {
    * @returns {string} the singular form of the input word
    */
   static singularize(word) {
-    return RiTa.inflector.singularize(...arguments);
+    return RiTa.inflector.singularize(word);
   }
 
   /**
@@ -384,7 +409,7 @@ class RiTa {
    * @returns {string} the plural form of the input word
    */
   static pluralize(word) {
-    return RiTa.inflector.pluralize(...arguments);
+    return RiTa.inflector.pluralize(word);
   }
 
   /**
@@ -404,7 +429,7 @@ class RiTa {
    * @returns {Promise<string[]>} an array of words matching the criteria in both the pattern and the options object 
    */
   static async search(pattern, options) {
-    return await RiTa.lexicon.search(...arguments);
+    return await RiTa.lexicon.search(pattern, options);
   }
 
   /**
@@ -443,110 +468,124 @@ class RiTa {
    * (e.g., "I'd" or "she'll") into multiple individual tokens
    * @returns {string[]} Array of tokens
    */
-  static tokenize(string, options) {
-    return RiTa.tokenizer.tokenize(...arguments);
+  static tokenize(input, options) {
+    return RiTa.tokenizer.tokenize(input, options);
   }
 
   /**
-   * 
-   * @param {*} stringArray 
-   * @param {*} delim 
-   * @returns 
+   * Joins an array (of words and punctuation) into a sentence, according to 
+   * the Penn Treebank conventions. The inverse of RiTa.tokenize().
+   * @param {string[]} input - The array of words to join
+   * @param {string} delim=' ' - The delimiter to use between words, or a space by default
+   * @returns {string} The joined sentence
    */
-  static untokenize(stringArray, delim) {
-    return RiTa.tokenizer.untokenize(...arguments);
+  static untokenize(input, delim = ' ') {
+    return RiTa.tokenizer.untokenize(input, delim);
   }
 
   /**
-   * Split the input text into sentences according to the options
+   * Split the input text into sentences following using Penn Treebank conventions and the specified options.
    * @param {string} text - The text to split
-   * @param {RegExp} [regex] - An optional custom regex to split on
+   * @param {(string|RegExp)} [pattern] - An optional custom regex to split on
    * @returns {string[]} An array of sentences
    */
-  static sentences(text, regex) {
-    return RiTa.tokenizer.sentences(text, regex);
+  static sentences(text, pattern) {
+    return RiTa.tokenizer.sentences(text, pattern);
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @returns 
+   * Returns true if the word is a 'stop word', a commonly used word that is often ignored in text processing. 
+   * To use your own list, set RiTa.STOP_WORDS to a new array of (lowercase) words.
+   * @param {string} word - the word to check
+   * @returns {boolean} true if the word is a stop word, else false
    */
   static isStopWord(word) {
     return RiTa.STOP_WORDS.includes(word.toLowerCase());
   }
 
   /**
-   * 
-   * @param {*} string 
-   * @returns 
+   * Extracts base roots from a word according to the Pling stemming algorithm.
+   * @param {string} word - the word to stem 
+   * @returns {string} the base root of the word
    */
-  static stem(string) {
-    return Stemmer.stem(...arguments);
+  static stem(word) {
+    return Stemmer.stem(word);
   }
 
   /**
-   * 
-   * @param {*} verbWord 
-   * @returns 
+   * Returns the present participle of the input word (e.g., "walking" for "walk").
+   * @param {string} verbWord - the word to get the present participle of
+   * @returns {string} the present participle of the input word
    */
   static presentPart(verbWord) {
-    return RiTa.conjugator.presentPart(...arguments);
+    return RiTa.conjugator.presentPart(verbWord);
   }
 
   /**
-   * 
-   * @param {*} verbWord 
-   * @returns 
+   * Returns the past participle of the input word (e.g., "walked" for "walk").
+   * @param {string} verbWord 
+   * @returns {string} the past participle of the input word
    */
   static pastPart(verbWord) {
-    return RiTa.conjugator.pastPart(...arguments);
+    return RiTa.conjugator.pastPart(verbWord);
   }
 
   /**
-   * 
-   * @param {*} verbWord 
+   * Conjugates the 'verb' according to the specified options (tense, person, number, etc.)
+   * @param {string} verbWord 
    * @param {object} [options]
-   * @returns 
+   * @param {number} options.tense - the tense of the verb, either RiTa.PAST, RiTa.PRESENT, or RiTa.FUTURE
+   * @param {number} options.person - the person of the verb, either RiTa.FIRST, RiTa.SECOND, or RiTa.THIRD
+   * @param {number} options.number - the number of the verb, either RiTa.SINGULAR or RiTa.PLURAL
+   * @param {number} options.form - the form of the verb, either RiTa.INFINITIVE or RiTa.GERUND
+   * @param {boolean} options.passive - whether the verb should be passive
+   * @param {boolean} options.progressive - whether the verb should be progressive
+   * @param {boolean} options.perfect - whether the verb should be perfect
+   * @param {boolean} options.interrogative - whether the verb should be in interrogative form
+   * @returns {string} the conjugated verb
    */
   static conjugate(verbWord, options) {
-    return RiTa.conjugator.conjugate(...arguments);
+    return RiTa.conjugator.conjugate(verbWord, options);
   }
 
   /**
-   * 
-   * @param {*} string 
-   * @returns 
+   * Analyzes the input and returns a new string containing the stresses for each syllable of the input text .
+   * @param {string} input - the text to analyze
+   * @returns {string} a string containing the stresses for each syllable of the input text
    */
-  static stresses(string) {
-    return RiTa.analyzer.analyze(...arguments).stresses;
+  static stresses(input) {
+    return RiTa.analyzer.analyze(input).stresses;
   }
 
   /**
-   * 
-   * @param {*} string 
-   * @returns 
+   * Analyzes the input and returns a new string containing the syllables of the input text.
+   * @param {string} input - the text to analyze
+   * @returns {string} a string containing the syllables of the input text
    */
-  static syllables(string) {
-    return RiTa.analyzer.analyze(...arguments).syllables;
+  static syllables(input) {
+    return RiTa.analyzer.analyze(input).syllables;
   }
 
   /**
-   * 
-   * @param {*} string 
-   * @returns 
+   * Analyzes the input and returns a new string containing the phonemes of the input text.
+   * @param {string} input - the text to analyze
+   * @returns {string} a string containing the phones of the input text
    */
-  static phones(string) {
-    return RiTa.analyzer.analyze(...arguments).phones;
+  static phones(input) {
+    return RiTa.analyzer.analyze(input).phones;
   }
 
   /**
-   * 
-   * @param {*} string 
-   * @returns 
+   * Analyzes the input to compute a set of features for the input,
+   * including phonemes, syllables, stresses, and part-of-speech tags.
+   * @param {string} input - the text to analyze
+   * @param {object} [options] - options for the analysis
+   * @param {boolean} options.simple=false - whether to use the simplified tag set [a, r, v, n]
+   * @param {boolean} options.inline=false - whether to return features inline with the words
+   * @returns {object} an object containing the features of the input text (phones, syllables, stresses, pos), or the features inline
    */
-  static analyze(string) {
-    return RiTa.analyzer.analyze(...arguments);
+  static analyze(input, options) {
+    return RiTa.analyzer.analyze(input, options);
   }
 
   ////////////////////////////// lex-sync ////////////////////////////
@@ -558,17 +597,25 @@ class RiTa {
    * @returns 
    */
   static spellsLikeSync(word, options) {
-    return RiTa.lexicon.spellsLikeSync(...arguments);
+    return RiTa.lexicon.spellsLikeSync(word, options);
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @param {object} [options]
-   * @returns 
+   * A synchronous version of RiTa.lexicon.soundsLike(). It compares the phonemes of the input pattern (using a version of the Levenstein min-edit distance algorithm)
+   *  to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
+   * @param {string} word - the word to match
+   * @param {object} [options] - options for the search
+   * @param {number} options.minLength=4 - the minimum length of the words
+   * @param {number} options.maxLength - the maximum length of the words
+   * @param {number} options.numSyllables - the number of syllables in the words 
+   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
+   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   *  or the simplified tag set [a, r, v, n]
+   * @return {string[]} an array of words matching the phonemic pattern and criteria in the options object 
    */
   static soundsLikeSync(word, options) {
-    return RiTa.lexicon.soundsLikeSync(...arguments);
+    RiTa.lexicon.soundsLikeSync(word, options);
   }
 
   /**
@@ -578,7 +625,7 @@ class RiTa {
    * @returns 
    */
   static rhymesSync(word, options) {
-    return RiTa.lexicon.rhymesSync(...arguments);
+    return RiTa.lexicon.rhymesSync(word, options);
   }
 
   // TODO: all need tests
@@ -590,7 +637,7 @@ class RiTa {
    * @returns 
    */
   static searchSync(word, options) {
-    return RiTa.lexicon.rhymesSync(...arguments);
+    return RiTa.lexicon.rhymesSync(word, options);
   }
 
   /**
@@ -600,7 +647,7 @@ class RiTa {
    * @returns 
    */
   static alliterationsSync(word, options) {
-    return RiTa.lexicon.alliterationsSync(...arguments);
+    return RiTa.lexicon.alliterationsSync(word, options);
   }
 
   ////////////////////////////// niapa /////////////////////////////
@@ -668,6 +715,7 @@ RiTa.WORD_BOUNDARY = " ";
 RiTa.SYLLABLE_BOUNDARY = "/";
 RiTa.SENTENCE_BOUNDARY = "|";
 RiTa.VOWELS = "aeiou";
+
 // RiTa.MODAL_EXCEPTIONS = ["hardness", "shortness"];
 RiTa.PHONES = ['aa', 'ae', 'ah', 'ao', 'aw', 'ay', 'b', 'ch', 'd', 'dh', 'eh', 'er', 'ey', 'f', 'g', 'hh', 'ih', 'iy', 'jh', 'k', 'l', 'm', 'n', 'ng', 'ow', 'oy', 'p', 'r', 's', 'sh', 't', 'th', 'uh', 'uw', 'v', 'w', 'y', 'z', 'zh'];
 RiTa.ABRV = ["Adm.", "Capt.", "Cmdr.", "Col.", "Dr.", "Gen.", "Gov.", "Lt.", "Maj.", "Messrs.", "Mr.", "Mrs.", "Ms.", "Prof.", "Rep.", "Reps.", "Rev.", "Sen.", "Sens.", "Sgt.", "Sr.", "St.", "A.k.a.", "C.f.", "I.e.", "E.g.", "Vs.", "V.", "Jan.", "Feb.", "Mar.", "Apr.", "Mar.", "Jun.", "Jul.", "Aug.", "Sept.", "Oct.", "Nov.", "Dec."];

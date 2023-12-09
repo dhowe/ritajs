@@ -71,12 +71,11 @@ class Tokenizer {
     return result;
   }
 
-  untokenize(arr, delim) { // very ugly (but works somehow)
+  untokenize(arr, delim=' ') { // very ugly (but works somehow)
 
     if (!arr || !Array.isArray(arr)) return '';
 
     arr = this.preProcessTags(arr);
-    delim = delim || ' ';
 
     let nextNoSpace = false, afterQuote = false, midSentence = false;
     let withinQuote = arr.length && QUOTE_RE.test(arr[0]);
@@ -166,7 +165,7 @@ class Tokenizer {
   /**
    * Split the input text into sentences according to the options
    * @param {string} text - The text to split
-   * @param {RegExp} [regex] - An optional custom regex to split on
+   * @param {(string|RegExp)} [regex] - An optional custom regex to split on
    * @returns {string[]} An array of sentences
    */
   sentences(text, regex) {
