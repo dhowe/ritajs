@@ -247,12 +247,14 @@ class RiTa {
   }
 
   /**
-   * 
-   * @param {*} word 
-   * @returns 
+   * Returns true if the word is in the lexicon, else false
+   * @param {string} word - the word to check
+   * @param {object} [options] - options for the search
+   * @param {boolean} options.noDerivations=false - whether to ignore derivations and only search for raw words
+   * @returns {boolean} true if the word is in the lexicon, else false
    */
-  static hasWord(word) {
-    return RiTa.lexicon.hasWord(word);
+  static hasWord(word, options) {
+    return RiTa.lexicon.hasWord(word, options);
   }
 
   /**
@@ -615,7 +617,7 @@ class RiTa {
    * @return {string[]} an array of words matching the phonemic pattern and criteria in the options object 
    */
   static soundsLikeSync(word, options) {
-    RiTa.lexicon.soundsLikeSync(word, options);
+    return RiTa.lexicon.soundsLikeSync(word, options);
   }
 
   /**

@@ -177,12 +177,19 @@ class Lexicon {
     return this._promise(this.soundsLikeSync, [word, options]);
   }
 
+  /**
+   * A synchronous version of RiTa.lexicon.soundsLike().
+   * @param {string} word 
+   * @param {object} [opts]
+   * @returns {string[]} An array of words that sound like the input word
+   */
   soundsLikeSync(word, opts = {}) {
     if (!word || !word.length) return [];
     opts.type = 'sound';
-    return (opts.matchSpelling)
-      ? this._bySoundAndLetter(word, opts)
-      : this._byTypeSync(word, opts);
+    return this._byTypeSync(word, opts);
+    // return (opts.matchSpelling)
+    //   ? this._bySoundAndLetter(word, opts)
+      // : this._byTypeSync(word, opts);
   }
 
   randomWord(pattern, opts) {
