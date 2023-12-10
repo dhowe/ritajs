@@ -185,11 +185,9 @@ class Lexicon {
    */
   soundsLikeSync(word, opts = {}) {
     if (!word || !word.length) return [];
-    opts.type = 'sound';
-    return this._byTypeSync(word, opts);
-    // return (opts.matchSpelling)
-    //   ? this._bySoundAndLetter(word, opts)
-      // : this._byTypeSync(word, opts);
+    return (opts.matchSpelling)
+      ? this._bySoundAndLetterSync(word, opts)
+      : this._byTypeSync(word, { ...opts, type: 'sound' });
   }
 
   randomWord(pattern, opts) {
@@ -463,6 +461,13 @@ class Lexicon {
         });
       default: throw Error('Unexpected pos: ' + pos);
     }
+  }
+
+  _bySoundAndLetterSync(word, opts) {
+    let bySound = this._byTypeSync(word, { ...opts, type: 'sound' });
+    let byLetter = this._byTypeSync(word, { ...opts, type: 'letter' });
+    if (bySound.length < 1 || byLetter.length < 1) return [];
+    return this._intersect(bySound, byLetter).slice(0, opts.limit);
   }
 
   async _bySoundAndLetter(word, opts) {
