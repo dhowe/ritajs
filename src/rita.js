@@ -387,16 +387,11 @@ class RiTa {
    * @param {string} sentence - the sentence to tag
    * @param {object} [options] - options for the tagging
    * @param {boolean} options.simple=false - use the simplified tag set [a, r, v, n]
-   * @param {boolean} options.inline=true - return the tags inline with the words
    * @returns {string} the tagged sentence
    */
-  static posInline(sentence, options = {
-    inline: true,
-    simple: false
-  }) {
-    return RiTa.tagger.tag(sentence, options);
+  static posInline(sentence, options) {
+    return RiTa.tagger.tag(sentence, { ...options, inline: true });
   }
-
 
   /**
    * Return the singular form of the input word
@@ -585,7 +580,6 @@ class RiTa {
    * @param {string} input - the text to analyze
    * @param {object} [options] - options for the analysis
    * @param {boolean} options.simple=false - whether to use the simplified tag set [a, r, v, n]
-   * @param {boolean} options.inline=false - whether to return features inline with the words
    * @returns {object} an object containing the features of the input text (phones, syllables, stresses, pos), or the features inline
    */
   static analyze(input, options) {

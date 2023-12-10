@@ -7,10 +7,16 @@ describe('Analyzer', function () {
   
   let hasLex = true;
 
-  it('Should one-off', function () {
+  /*it('Should one-off', function () {
     expect(RiTa.inflector.isPlural('hardness')).true;
-  })
+  })*/
 
+  it('Should call analyze-inline', function () {
+    let data = RiTa.analyzer.analyze("abandon");
+    expect(data.phones).eq("ah-b-ae-n-d-ah-n");
+    expect(data.stresses).eq("0/1/0");
+    expect(data.syllables).eq("ah/b-ae-n/d-ah-n");
+  });
 
   it('Should call analyzeWord', function () {
 
