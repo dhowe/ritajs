@@ -3,12 +3,14 @@
     "src/rita.js"
   ],
   "compilerOptions": {
+        // "outFile": "./dist/rita.d.ts",
+
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
     "emitDeclarationOnly": true,
     "declarationMap": false,
-    "outFile": "./dist/rita.d.ts",
+    "outDir": "./types",
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
     "target": "es6",

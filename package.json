@@ -11,7 +11,7 @@
     "test:dist": "NODE_ENV=dev npx mocha test/dist",
     "build": "rm -rf dist/ && npx tsup",
     "types": "npx tsc",
-    "pub": "./npnb/source/cli.js --no-release-draft --test-script test:dist patch",
+    "pub": "cp types/rita.d.ts types && ./npnb/source/cli.js --no-release-draft --test-script test:dist patch",
     "prepub": "npm version patch && npm run build"
   },
   "main": "dist/rita.js",

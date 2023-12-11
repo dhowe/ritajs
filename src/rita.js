@@ -22,9 +22,9 @@ class RiTa {
 
   /**
    * Create a RiTa grammar instance
-   * @param {object} rules 
-   * @param {object} context 
-   * @returns {RiGrammar}
+   * @param {object} rules - the rules of the grammar
+   * @param {object} context - the context of the grammar
+   * @returns {RiGrammar} - a new RiGrammar instance
    */
   static grammar(rules, context) {
     return new RiGrammar(rules, context);
@@ -58,7 +58,7 @@ class RiTa {
   /**
    * Adds the appropriate article ('a' or 'an') to the word, according to its phonemes (useful as a transform function)
    * @param {string} word - the word to transform
-   * @returns the word with an article, e.g., 'honor' -> 'an honor'
+   * @returns {string} - the word with an article, e.g., 'honor' -> 'an honor'
    */
   static articlize(word) {
     return RiScript.articlize(word);
@@ -94,6 +94,8 @@ class RiTa {
    * @param {number} options.numWords - the number of words to include in the context
    * @param {string} options.text - the text as input for the KWIC model
    * @param {string[]} options.words - the array of words to be used as input for the KWIC model
+   * @returns {string[]} all the occurrences of the keyword in the model, each with no more 
+   * than 'numWords' words of context on either side
    * @overload
    * @param {string} keyword
    * @param {number} text - the number of words to include in the context
@@ -704,7 +706,7 @@ class RiTa {
    * The version of random() with two parameters returns a random number from the first number up to but not including the second.   
    * @param {number|object[]} [param1] - the minimum value of the random number, or an array of values to choose from
    * @param {number} [param2] - the maximum value of the random number
-   * @returns {any} a random number or a random element from the array
+   * @returns {number|object} a random number or a random element from the array
    */
   static random(param1, param2) {
     return RiTa.randomizer.random(...arguments); // keep args
