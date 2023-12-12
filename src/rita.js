@@ -67,7 +67,7 @@ class RiTa {
   /**
    * Evaluates the input script via the RiScript parser
    * @param {string} script - the script to evaluate
-   * @param {object} context - the context to evaluate the script in
+   * @param {object} context - the context to evaluate the script ing
    * @param {object} [options] - options for the evaluation
    * @param {boolean} options.trace - whether to trace the evaluation
    * @returns {string} the result of the evaluation
@@ -772,7 +772,7 @@ const ONLY_PUNCT = /^[\p{P}|\+|-|<|>|\^|\$|\ufffd|`]*$/u;
 const IS_LETTER = /^[a-z\u00C0-\u00ff]+$/;
 
 RiTa.RiScript = RiScript;
-RiScript.RiTa = RiTa;
+// RiScript.RiTa = RiTa; ??
 
 RiTa.riscript = new RiScript({ RiTa });
 

@@ -11,15 +11,16 @@
     "test:dist": "NODE_ENV=dev npx mocha test/dist",
     "build": "rm -rf dist/ && npx tsup",
     "types": "npx tsc",
-    "pub": "cp types/rita.d.ts types && ./npnb/source/cli.js --no-release-draft --test-script test:dist patch",
-    "prepub": "npm version patch && npm run build"
+    "pub": "./npnb/source/cli.js --no-release-draft --test-script test:dist patch",
+    "prepub": "npm version patch && npm run build && npm run types",
+    "posttypes": "cp types/rita.d.ts dist" 
   },
   "main": "dist/rita.js",
   "exports": {
     ".": {
       "import": "./dist/rita.js",
       "require": "./dist/rita.cjs",
-      "types": "./dist/index.d.ts"
+      "types": "./dist/rita.d.ts"
     }
   },
   "files": [
