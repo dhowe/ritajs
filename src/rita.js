@@ -24,7 +24,7 @@ class RiTa {
    * Create a RiTa grammar instance
    * @param {object} rules - the rules of the grammar
    * @param {object} context - the context of the grammar
-   * @returns {RiGrammar} - a new RiGrammar instance
+   * @returns {object} - a new RiGrammar instance // TODO: fix return type -> RiGrammar
    */
   static grammar(rules, context) {
     return new RiGrammar(rules, context);
@@ -61,7 +61,7 @@ class RiTa {
    * @returns {string} - the word with an article, e.g., 'honor' -> 'an honor'
    */
   static articlize(word) {
-    return RiScript.articlize(word);
+    return RiScript.articlize(word, RiTa);
   }
 
   /**
@@ -326,11 +326,13 @@ class RiTa {
    * from the Penn tag set or the simplified tag set [a, r, v, n].
    * @param {(string|string[])} word - the word or words to tag
    * @param {object} [options] - options for the tagging
-   * @param {boolean} options.inline - tags are returned inline with words
    * @param {boolean} options.simple - use simple tags (noun=n,verb=v,adverb=a,adjective=r)
    * @returns {string|string[]} - an array of part-of-speech tags for each word in the input
    */
   static pos(word, options) {
+    if (options && 'inline' in options) {
+      throw Error('Use RiTa.posInline() instead');
+    }
     return RiTa.tagger.tag(word, options);
   }
 
@@ -554,8 +556,8 @@ class RiTa {
    * @param {string} input - the text to analyze
    * @returns {string} a string containing the stresses for each syllable of the input text
    */
-  static stresses(input) {
-    return RiTa.analyzer.analyze(input).stresses;
+  static stresses(input, options) {
+    return RiTa.analyzer.analyze(input, options).stresses;
   }
 
   /**
@@ -563,8 +565,8 @@ class RiTa {
    * @param {string} input - the text to analyze
    * @returns {string} a string containing the syllables of the input text
    */
-  static syllables(input) {
-    return RiTa.analyzer.analyze(input).syllables;
+  static syllables(input, options) {
+    return RiTa.analyzer.analyze(input, options).syllables;
   }
 
   /**
@@ -572,8 +574,8 @@ class RiTa {
    * @param {string} input - the text to analyze
    * @returns {string} a string containing the phones of the input text
    */
-  static phones(input) {
-    return RiTa.analyzer.analyze(input).phones;
+  static phones(input, options) {
+    return RiTa.analyzer.analyze(input, options).phones;
   }
 
   /**
