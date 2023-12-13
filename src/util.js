@@ -117,6 +117,7 @@ class Util {
   static isNum(n) {
     return !isNaN(parseFloat(n)) && isFinite(n);
   }
+  
   static numOpt(opts, name, def = 0) {
     return Util.isNum(opts?.[name]) ? opts[name] : def;
   }
