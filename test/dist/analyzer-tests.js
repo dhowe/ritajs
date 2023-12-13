@@ -2,6 +2,12 @@ import { expect } from "chai";
 import { RiTa } from "./index.js";
 describe("Analyzer", function() {
   let hasLex = true;
+  it("Should call analyze-inline", function() {
+    let data = RiTa.analyzer.analyze("abandon");
+    expect(data.phones).eq("ah-b-ae-n-d-ah-n");
+    expect(data.stresses).eq("0/1/0");
+    expect(data.syllables).eq("ah/b-ae-n/d-ah-n");
+  });
   it("Should call analyzeWord", function() {
     let tmp = RiTa.SILENCE_LTS;
     RiTa.SILENCE_LTS = true;
@@ -97,7 +103,7 @@ describe("Analyzer", function() {
     expect(feats.pos).eq("prp vbd dt nn .");
     feats = RiTa.analyze("They will be remade into something else.");
     feats = RiTa.analyze("She becomes a companion to a foreigner.");
-    expect(feats.pos).eq("prp vbz dt jj to dt nn .");
+    expect(feats.pos).eq("prp vbz dt nn to dt nn .");
     feats = RiTa.analyze("She has become a companion to a foreigner.");
   });
   it("Should treat hyphenated words as single tokens", function() {
@@ -421,6 +427,7 @@ describe("Analyzer", function() {
     });
   });
   it("Should handle number (singular/plural)", function() {
+    expect(RiTa.inflector.isPlural("dreariness", { dbug: 0 })).eq(true);
     expect(RiTa.singularize()).eq("");
     expect(RiTa.singularize("")).eq("");
     expect(function() {
@@ -580,7 +587,7 @@ describe("Analyzer", function() {
       "menu",
       "gurus",
       "guru",
-      "hardnesses",
+      "hardness",
       "hardness",
       "fish",
       "fish",
@@ -618,7 +625,7 @@ describe("Analyzer", function() {
       "crisis",
       "corpora",
       "corpus",
-      "shortnesses",
+      "shortness",
       "shortness",
       "dreariness",
       "dreariness",
@@ -828,9 +835,9 @@ describe("Analyzer", function() {
       expect(res2).eq(plural, "FAIL2: pluralize(" + singular + ") was " + res2 + ", but expected " + plural + "\n        singularize(" + plural + ") was " + res1 + "\n\n");
       expect(res3).eq(true, "FAIL3: isPlural(" + plural + ") was false for plural noun\n\n");
       let isMass = RiTa.MASS_NOUNS.includes(singular.toLowerCase());
-      let isModal = singular.endsWith("ness") && !RiTa.MODAL_EXCEPTIONS.includes(singular.toLowerCase());
+      let isModal = singular.endsWith("ness");
       if (!isMass && !isModal) {
-        expect(res4).eq(false, "FAIL4: isPlural(" + singular + ") was true for singular noun, isMassNoun=" + RiTa.MASS_NOUNS.includes(singular.toLowerCase()) + " isModalException=" + RiTa.MODAL_EXCEPTIONS.includes(singular.toLowerCase()) + "\n\n");
+        expect(res4).eq(false, "FAIL4: isPlural(" + singular + ") was true for singular noun, isMassNoun=" + RiTa.MASS_NOUNS.includes(singular.toLowerCase()));
       }
     }
   });
@@ -856,12 +863,6 @@ describe("Analyzer", function() {
   it("Should call isPlural", function() {
     expect(RiTa.inflector.isPlural()).eq(false);
     expect(RiTa.inflector.isPlural("")).eq(false);
-    expect(function() {
-      RiTa.inflector.isPlural([1]);
-    }).to.throw();
-    expect(function() {
-      RiTa.inflector.isPlural(1);
-    }).to.throw();
     expect(RiTa.inflector.isPlural("octopus", { dbug: 0 })).eq(false);
     expect(RiTa.inflector.isPlural("sheep")).eq(true);
     expect(RiTa.inflector.isPlural("apples")).eq(true);

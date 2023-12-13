@@ -518,6 +518,7 @@ class RiMarkov {
 
 }
 
+/**  @memberof module:rita */
 class Node {
 
   constructor(parent, word, count) {

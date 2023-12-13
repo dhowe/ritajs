@@ -2,7 +2,12 @@ import { expect } from "chai";
 import { RiTa } from "./index.js";
 describe("Tokenizer", () => {
   it("Should call tokens", function() {
-    let tokens, input = `She wrote: "I don't paint anymore. For a while she thought it was just a phase that she'd get over."`;
+    let tokens;
+    tokens = RiTa.tokens("A small one is like a big one.");
+    expect(tokens).eql(["a", "small", "one", "is", "like", "big"]);
+    tokens = RiTa.tokens("One escaped, she'd thought.", { splitContractions: true });
+    expect(tokens).eql(["one", "escaped", "she", "had", "thought"]);
+    let input = `She wrote: "I don't paint anymore. For a while she thought it was just a phase that she'd gotten over."`;
     tokens = RiTa.tokens(input);
     expect(tokens).eql([
       "she",
@@ -21,7 +26,28 @@ describe("Tokenizer", () => {
       "phase",
       "that",
       "she'd",
-      "get",
+      "gotten",
+      "over"
+    ]);
+    tokens = RiTa.tokens(input);
+    expect(tokens).eql([
+      "she",
+      "wrote",
+      "i",
+      "don't",
+      "paint",
+      "anymore",
+      "for",
+      "a",
+      "while",
+      "thought",
+      "it",
+      "was",
+      "just",
+      "phase",
+      "that",
+      "she'd",
+      "gotten",
       "over"
     ]);
     tokens = RiTa.tokens(input, { sort: true });
@@ -30,7 +56,7 @@ describe("Tokenizer", () => {
       "anymore",
       "don't",
       "for",
-      "get",
+      "gotten",
       "i",
       "it",
       "just",
@@ -64,7 +90,7 @@ describe("Tokenizer", () => {
       "phase",
       "that",
       "she'd",
-      "get",
+      "gotten",
       "over"
     ]);
     tokens = RiTa.tokens(input, { caseSensitive: true, sort: true });
@@ -75,7 +101,7 @@ describe("Tokenizer", () => {
       "a",
       "anymore",
       "don't",
-      "get",
+      "gotten",
       "it",
       "just",
       "over",
@@ -98,7 +124,7 @@ describe("Tokenizer", () => {
       "thought",
       "phase",
       "she'd",
-      "get"
+      "gotten"
     ]);
     tokens = RiTa.tokens(input, { splitContractions: true });
     expect(tokens).eql([
@@ -118,8 +144,8 @@ describe("Tokenizer", () => {
       "just",
       "phase",
       "that",
-      "would",
-      "get",
+      "had",
+      "gotten",
       "over"
     ]);
     tokens = RiTa.tokens(input, { splitContractions: true, sort: true });
@@ -128,7 +154,8 @@ describe("Tokenizer", () => {
       "anymore",
       "do",
       "for",
-      "get",
+      "gotten",
+      "had",
       "i",
       "it",
       "just",
@@ -141,7 +168,6 @@ describe("Tokenizer", () => {
       "thought",
       "was",
       "while",
-      "would",
       "wrote"
     ]);
     tokens = RiTa.tokens(input, { splitContractions: true, includePunct: true });
@@ -165,8 +191,8 @@ describe("Tokenizer", () => {
       "just",
       "phase",
       "that",
-      "would",
-      "get",
+      "had",
+      "gotten",
       "over"
     ]);
   });
@@ -220,12 +246,12 @@ describe("Tokenizer", () => {
     let inputs = [
       "That's why this is our place.",
       "that's why he'll win.",
-      "that's why I'd lose."
+      "that's why I'd lost."
     ];
     let outputs = [
       ["That", "is", "why", "this", "is", "our", "place", "."],
       ["that", "is", "why", "he", "will", "win", "."],
-      ["that", "is", "why", "I", "would", "lose", "."]
+      ["that", "is", "why", "I", "had", "lost", "."]
     ];
     for (let i = 0; i < inputs.length; i++) {
       let res = RiTa.tokenize(inputs[i], { splitContractions: 1 });

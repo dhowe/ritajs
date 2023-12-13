@@ -1,0 +1,51 @@
+export default RiMarkov;
+declare class RiMarkov {
+    static parent: any;
+    static fromJSON(json: any): any;
+    constructor(n: any, opts?: {});
+    n: any;
+    root: Node;
+    trace: any;
+    mlm: any;
+    maxAttempts: any;
+    tokenize: any;
+    untokenize: any;
+    disableInputChecks: any;
+    sentenceStarts: any[];
+    sentenceEnds: Set<any>;
+    input: any[];
+    addText(text: any, multiplier?: number): void;
+    generate(count: any, opts?: {}, ...args: any[]): any;
+    toJSON(): any;
+    completions(pre: any, post: any): any[];
+    probabilities(path: any, temp: any): {};
+    probability(data: any): number;
+    toString(root: any, sort: any): any;
+    size(): number;
+    _selectNext(parent: any, temp: any, tokens: any, filter: any): any;
+    _isEnd(node: any): boolean;
+    _pathTo(path: any, root: any): any;
+    treeify(tokens: any): void;
+    _splitEnds(str: any): any[];
+    _flatten(nodes: any): any;
+}
+declare class Node {
+    constructor(parent: any, word: any, count: any);
+    children: {};
+    parent: any;
+    token: any;
+    count: any;
+    numChildren: number;
+    marked: boolean;
+    hidden: boolean;
+    child(word: any): any;
+    pselect(filter: any): any;
+    isLeaf(ignoreHidden: any): boolean;
+    isRoot(): boolean;
+    childNodes(opts: any): any[];
+    childCount(ignoreHidden: any): number;
+    nodeProb(excludeMetaTags: any): number;
+    addChild(word: any, count: any): any;
+    toString(): string;
+    asTree(sort: any, showHiddenNodes: any): any;
+}

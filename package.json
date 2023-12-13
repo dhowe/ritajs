@@ -13,7 +13,7 @@
     "types": "npx tsc",
     "pub": "./npnb/source/cli.js --no-release-draft --test-script test:dist patch",
     "prepub": "npm version patch && npm run build && npm run types",
-    "posttypes": "cp types/rita.d.ts dist" 
+    "_posttypes": "cp types/rita.d.ts dist" 
   },
   "main": "dist/rita.js",
   "exports": {

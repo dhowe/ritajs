@@ -154,7 +154,11 @@ describe("Conjugator", function() {
     }).to.throw();
     expect("swum").eq(RiTa.pastPart("swim"));
     expect(RiTa.conjugate("be", { form: RiTa.GERUND })).eq("being");
-    expect(RiTa.conjugate("are", { number: RiTa.PLURAL, person: RiTa.SECOND, tense: RiTa.PAST })).eq("were");
+    expect(RiTa.conjugate("are", {
+      number: RiTa.PLURAL,
+      person: RiTa.SECOND,
+      tense: RiTa.PAST
+    })).eq("were");
     s = ["swim", "need", "open"];
     a = ["swims", "needs", "opens"];
     args = {

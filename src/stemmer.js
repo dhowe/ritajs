@@ -1,3 +1,4 @@
+/**  @memberof module:rita */
 class SnowballStemmer {
 
   constructor() {
@@ -231,6 +232,7 @@ class SnowballStemmer {
   }
 }
 
+/**  @memberof module:rita */
 class Among {
 
   constructor(s, substring_i, result) {

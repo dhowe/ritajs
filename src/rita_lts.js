@@ -145,6 +145,7 @@ class LetterToSound {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+/**  @memberof module:rita */
 class LtsTokenizer {
   tokenize(str, delim) {
     this.idx = 0;
@@ -155,6 +156,7 @@ class LtsTokenizer {
   }
 }
 
+/**  @memberof module:rita */
 class DecisionState {
   constructor(index, c, qtrue, qfalse) {
     this.c = c;
@@ -168,7 +170,7 @@ class DecisionState {
 }
 DecisionState.TYPE = 1;
 
-
+/**  @memberof module:rita */
 class FinalState {
 
   // "epsilon" is used to indicate an empty list.

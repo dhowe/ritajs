@@ -30,24 +30,24 @@ describe("Tagger", () => {
     expect(RiTa.pos("Elephants dance".split(/ /), { simple: true })).eql(["n", "v"]);
     expect(RiTa.pos("the boy dances".split(/ /), { simple: true })).eql(["-", "n", "v"]);
   });
-  it("Should call pos.array.inline.simple", function() {
+  it("Should call posInline.array.simple", function() {
     let result, answer, txt;
-    expect(RiTa.pos([], { inline: true, simple: true })).eql("");
-    expect(RiTa.pos(["asdfaasd"], { inline: true, simple: true })).eql("asdfaasd/n");
-    result = RiTa.pos(["clothes"], { inline: true, simple: true });
+    expect(RiTa.posInline([], { simple: true })).eql("");
+    expect(RiTa.posInline(["asdfaasd"], { simple: true })).eql("asdfaasd/n");
+    result = RiTa.posInline(["clothes"], { simple: true });
     answer = "clothes/n";
     expect(result).eql(answer);
-    result = RiTa.pos(["teeth"], { inline: true, simple: true });
+    result = RiTa.posInline(["teeth"], { simple: true });
     answer = "teeth/n";
     expect(result).eql(answer);
-    result = RiTa.pos("There is a cat".split(/ /), { inline: true, simple: true });
+    result = RiTa.posInline("There is a cat".split(/ /), { simple: true });
     answer = "There/- is/v a/- cat/n";
     expect(result).eql(answer);
-    result = RiTa.pos(RiTa.tokenize("The boy, dressed in red, ate an apple."), { inline: true, simple: true });
+    result = RiTa.posInline(RiTa.tokenize("The boy, dressed in red, ate an apple."), { simple: true });
     answer = "The/- boy/n , dressed/v in/- red/a , ate/v an/- apple/n .";
     expect(result).eql(answer);
     txt = "The dog ran faster than the other dog. But the other dog was prettier.";
-    result = RiTa.pos(RiTa.tokenize(txt), { inline: true, simple: true });
+    result = RiTa.posInline(RiTa.tokenize(txt), { simple: true });
     answer = "The/- dog/n ran/v faster/r than/- the/- other/a dog/n . But/- the/- other/a dog/n was/v prettier/a .";
     expect(result).eq(answer);
     ;
@@ -207,38 +207,6 @@ describe("Tagger", () => {
     expect(RiTa.pos("There is a pig")).eql(["ex", "vbz", "dt", "nn"]);
     expect(RiTa.pos("There isn't a world that is worth saving")).eql(["ex", "vbz", "dt", "nn", "in", "vbz", "jj", "vbg"]);
   });
-  it("Should call pos.simple", function() {
-    expect(RiTa.pos("biped", { simple: true })).eql(["n"]);
-    expect(RiTa.pos("greed", { simple: true })).eql(["n"]);
-    expect(RiTa.pos("creed", { simple: true })).eql(["n"]);
-    expect(RiTa.pos("weed", { simple: true })).eql(["n"]);
-    expect(RiTa.pos("is", { simple: true })).eql(["v"]);
-    expect(RiTa.pos("am", { simple: true })).eql(["v"]);
-    expect(RiTa.pos("be", { simple: true })).eql(["v"]);
-    expect(RiTa.pos("freed", { simple: true })).eql(["a"]);
-  });
-  it("Should call pos.inline", function() {
-    let result, answer, txt;
-    expect(RiTa.pos("", { inline: true })).eql("");
-    expect(RiTa.pos("asdfaasd", { inline: true })).eql("asdfaasd/nn");
-    result = RiTa.pos("clothes", { inline: true });
-    answer = "clothes/nns";
-    expect(result).eql(answer);
-    result = RiTa.pos("teeth", { inline: true });
-    answer = "teeth/nns";
-    expect(result).eql(answer);
-    result = RiTa.pos("There is a cat.", { inline: true });
-    answer = "There/ex is/vbz a/dt cat/nn .";
-    expect(result).eql(answer);
-    result = RiTa.pos("The boy, dressed in red, ate an apple.", { inline: true });
-    answer = "The/dt boy/nn , dressed/vbn in/in red/jj , ate/vbd an/dt apple/nn .";
-    expect(result).eql(answer);
-    txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
-    result = RiTa.pos(txt, { inline: true });
-    answer = "The/dt dog/nn ran/vbd faster/rbr than/in the/dt other/jj dog/nn . But/cc the/dt other/jj dog/nn was/vbd prettier/jjr .";
-    expect(result).eq(answer);
-    ;
-  });
   it("Should call posInline", function() {
     let result, answer, txt;
     expect(RiTa.posInline("")).eql("");
@@ -314,46 +282,53 @@ describe("Tagger", () => {
     expect(result).eq(answer);
     ;
   });
-  it("Should call pos.inline.simple", function() {
+  it("Should call pos.simple", function() {
     let result, answer, txt;
-    expect(RiTa.pos("", { inline: true, simple: true })).eql("");
-    expect(RiTa.pos("asdfaasd", { inline: true, simple: true })).eql("asdfaasd/n");
-    result = RiTa.pos("clothes", { inline: true, simple: true });
-    answer = "clothes/n";
-    expect(result).eql(answer);
-    result = RiTa.pos("teeth", { inline: true, simple: true });
-    answer = "teeth/n";
-    expect(result).eql(answer);
-    result = RiTa.pos("There is a cat.", { inline: true, simple: true });
-    answer = "There/- is/v a/- cat/n .";
-    expect(result).eql(answer);
-    result = RiTa.pos("The boy, dressed in red, ate an apple.", { inline: true, simple: true });
-    answer = "The/- boy/n , dressed/v in/- red/a , ate/v an/- apple/n .";
-    expect(result).eql(answer);
-    txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
-    result = RiTa.pos(txt, { inline: true, simple: true });
-    answer = "The/- dog/n ran/v faster/r than/- the/- other/a dog/n . But/- the/- other/a dog/n was/v prettier/a .";
-    expect(result).eq(answer);
-    ;
+    expect(RiTa.pos("biped", { simple: true })).eql(["n"]);
+    expect(RiTa.pos("greed", { simple: true })).eql(["n"]);
+    expect(RiTa.pos("creed", { simple: true })).eql(["n"]);
+    expect(RiTa.pos("weed", { simple: true })).eql(["n"]);
+    expect(RiTa.pos("is", { simple: true })).eql(["v"]);
+    expect(RiTa.pos("am", { simple: true })).eql(["v"]);
+    expect(RiTa.pos("be", { simple: true })).eql(["v"]);
+    expect(RiTa.pos("freed", { simple: true })).eql(["a"]);
+    expect(RiTa.pos("the top seed", { simple: true })).eql(["-", "a", "n"]);
+    expect(RiTa.pos("", { simple: true })).eql([]);
   });
   it("Should call posInline.simple", function() {
     let result, answer, txt;
-    expect(RiTa.posInline("asdfaasd", { inline: true, simple: true })).eql("asdfaasd/n");
-    expect(RiTa.posInline("", { inline: true, simple: true })).eql("");
-    result = RiTa.posInline("clothes", { inline: true, simple: true });
+    expect(RiTa.posInline("", { simple: true })).eql("");
+    expect(RiTa.posInline("asdfaasd", { simple: true })).eql("asdfaasd/n");
+    result = RiTa.posInline("clothes", { simple: true });
     answer = "clothes/n";
     expect(result).eql(answer);
-    result = RiTa.posInline("teeth", { inline: true, simple: true });
+    result = RiTa.posInline("clothes", { simple: true });
+    answer = "clothes/n";
+    expect(result).eql(answer);
+    result = RiTa.posInline("teeth", { simple: true });
     answer = "teeth/n";
     expect(result).eql(answer);
-    result = RiTa.posInline("There is a cat.", { inline: true, simple: true });
+    result = RiTa.posInline("There is a cat.", { simple: true });
     answer = "There/- is/v a/- cat/n .";
     expect(result).eql(answer);
-    result = RiTa.posInline("The boy, dressed in red, ate an apple.", { inline: true, simple: true });
+    result = RiTa.posInline("The boy, dressed in red, ate an apple.", { simple: true });
     answer = "The/- boy/n , dressed/v in/- red/a , ate/v an/- apple/n .";
     expect(result).eql(answer);
     txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
-    result = RiTa.posInline(txt, { inline: true, simple: true });
+    result = RiTa.posInline(txt, { simple: true });
+    answer = "The/- dog/n ran/v faster/r than/- the/- other/a dog/n . But/- the/- other/a dog/n was/v prettier/a .";
+    expect(result).eq(answer);
+    result = RiTa.posInline("teeth", { simple: true });
+    answer = "teeth/n";
+    expect(result).eql(answer);
+    result = RiTa.posInline("There is a cat.", { simple: true });
+    answer = "There/- is/v a/- cat/n .";
+    expect(result).eql(answer);
+    result = RiTa.posInline("The boy, dressed in red, ate an apple.", { simple: true });
+    answer = "The/- boy/n , dressed/v in/- red/a , ate/v an/- apple/n .";
+    expect(result).eql(answer);
+    txt = "The dog ran faster than the other dog.  But the other dog was prettier.";
+    result = RiTa.posInline(txt, { simple: true });
     answer = "The/- dog/n ran/v faster/r than/- the/- other/a dog/n . But/- the/- other/a dog/n was/v prettier/a .";
     expect(result).eq(answer);
     ;
@@ -694,7 +669,7 @@ describe("Tagger", () => {
     expect(RiTa.tagger.tag(["She", "remade", "this", "video", "."], { inline: true })).eq("She/prp remade/vbd this/dt video/nn .");
     expect(RiTa.tagger.tag(["She", "has", "remade", "this", "video", "."], { inline: true })).eq("She/prp has/vbz remade/vbn this/dt video/nn .");
   });
-  it("Should handle hyphenated words in sentence", () => {
+  it("Should handle hyphenated words", () => {
     let pool = [
       "He is my father-in-law.",
       "We have a off-site meeting yesterday.",

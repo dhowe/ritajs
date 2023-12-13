@@ -80,6 +80,9 @@ describe("Core", () => {
     ok(!RiTa.isQuestion(""));
   });
   it("Should handle articlize", function() {
+    let tmp = RiTa.SILENCE_LTS;
+    RiTa.SILENCE_LTS = true;
+    expect(RiTa.articlize("honor")).eq("an honor");
     let data = [
       "dog",
       "a dog",
@@ -95,6 +98,7 @@ describe("Core", () => {
     for (let i = 0; i < data.length; i += 2) {
       expect(RiTa.articlize(data[i])).eq(data[i + 1]);
     }
+    RiTa.SILENCE_LTS = tmp;
   });
   it("Should handle articlize phrases", function() {
     let data = [

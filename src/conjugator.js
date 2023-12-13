@@ -1,3 +1,6 @@
+/**
+ * @memberof module:rita
+ */
 class RegularExpression {
 
   constructor(regex, offset, suffix) {

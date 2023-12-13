@@ -3,16 +3,16 @@
     "src/rita.js"
   ],
   "compilerOptions": {
-        // "outFile": "./dist/rita.d.ts",
-
+    // "outFile": "./dist/rita.d.ts",
+    "outDir": "types",
     "allowJs": true,
     "checkJs": true,
     "declaration": true,
-    "emitDeclarationOnly": true,
     "declarationMap": false,
-    "outDir": "./types",
+    "emitDeclarationOnly": true,
+    "removeComments": true, // tmp 
     "moduleResolution": "NodeNext",
     "module": "NodeNext",
-    "target": "es6",
+    "target": "ESNext",
   }
 }
