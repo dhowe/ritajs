@@ -7,7 +7,7 @@ declare class RiMarkov {
         trace?: boolean;
         maxLengthMatch?: number;
         maxAttempts?: number;
-        tokenize?: Function;
+        tokenize?: object;
         untokenize?: Function;
         disableInputChecks?: boolean;
     });
@@ -30,7 +30,7 @@ declare class RiMarkov {
         allowDuplicates?: boolean;
         seed?: string | string[];
         trace?: boolean;
-    }, ...args: any[]): string[];
+    }, ...args: any[]): string | string[];
     toJSON(): string;
     completions(pre: string[], post?: string[]): string[];
     probabilities(path: string | string[], temperature?: number): object;

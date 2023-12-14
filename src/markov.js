@@ -20,8 +20,8 @@ class RiMarkov {
    * @param {boolean} [options.trace] - output trace info to the console
    * @param {number} [options.maxLengthMatch] - # of words allowed in result to match a sequence in the input, default=∞
    * @param {number} [options.maxAttempts=999] - max attempts before to complete one ore more generations before erroring, default=999
-   * @param {function} [options.tokenize] - custom tokenizer with tokenize() method, defaults to RiTa.tokenize()
-   * @param {function} [options.untokenize] - custom untokenizer with untokenize() method, defaults to RiTa.untokenize()
+   * @param {object} [options.tokenize] - custom tokenize() function, defaults to RiTa.tokenize()
+   * @param {function} [options.untokenize] - custom untokenize() function, defaults to RiTa.untokenize()
    * @param {boolean} [options.disableInputChecks=false] - if true, allow result to be present in the input, default
    * @memberof RiMarkov
    */
@@ -92,7 +92,7 @@ class RiMarkov {
    * @param {boolean} [options.allowDuplicates=false] - if true, allow duplicate sentences in the output
    * @param {string|string[]} [options.seed] - a seed string or array of tokens to start the generation
    * @param {boolean} [options.trace] - output trace info to the console
-   * @return {string[]} - the generated sentences
+   * @return {string|string[]} - the generated sentences
    */
   generate(count, options = {}) {
 
