@@ -38,7 +38,7 @@ class RiMarkov {
     this.disableInputChecks = options.disableInputChecks;
     this.sentenceStarts = []; // allow duplicates for prob
 
-    /** @type {Set} */ this.sentenceEnds = new Set(); // no dups    
+    /** @type {Set<string>} */ this.sentenceEnds = new Set(); // no dups    
 
     if (this.n < 2) throw Error('minimum N is 2');
 
@@ -63,7 +63,7 @@ class RiMarkov {
     let sents = Array.isArray(text) ? text : RiMarkov.parent.sentences(text);
 
     // add new tokens for each sentence start/end
-    let wrap, allWords = [];
+    let allWords = [];
     for (let k = 0; k < multiplier; k++) {
       for (let i = 0; i < sents.length; i++) {
         let words = this.tokenize(sents[i]);
@@ -92,7 +92,7 @@ class RiMarkov {
    * @param {boolean} [options.allowDuplicates=false] - if true, allow duplicate sentences in the output
    * @param {string|string[]} [options.seed] - a seed string or array of tokens to start the generation
    * @param {boolean} [options.trace] - output trace info to the console
-   * @return {string|string[]} - the generated sentences
+   * @return {(string|string[])} - the generated sentences, a string if count=1, otherwise an array
    */
   generate(count, options = {}) {
 

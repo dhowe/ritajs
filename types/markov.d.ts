@@ -20,7 +20,7 @@ declare class RiMarkov {
     untokenize: any;
     disableInputChecks: boolean;
     sentenceStarts: any[];
-    sentenceEnds: Set<any>;
+    sentenceEnds: Set<string>;
     input: any[];
     addText(text: string | string[], multiplier?: number): RiMarkov;
     generate(count?: number, options?: {
@@ -30,7 +30,7 @@ declare class RiMarkov {
         allowDuplicates?: boolean;
         seed?: string | string[];
         trace?: boolean;
-    }, ...args: any[]): string | string[];
+    }, ...args: any[]): (string | string[]);
     toJSON(): string;
     completions(pre: string[], post?: string[]): string[];
     probabilities(path: string | string[], temperature?: number): object;
