@@ -82,19 +82,36 @@ class RiMarkov {
     return this;
   }
 
-  /**
-   * Generates `count` joined sentences from the model.
-   * @param {number} [count=1] - the number of sentences to generate (default=1)
+
+  /** 
+   * @overload
+   * @param {number} count
    * @param {object} [options={}] - options for the generation
    * @param {number} [options.minLength=5] - minimum length of each sentence
    * @param {number} [options.maxLength=35] - maximum length of each sentence
    * @param {number} [options.temperature=1] - temperature acts as a knob to adjust the probability that input elements will be selected for the output. At higher values, infrequent words are more likely to be chosen, while at lower values the most frequent inputs are more likely to be output. If no value is provided, then tokens are chosen according to their relative frequency in the input.
    * @param {boolean} [options.allowDuplicates=false] - if true, allow duplicate sentences in the output
    * @param {string|string[]} [options.seed] - a seed string or array of tokens to start the generation
-   * @param {boolean} [options.trace] - output trace info to the console
-   * @return {(string|string[])} - the generated sentences, a string if count=1, otherwise an array
+   * @returns {string[]}
+   *
+   * @overload
+   * @param {object} [options={}] - options for the generation
+   * @param {number} [options.minLength=5] - minimum length of each sentence
+   * @param {number} [options.maxLength=35] - maximum length of each sentence
+   * @param {number} [options.temperature=1] - temperature acts as a knob to adjust the probability that input elements will be selected for the output. At higher values, infrequent words are more likely to be chosen, while at lower values the most frequent inputs are more likely to be output. If no value is provided, then tokens are chosen according to their relative frequency in the input.
+   * @param {boolean} [options.allowDuplicates=false] - if true, allow duplicate sentences in the output
+   * @param {string|string[]} [options.seed] - a seed string or array of tokens to start the generation
+   * @returns {string}
    */
   generate(count, options = {}) {
+
+    let returnsArray = false; 
+    if (typeof count === 'number') {
+      if (count === 1) {
+        throw Error("For one result, use generate() with no 'count' argument");
+      }
+      returnsArray = true;
+    }
 
     if (arguments.length === 1 && typeof count === 'object') {
       options = count;
@@ -337,7 +354,7 @@ class RiMarkov {
     unmarkNodes();
 
     let str = this.untokenize(tokens.map(t => t.token)).trim();
-    return num > 1 ? this._splitEnds(str) : str;
+    return returnsArray ? this._splitEnds(str) : str;
   }
 
   /**

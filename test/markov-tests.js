@@ -327,14 +327,15 @@ describe('Markov', function () {
   it('should call generate5', function () { // misc
 
     let rm = new RiMarkov(3, { maxLengthMatch: 19, trace: 0 });
+
     rm.addText(RiTa.sentences(sample2));
-    let res = rm.generate(1, { seed: "One reason", maxLength: 20 });
+    let res = rm.generate({ seed: "One reason", maxLength: 20 });
     ok(res.startsWith("One reason"));
     ok(/[!?.]$/.test(res));
 
     rm = new RiMarkov(3, { trace: 0 });
     rm.addText(RiTa.sentences(sample2));
-    res = rm.generate(1);
+    res = rm.generate();
     ok(/^[A-Z]/.test(res));
     ok(/[!?.]$/.test(res));
 
@@ -416,6 +417,8 @@ describe('Markov', function () {
     start = ["a"]
     expect(rm.generate(2, { seed: start }).length).eq(2);
     expect(rm.generate({ seed: start })[0].toLowerCase()).eq("a");
+
+    expect(function () { rm.generate(1, { seed: start }) }).to.throw();
   });
 
   it('should call generate.seedArray', function () {
