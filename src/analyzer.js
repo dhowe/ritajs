@@ -17,7 +17,7 @@ class Analyzer {
 
   analyze(text, opts) {
     let words = this.RiTa.tokenizer.tokenize(text);
-    let tags = this.RiTa.pos(text, opts); // don't fail if no lexicon
+    let tags = this.RiTa.pos(text, opts); // tags are not cached
     let features = {
       phones: E,
       stresses: E,
@@ -32,13 +32,13 @@ class Analyzer {
       features.stresses += SP + stresses;
       features.syllables += SP + syllables;
     }
-    Object.keys(features).forEach(k => features[k] = features[k].trim()); // trim
+    Object.keys(features).forEach(k => features[k] = features[k].trim());
 
     return features;
   }
 
   computePhones(word, opts) {
-    if (!this.lts) this.lts = new LetterToSound(this.RiTa);
+    this.lts = this.lts || new LetterToSound(this.RiTa);
     return this.lts.buildPhones(word, opts);
   }
 
@@ -55,10 +55,8 @@ class Analyzer {
 
   analyzeWord(word, opts = {}) {
 
-    let RiTa = this.RiTa;
-
     // check the cache first
-    let result = RiTa.CACHING && this.cache[word];
+    let result = this.RiTa.CACHING && this.cache[word];
     if (typeof result === 'undefined') {
 
       let slash = '/', delim = '-';
@@ -98,7 +96,7 @@ class Analyzer {
       Object.keys(result).forEach(k => result[k] = result[k].trim());
 
       // add to cache if enabled
-      if (RiTa.CACHING) this.cache[word] = result;
+      if (this.RiTa.CACHING) this.cache[word] = result;
     }
 
     return result;
@@ -132,8 +130,7 @@ class Analyzer {
       rawPhones && (rawPhones += '-z'); // add 's' phone
     }
 
-    // TODO: what about verb forms here?? TestCase?
-
+    // TODO: what about verb forms here?? Need test cases
     let silent = RiTa.SILENT || RiTa.SILENCE_LTS || (opts && opts.silent);
 
     // if no phones yet, try the lts-engine

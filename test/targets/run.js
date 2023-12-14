@@ -1,6 +1,6 @@
 import { RiTa } from '../../dist/rita.js';
 
-let str = '\nRiTa v' + RiTa.VERSION + ' (RiScript v' + RiTa.RiScript.VERSION + ')\n\n';
+let str = '\nRiTa v' + RiTa.VERSION + '\n\n';
 Object.getOwnPropertyNames(RiTa)
   .filter(p => !p.startsWith('_')
     && typeof RiTa[p] === "function")

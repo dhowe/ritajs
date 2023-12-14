@@ -1,5 +1,5 @@
 export class RiTa {
-    static grammar(rules?: object, context?: object): any;
+    static grammar(rules?: object, context?: object): RiGrammar;
     static addTransform(name: string, definition: Function): void;
     static removeTransform(name: string): void;
     static getTransforms(): string[];
@@ -7,7 +7,15 @@ export class RiTa {
     static evaluate(script: string, context?: object, options?: {
         trace?: boolean;
     }): string;
-    static markov(n: number, options?: object): RiMarkov;
+    static markov(n: number, options?: {
+        text?: string | string[];
+        maxLengthMatch?: number;
+        maxAttempts?: number;
+        tokenize?: Function;
+        untokenize?: Function;
+        disableInputChecks?: boolean;
+        trace?: boolean;
+    }): RiMarkov;
     static kwic(keyword: string, options?: {
         numWords?: number;
         text?: string;
@@ -217,11 +225,9 @@ export namespace RiTa {
     export let INFINITIVE: number;
     export let GERUND: number;
     export let SPLIT_CONTRACTIONS: boolean;
-    export { RiScript };
     export let riscript: any;
 }
 import RiMarkov from './markov.js';
-declare const RiGrammar: any;
 import Stemmer from './stemmer.js';
 import RandGen from './randgen.js';
 import Tagger from './tagger.js';

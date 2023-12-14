@@ -8,11 +8,10 @@ import Analyzer from './analyzer.js';
 import Concorder from './concorder.js';
 import RandGen from './randgen.js';
 import RiMarkov from './markov.js';
-import { RiScript } from 'riscript';
+
+import { RiScript, RiGrammar } from 'riscript';
 
 /** @module rita */
-
-const { Grammar: RiGrammar } = RiScript;
 
 /**
  * @class RiTa
@@ -80,6 +79,13 @@ class RiTa {
    * Creates a new RiMarkov object
    * @param {number} n - an int representing the n-factor of the markov chain 
    * @param {object} [options] - options for the markov chain
+   * @param {string|string[]} [options.text] - a text string, or array of sentences, to add to the model (same as via model.addText()
+   * @param {number} [options.maxLengthMatch] - # of words allowed in result to match a sequence in the input, default=∞
+   * @param {number} [options.maxAttempts=999] - max attempts before to complete one ore more generations before erroring, default=999
+   * @param {function} [options.tokenize] - custom tokenizer with tokenize() method, defaults to RiTa.tokenize()
+   * @param {function} [options.untokenize] - custom untokenizer with untokenize() method, defaults to RiTa.untokenize()
+   * @param {boolean} [options.disableInputChecks=false] - if true, allow result to be present in the input, default
+   * @param {boolean} [options.trace] - output trace info to the console
    * @returns {RiMarkov}
    */
   static markov(n, options) {
@@ -775,9 +781,6 @@ RiTa.SPLIT_CONTRACTIONS = false;
 
 const ONLY_PUNCT = /^[\p{P}|\+|-|<|>|\^|\$|\ufffd|`]*$/u;
 const IS_LETTER = /^[a-z\u00C0-\u00ff]+$/;
-
-RiTa.RiScript = RiScript;
-// RiScript.RiTa = RiTa; ??
 
 RiTa.riscript = new RiScript({ RiTa });
 
