@@ -3,12 +3,12 @@ declare class Tokenizer {
     constructor(parent: any);
     RiTa: any;
     splitter: RegExp;
-    tokens(text: string, opts?: {
-        caseSensitive: boolean;
-        ignoreStopWords: boolean;
-        splitContractions: boolean;
-        includePunct: boolean;
-        sort: boolean;
+    tokens(text: string, options?: {
+        caseSensitive?: boolean;
+        ignoreStopWords?: boolean;
+        splitContractions?: boolean;
+        includePunct?: boolean;
+        sort?: boolean;
     }): string[];
     tokenize(input: any, opts?: {}): any;
     untokenize(arr: any, delim?: string): any;

@@ -11,19 +11,34 @@ class RiMarkov {
 
   static parent; // RiTa
 
-  constructor(n, opts = {}) {
+  /**
+   * Creates a new RiMarkov object with functions for text-generation and other probabilistic functions, 
+   * via Markov chains (or n-grams) with options to process words or tokens split by arbitrary regular expressions.
+   * @param {number} [n] - the n-gram size (an integer >= 2)
+   * @param {object} [options={}] - options for the model
+   * @param {string|string[]} [options.text] - a text string, or array of sentences, to add to the model (same as via model.addText()
+   * @param {boolean} [options.trace] - output trace info to the console
+   * @param {number} [options.maxLengthMatch] - # of words allowed in result to match a sequence in the input, default=∞
+   * @param {number} [options.maxAttempts=999] - max attempts before to complete one ore more generations before erroring, default=999
+   * @param {function} [options.tokenize] - custom tokenizer with tokenize() method, defaults to RiTa.tokenize()
+   * @param {function} [options.untokenize] - custom untokenizer with untokenize() method, defaults to RiTa.untokenize()
+   * @param {boolean} [options.disableInputChecks=false] - if true, allow result to be present in the input, default
+   * @memberof RiMarkov
+   */
+  constructor(n, options = {}) {
 
     this.n = n;
     this.root = new Node(null, 'ROOT');
-    this.trace = opts.trace;
-    this.mlm = opts.maxLengthMatch;
-    this.maxAttempts = opts.maxAttempts || 999;
-    this.tokenize = opts.tokenize || RiMarkov.parent.tokenize;
-    this.untokenize = opts.untokenize || RiMarkov.parent.untokenize;
-    this.disableInputChecks = opts.disableInputChecks;
+
+    this.trace = options.trace;
+    this.mlm = options.maxLengthMatch;
+    this.maxAttempts = options.maxAttempts || 999;
+    this.tokenize = options.tokenize || RiMarkov.parent.tokenize;
+    this.untokenize = options.untokenize || RiMarkov.parent.untokenize;
+    this.disableInputChecks = options.disableInputChecks;
     this.sentenceStarts = []; // allow duplicates for prob
-    /** @type {Set} */
-    this.sentenceEnds = new Set(); // no duplicates    
+
+    /** @type {Set} */ this.sentenceEnds = new Set(); // no dups    
 
     if (this.n < 2) throw Error('minimum N is 2');
 
@@ -33,9 +48,16 @@ class RiMarkov {
     if (!this.disableInputChecks || this.mlm) this.input = [];
 
     // add text if supplied as opt // 
-    if (opts.text) this.addText(opts.text);
+    if (options.text) this.addText(options.text);
   }
 
+  /**
+   * Loads text into the model. If a raw string is provided, it will be split into sentences 
+   * via RiTa.sentences(). If an array is provided, each string will be treated as an individual sentence.
+   * @param {string|string[]} text - a text string, or array of sentences, to add to the model
+   * @param {number} [multiplier=1] - number of times to add the text to the model
+   * @return {RiMarkov} - the RiMarkov instance
+   */
   addText(text, multiplier = 1) {
 
     let sents = Array.isArray(text) ? text : RiMarkov.parent.sentences(text);
@@ -57,24 +79,37 @@ class RiMarkov {
         this.input.push(allWords[i]);
       }
     }
+    return this;
   }
 
-  generate(count, opts = {}) {
+  /**
+   * Generates `count` joined sentences from the model.
+   * @param {number} [count=1] - the number of sentences to generate (default=1)
+   * @param {object} [options={}] - options for the generation
+   * @param {number} [options.minLength=5] - minimum length of each sentence
+   * @param {number} [options.maxLength=35] - maximum length of each sentence
+   * @param {number} [options.temperature=1] - temperature acts as a knob to adjust the probability that input elements will be selected for the output. At higher values, infrequent words are more likely to be chosen, while at lower values the most frequent inputs are more likely to be output. If no value is provided, then tokens are chosen according to their relative frequency in the input.
+   * @param {boolean} [options.allowDuplicates=false] - if true, allow duplicate sentences in the output
+   * @param {string|string[]} [options.seed] - a seed string or array of tokens to start the generation
+   * @param {boolean} [options.trace] - output trace info to the console
+   * @return {string[]} - the generated sentences
+   */
+  generate(count, options = {}) {
 
     if (arguments.length === 1 && typeof count === 'object') {
-      opts = count;
+      options = count;
       count = 1;
     }
 
     const num = count || 1;
-    const minLength = opts.minLength || 5;
-    const maxLength = opts.maxLength || 35;
+    const minLength = options.minLength || 5;
+    const maxLength = options.maxLength || 35;
 
-    if (typeof opts.temperature !== 'undefined' && opts.temperature <= 0) {
+    if (typeof options.temperature !== 'undefined' && options.temperature <= 0) {
       throw Error("Temperature option must be greater than 0");
     }
 
-    let tries = 0, tokens = [], usedStarts = [];
+    let tries = 0, tokens = [];//, usedStarts = [];
     let minIdx = 0, sentenceIdxs = [];
     let markedNodes = [];
 
@@ -125,7 +160,7 @@ class RiMarkov {
       }
 
       let flatSent = this.untokenize(sentence);
-      if (!opts.allowDuplicates && isSubArray(sentence, tokens.slice(0, sentIdx))) {
+      if (!options.allowDuplicates && isSubArray(sentence, tokens.slice(0, sentIdx))) {
         fail('duplicate (pop: ' + next.token + ')');
         return false;
       }
@@ -239,7 +274,7 @@ class RiMarkov {
 
     const selectStart = () => {
 
-      let seed = opts.seed;
+      let seed = options.seed;
 
       if (seed && seed.length) {
         if (typeof seed === 'string') seed = this.tokenize(seed);
@@ -280,7 +315,7 @@ class RiMarkov {
       }
 
       let parent = this._pathTo(tokens);
-      let next = this._selectNext(parent, opts.temperature, tokens, notMarked);
+      let next = this._selectNext(parent, options.temperature, tokens, notMarked);
 
       if (!next) { // no valid children, pop and continue;
         fail('mlm-fail(' + this.mlm + ')', this._flatten(tokens), true);
@@ -305,6 +340,10 @@ class RiMarkov {
     return num > 1 ? this._splitEnds(str) : str;
   }
 
+  /**
+   * Converts the model to a JSON-formatted string for storage or serialization
+   * @return {string} - the JSON string
+   */
   toJSON() {
     let data = Object.keys(this).reduce
       ((acc, k) => Object.assign(acc, { [k]: this[k] }), {});
@@ -313,6 +352,11 @@ class RiMarkov {
     return stringify(data);
   }
 
+  /**
+   * Creates a new model from one previously saved as JSON
+   * @param {string} json - the JSON string to load
+   * @return {RiMarkov} - the RiMarkov instance
+   */
   static fromJSON(json) {
 
     // parse the json and merge with new object
@@ -332,7 +376,13 @@ class RiMarkov {
     return rm;
   }
 
-  /* returns array of possible tokens after pre and (optionally) before post */
+  /**
+   * Returns array of possible tokens after pre and (optionally) before post. If only one array parameter is provided, this function returns all possible next words, ordered by probability, for the given array. 
+   * If two arrays are provided, it returns an unordered list of possible words w that complete the n-gram consisting of: pre[0]...pre[k], w, post[k+1]...post[n].
+   * @param {string[]} pre - the list of tokens preceding the completion
+   * @param {string[]} [post] - the (optional) list of tokens following the completion
+   * @return {string[]} - an unordered list of possible next tokens 
+   */
   completions(pre, post) {
     let tn, result = [];
     if (post) { // fill the center
@@ -355,20 +405,32 @@ class RiMarkov {
     return result;
   }
 
-  /* return an object mapping {string -> prob} */
-  probabilities(path, temp) {
+  /**
+   * Returns the full set of possible next tokens as a object, mapping tokens to probabilities,
+   *  given an array of tokens representing the path down the tree (with length less than `n`).
+   * @param {string|string[]} path - the path to the node as a string or an array of tokens
+   * @param {number} [temperature=1] - temperature acts as a knob to adjust the probability that input elements will be selected for the output. At higher values, infrequent words are more likely to be chosen, while at lower values the most frequent inputs are more likely to be output. If no value is provided, then tokens are chosen according to their relative frequency in the input.
+   * @return {object} - a map of tokens to probabilities
+   */
+  probabilities(path, temperature) {
     if (!Array.isArray(path)) path = this.tokenize(path);
     const probs = {};
     const parent = this._pathTo(path);
     if (parent) {
       const children = parent.childNodes();
       const weights = children.map(n => n.count);
-      const pdist = RiMarkov.parent.randomizer.ndist(weights, temp);
+      const pdist = RiMarkov.parent.randomizer.ndist(weights, temperature);
       children.forEach((c, i) => probs[c.token] = pdist[i]);
     }
     return probs;
   }
 
+  /**
+   * Returns either the raw (unigram) probability for a single token in the model (0 if it does not exist), OR
+   * the probability of a sequence of K tokens where K is less than `n` (0 if the sequence does not exist).
+   * @param {string|string[]} data - the token or array of tokens to check
+   * @return {number} - the probability of the token or sequence
+   */
   probability(data) {
     let p = 0;
     if (data && data.length) {
@@ -379,11 +441,21 @@ class RiMarkov {
     return p;
   }
 
+  /**
+   * Returns a string representation of the model or a subtree of the model, optionally ordered by probability.
+   * @param {object} root - the root node of the subtree to print
+   * @param {boolean} sort - if true, sort the nodes by probability
+   * @return {string} - the string representation of the model 
+   */
   toString(root, sort) {
     root = root || this.root;
     return root.asTree(sort).replace(/{}/g, '');
   }
 
+  /**
+   * Returns the number of tokens currently in the model.
+   * @return {number} - number of tokens
+   */
   size() {
     return this.root.childCount(true);
   }

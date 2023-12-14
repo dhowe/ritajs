@@ -13,29 +13,29 @@ class Tokenizer {
    * Returns an array containing all unique alphabetical words (tokens) in the text.
    * Punctuation and case are ignored unless specified otherwise.
    * @param {string} text - The text from which to extract the tokens
-   * @param {object} [opts] - The options
-   * @param {boolean} opts.caseSensitive=false - Whether to pay attention to case
-   * @param {boolean} opts.ignoreStopWords=false - Whether to ignore words like 'the', 'and', 'a', 'of', etc, as specified in RiTa.STOP_WORDS
-   * @param {boolean} opts.splitContractions=false - Whether to convert contractions (e.g., "I'd" or "she'll") into multiple individual tokens
-   * @param {boolean} opts.includePunct=false - Whether to include punctuation in the results
-   * @param {boolean} opts.sort=false - Whether to sort the tokens before returning them
+   * @param {object} [options] - The options
+   * @param {boolean} [options.caseSensitive=false] - Whether to pay attention to case
+   * @param {boolean} [options.ignoreStopWords=false] - Whether to ignore words like 'the', 'and', 'a', 'of', etc, as specified in RiTa.STOP_WORDS
+   * @param {boolean} [options.splitContractions=false] - Whether to convert contractions (e.g., "I'd" or "she'll") into multiple individual tokens
+   * @param {boolean} [options.includePunct=false] - Whether to include punctuation in the results
+   * @param {boolean} [options.sort=false] - Whether to sort the tokens before returning them
    * @returns {string[]} Array of tokens
    */
-  tokens(text, opts = {
+  tokens(text, options = {
     caseSensitive: false,
     ignoreStopWords: false,
     splitContractions: false,
     includePunct: false,
     sort: false,
   }) {
-    let words = this.tokenize(text, opts), map = {};
+    let words = this.tokenize(text, options), map = {};
     words.forEach(w => {
-      if (!opts.caseSensitive) w = w.toLowerCase();
-      if (opts.includePunct || ALPHA_RE.test(w)) map[w] = 1;
+      if (!options.caseSensitive) w = w.toLowerCase();
+      if (options.includePunct || ALPHA_RE.test(w)) map[w] = 1;
     });
     let tokens = Object.keys(map);
-    if (opts.ignoreStopWords) tokens = tokens.filter(t => !this.RiTa.isStopWord(t));
-    return opts.sort ? tokens.sort() : tokens;
+    if (options.ignoreStopWords) tokens = tokens.filter(t => !this.RiTa.isStopWord(t));
+    return options.sort ? tokens.sort() : tokens;
   }
 
   tokenize(input, opts = {
@@ -71,7 +71,7 @@ class Tokenizer {
     return result;
   }
 
-  untokenize(arr, delim=' ') { // very ugly (but works somehow)
+  untokenize(arr, delim = ' ') { // very ugly (but works somehow)
 
     if (!arr || !Array.isArray(arr)) return '';
 

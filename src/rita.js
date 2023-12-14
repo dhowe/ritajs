@@ -22,9 +22,9 @@ class RiTa {
 
   /**
    * Create a RiTa grammar instance
-   * @param {object} rules - the rules of the grammar
-   * @param {object} context - the context of the grammar
-   * @returns {object} - a new RiGrammar instance // TODO: fix return type -> RiGrammar
+   * @param {object} [rules] - the rules of the grammar
+   * @param {object} [context] - the context of the grammar
+   * @returns {RiGrammar} - a new RiGrammar instance
    */
   static grammar(rules, context) {
     return new RiGrammar(rules, context);
@@ -67,9 +67,9 @@ class RiTa {
   /**
    * Evaluates the input script via the RiScript parser
    * @param {string} script - the script to evaluate
-   * @param {object} context - the context to evaluate the script ing
+   * @param {object} [context] - the context to evaluate the script ing
    * @param {object} [options] - options for the evaluation
-   * @param {boolean} options.trace - whether to trace the evaluation
+   * @param {boolean} [options.trace] - whether to trace the evaluation
    * @returns {string} the result of the evaluation
    */
   static evaluate(script, context, options) {
@@ -91,9 +91,9 @@ class RiTa {
    * @overload
    * @param {string} keyword 
    * @param {object} [options]  
-   * @param {number} options.numWords - the number of words to include in the context
-   * @param {string} options.text - the text as input for the KWIC model
-   * @param {string[]} options.words - the array of words to be used as input for the KWIC model
+   * @param {number} [options.numWords] - the number of words to include in the context
+   * @param {string} [options.text] - the text as input for the KWIC model
+   * @param {string[]} [options.words] - the array of words to be used as input for the KWIC model
    * @returns {string[]} all the occurrences of the keyword in the model, each with no more 
    * than 'numWords' words of context on either side
    * @overload
@@ -110,11 +110,11 @@ class RiTa {
    * Creates a concordance, a list of words with their frequency of occurence, from the given text and options.
    * @param {string} text - the text from which to create the concordance
    * @param {object} [options] - options for the concordance
-   * @param {boolean} options.ignoreCase=false - whether to ignore case when creating the concordance
-   * @param {boolean} options.ignoreStopWords=false - whether to ignore stop words like
+   * @param {boolean} [options.ignoreCase=false] - whether to ignore case when creating the concordance
+   * @param {boolean} [options.ignoreStopWords=false] - whether to ignore stop words like
    *  'the', 'and', 'a', 'of', etc, as specified in RiTa.STOP_WORDS
-   * @param {boolean} options.ignorePunctuation=false - whether to ignore punctuation when creating the concordance
-   * @param {string[]} options.wordsToIgnore=null - words to ignore when creating the concordance (alternate stop-words)
+   * @param {boolean} [options.ignorePunctuation=false] - whether to ignore punctuation when creating the concordance
+   * @param {string[]} [options.wordsToIgnore=null] - words to ignore when creating the concordance (alternate stop-words)
    * @returns {object} the concordance, an object with words as keys and frequencies as values
    */
   static concordance(text, options) {
@@ -185,14 +185,14 @@ class RiTa {
    * (length, syllable-count, phonemic pattern, stress pattern, part-of-speech, etc.).
    * @param {(string|RegExp)} [pattern] - the pattern to match
    * @param {object} [options] 
-   * @param {number} options.minLength=4 - the minimum length of the word
-   * @param {number} options.maxLength=-1 - the maximum length of the word
-   * @param {number} options.numSyllables=null - the number of syllables in the word 
-   * @param {number} options.limit=10 - the maximum number of results to retur   
-   * @param {string} options.pos=null - the part-of-speech of the word to return,
+   * @param {number} [options.minLength=4] - the minimum length of the word
+   * @param {number} [options.maxLength=-1] - the maximum length of the word
+   * @param {number} [options.numSyllables=null] - the number of syllables in the word 
+   * @param {number} [options.limit=10] - the maximum number of results to retur   
+   * @param {string} [options.pos=null] - the part-of-speech of the word to return,
    *  either from the Penn tag set or the simplified tag set [a, r, v, n]
-   * @param {RegExp} options.pattern=null - the spelling or phonemic pattern to match
-   * @param {string} options.type=null - the type of regex or string pattern to match, 
+   * @param {RegExp} [options.pattern=null] - the spelling or phonemic pattern to match
+   * @param {string} [options.type=null] - the type of regex or string pattern to match, 
    * options are 'stresses' or 'phones' or 'letters' (the default)
    * @returns {string} a random word matching the criteria in the options object 
    */
@@ -205,12 +205,12 @@ class RiTa {
    * their final stressed vowel and all following phonemes are identical.
    * @param {string} word 
    * @param {object} [options]
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words 
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words 
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set
    *  or the simplified tag set [a, r, v, n]
    * @returns {Promise<string[]>} an array of rhymes that match criteria in the options object 
    */
@@ -235,12 +235,12 @@ class RiTa {
    *  of each word in the lexicon via a minimum-edit-distance metric.
    * @param {string} word 
    * @param {object} [options]
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words 
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words 
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set
    *  or the simplified tag set [a, r, v, n]
    * @returns {Promise<string[]>} an array of alliterations matching criteria in the options object 
    */
@@ -252,7 +252,7 @@ class RiTa {
    * Returns true if the word is in the lexicon, else false
    * @param {string} word - the word to check
    * @param {object} [options] - options for the search
-   * @param {boolean} options.noDerivations=false - whether to ignore derivations and only search for raw words
+   * @param {boolean} [options.noDerivations=false] - whether to ignore derivations and only search for raw words
    * @returns {boolean} true if the word is in the lexicon, else false
    */
   static hasWord(word, options) {
@@ -263,7 +263,7 @@ class RiTa {
    * Returns true if the word is an abbreviation, else false
    * @param {string} input - the word to check
    * @param {object} [options] - options for the search
-   * @param {boolean} options.caseSensitive=false - whether to ignore case when checking for abbreviations
+   * @param {boolean} [options.caseSensitive=false] - whether to ignore case when checking for abbreviations
    * @returns {boolean} true if the word is an abbreviation, else false
    */
   static isAbbrev(input, options) {
@@ -290,12 +290,12 @@ class RiTa {
    * to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
    * @param {string} word - the word to match
    * @param {object} [options] - options for the search
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words 
-   * @param {number} options.limit=10 - the maximum number of results to return  (pass -1 to return all matches) 
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set or the simplified tag set [a, r, v, n]
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words 
+   * @param {number} [options.limit=10] - the maximum number of results to return  (pass -1 to return all matches) 
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set or the simplified tag set [a, r, v, n]
    * @returns {Promise<string[]>} an array of words matching the spelling pattern and criteria in the options object 
    */
   static async spellsLike(word, options) {
@@ -307,13 +307,13 @@ class RiTa {
    *  to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
    * @param {string} word - the word to match
    * @param {object} [options] - options for the search
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words 
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {boolean} options.matchSpelling=false, if true will also attempt to match spelling by returning an intersection with RiTa.spellsLike()
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words 
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {boolean} [options.matchSpelling=false] if true will also attempt to match spelling by returning an intersection with RiTa.spellsLike()
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set
    *  or the simplified tag set [a, r, v, n]
    * @returns {Promise<string[]>} an array of words matching the phonemic pattern and criteria in the options object 
    */
@@ -326,7 +326,7 @@ class RiTa {
    * from the Penn tag set or the simplified tag set [a, r, v, n].
    * @param {(string|string[])} word - the word or words to tag
    * @param {object} [options] - options for the tagging
-   * @param {boolean} options.simple - use simple tags (noun=n,verb=v,adverb=a,adjective=r)
+   * @param {boolean} [options.simple] - use simple tags (noun=n,verb=v,adverb=a,adjective=r)
    * @returns {string|string[]} - an array of part-of-speech tags for each word in the input
    */
   static pos(word, options) {
@@ -390,7 +390,7 @@ class RiTa {
    * Tags the input string with part-of-speech tags, either from the Penn tag set or the simplified tag set [a, r, v, n].
    * @param {string} sentence - the sentence to tag
    * @param {object} [options] - options for the tagging
-   * @param {boolean} options.simple=false - use the simplified tag set [a, r, v, n]
+   * @param {boolean} [options.simple=false] - use the simplified tag set [a, r, v, n]
    * @returns {string} the tagged sentence
    */
   static posInline(sentence, options) {
@@ -420,14 +420,14 @@ class RiTa {
    * spelling, phonemes, stresses, part-of-speech, etc. If no regex or options are supplied, the full set of words is returned.
    * @param {(string|RegExp)} [pattern] - the pattern to match
    * @param {object} [options] - options for the search
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words 
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words 
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set
    *  or the simplified tag set [a, r, v, n]
-   * @param {string} options.type - the type of regex or string pattern to match, options are 'stresses'
+   * @param {string} [options.type] - the type of regex or string pattern to match, options are 'stresses'
    *  or 'phones' or 'letters' (the default)
    * @returns {Promise<string[]>} an array of words matching the criteria in both the pattern and the options object 
    */
@@ -440,13 +440,13 @@ class RiTa {
     * Punctuation and case are ignored unless specified otherwise.
     * @param {string} text - The text from which to extract the tokens
     * @param {object} [options] - The options
-    * @param {boolean} options.caseSensitive=false - Whether to pay attention to case
-    * @param {boolean} options.ignoreStopWords=false - Whether to ignore words such as 'the', 'and', 'a', 'of', etc,
+    * @param {boolean} [options.caseSensitive=false] - Whether to pay attention to case
+    * @param {boolean} [options.ignoreStopWords=false] - Whether to ignore words such as 'the', 'and', 'a', 'of', etc,
     *  as specified in RiTa.STOP_WORDS
-    * @param {boolean} options.splitContractions=false - Whether to convert contractions
+    * @param {boolean} [options.splitContractions=false] - Whether to convert contractions
     *  (e.g., "I'd" or "she'll") into multiple individual tokens
-    * @param {boolean} options.includePunct=false - Whether to include punctuation in the results
-    * @param {boolean} options.sort=false - Whether to sort the tokens before returning them
+    * @param {boolean} [options.includePunct=false] - Whether to include punctuation in the results
+    * @param {boolean} [options.sort=false] - Whether to sort the tokens before returning them
     * @returns {string[]} Array of tokens
     */
   static tokens(text, options = {
@@ -464,10 +464,10 @@ class RiTa {
    * Tokenizes an input string into words, according to the Penn Treebank conventions
    * @param {string} input - The text to tokenize
    * @param {object} [options] - The options
-   * @param {RegExp} options.regex=null - An optional custom regex to split on
-   * @param {boolean} options.splitHyphens=false - Whether to split hyphenated words 
+   * @param {RegExp} [options.regex=null] - An optional custom regex to split on
+   * @param {boolean} [options.splitHyphens=false] - Whether to split hyphenated words 
    * (e.g., "mother-in-law") into multiple individual tokens
-   * @param {boolean} options.splitContractions=false - Whether to split contractions 
+   * @param {boolean} [options.splitContractions=false] - Whether to split contractions 
    * (e.g., "I'd" or "she'll") into multiple individual tokens
    * @returns {string[]} Array of tokens
    */
@@ -479,7 +479,7 @@ class RiTa {
    * Joins an array (of words and punctuation) into a sentence, according to 
    * the Penn Treebank conventions. The inverse of RiTa.tokenize().
    * @param {string[]} input - The array of words to join
-   * @param {string} delim=' ' - The delimiter to use between words, or a space by default
+   * @param {string} [delim=' '] - The delimiter to use between words, or a space by default
    * @returns {string} The joined sentence
    */
   static untokenize(input, delim = ' ') {
@@ -537,14 +537,14 @@ class RiTa {
    * Conjugates the 'verb' according to the specified options (tense, person, number, etc.)
    * @param {string} verbWord 
    * @param {object} [options]
-   * @param {number} options.tense - the tense of the verb, either RiTa.PAST, RiTa.PRESENT, or RiTa.FUTURE
-   * @param {number} options.person - the person of the verb, either RiTa.FIRST, RiTa.SECOND, or RiTa.THIRD
-   * @param {number} options.number - the number of the verb, either RiTa.SINGULAR or RiTa.PLURAL
-   * @param {number} options.form - the form of the verb, either RiTa.INFINITIVE or RiTa.GERUND
-   * @param {boolean} options.passive - whether the verb should be passive
-   * @param {boolean} options.progressive - whether the verb should be progressive
-   * @param {boolean} options.perfect - whether the verb should be perfect
-   * @param {boolean} options.interrogative - whether the verb should be in interrogative form
+   * @param {number} [options.tense] - the tense of the verb, either RiTa.PAST, RiTa.PRESENT, or RiTa.FUTURE
+   * @param {number} [options.person] - the person of the verb, either RiTa.FIRST, RiTa.SECOND, or RiTa.THIRD
+   * @param {number} [options.number] - the number of the verb, either RiTa.SINGULAR or RiTa.PLURAL
+   * @param {number} [options.form] - the form of the verb, either RiTa.INFINITIVE or RiTa.GERUND
+   * @param {boolean} [options.passive] - whether the verb should be passive
+   * @param {boolean} [options.progressive] - whether the verb should be progressive
+   * @param {boolean} [options.perfect] - whether the verb should be perfect
+   * @param {boolean} [options.interrogative] - whether the verb should be in interrogative form
    * @returns {string} the conjugated verb
    */
   static conjugate(verbWord, options) {
@@ -554,6 +554,7 @@ class RiTa {
   /**
    * Analyzes the input and returns a new string containing the stresses for each syllable of the input text .
    * @param {string} input - the text to analyze
+   * @param {object} [options] - options for the analysis
    * @returns {string} a string containing the stresses for each syllable of the input text
    */
   static stresses(input, options) {
@@ -563,6 +564,7 @@ class RiTa {
   /**
    * Analyzes the input and returns a new string containing the syllables of the input text.
    * @param {string} input - the text to analyze
+   * @param {object} [options] - options for the analysis
    * @returns {string} a string containing the syllables of the input text
    */
   static syllables(input, options) {
@@ -572,6 +574,7 @@ class RiTa {
   /**
    * Analyzes the input and returns a new string containing the phonemes of the input text.
    * @param {string} input - the text to analyze
+   * @param {object} [options] - options for the analysis
    * @returns {string} a string containing the phones of the input text
    */
   static phones(input, options) {
@@ -583,7 +586,7 @@ class RiTa {
    * including phonemes, syllables, stresses, and part-of-speech tags.
    * @param {string} input - the text to analyze
    * @param {object} [options] - options for the analysis
-   * @param {boolean} options.simple=false - whether to use the simplified tag set [a, r, v, n]
+   * @param {boolean} [options.simple=false] - whether to use the simplified tag set [a, r, v, n]
    * @returns {object} an object containing the features of the input text (phones, syllables, stresses, pos), or the features inline
    */
   static analyze(input, options) {
@@ -598,13 +601,13 @@ class RiTa {
    *  returning the set of closest matches that also match the criteria in the options object.
    * @param {string} word - the word to match
    * @param {object} [options] - options for the search
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set
    * or the simplified tag set [a, r, v, n]
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
    * @return {string[]} an array of words matching the spelling pattern and criteria in the options object
    */
   static spellsLikeSync(word, options) {
@@ -616,13 +619,13 @@ class RiTa {
    *  to each word in the lexicon, returning the set of closest matches that also match the criteria in the options object.
    * @param {string} word - the word to match
    * @param {object} [options] - options for the search
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words 
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {boolean} options.matchSpelling=false, if true will also attempt to match spelling by returning an intersection with RiTa.spellsLike()
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words 
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} [options.matchSpelling=false] if true will also attempt to match spelling by returning an intersection with RiTa.spellsLike()
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set
    *  or the simplified tag set [a, r, v, n]
    * @return {string[]} an array of words matching the phonemic pattern and criteria in the options object 
    */
@@ -635,12 +638,12 @@ class RiTa {
    * Two words are considered as rhyming if their final stressed vowel and all following phonemes are identical.
    * @param {string} word - the word to match
    * @param {object} [options] - options for the search
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set  
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set  
    * or the simplified tag set [a, r, v, n]
    * @return {string[]} an array of rhymes that match criteria in the options object
    */
@@ -654,14 +657,14 @@ class RiTa {
    * part-of-speech, etc.
    * @param {(string|RegExp)} [pattern] - the pattern to match
    * @param {object} [options] - options for the search
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set
    * or the simplified tag set [a, r, v, n]
-   * @param {string} options.type - the type of regex or string pattern to match, options are 'stresses' or 'phones' or 'letters' (the default)
+   * @param {string} [options.type] - the type of regex or string pattern to match, options are 'stresses' or 'phones' or 'letters' (the default)
    * @return {string[]} an array of words matching the criteria in both the pattern and the options object
    */
   static searchSync(pattern, options) {
@@ -673,12 +676,12 @@ class RiTa {
    * of the input string to those of each word in the lexicon via a minimum-edit-distance metric.
    * @param {string} word - the word to match
    * @param {object} [options] - options for the search
-   * @param {number} options.minLength=4 - the minimum length of the words
-   * @param {number} options.maxLength - the maximum length of the words
-   * @param {number} options.numSyllables - the number of syllables in the words
-   * @param {number} options.limit=10 - the maximum number of results to return (pass -1 to return all matches)
-   * @param {boolean} options.shuffle=false - whether to shuffle the results before returning them
-   * @param {string} options.pos - the part-of-speech of the words to return, either from the Penn tag set
+   * @param {number} [options.minLength=4] - the minimum length of the words
+   * @param {number} [options.maxLength] - the maximum length of the words
+   * @param {number} [options.numSyllables] - the number of syllables in the words
+   * @param {number} [options.limit=10] - the maximum number of results to return (pass -1 to return all matches)
+   * @param {boolean} [options.shuffle=false] - whether to shuffle the results before returning them
+   * @param {string} [options.pos] - the part-of-speech of the words to return, either from the Penn tag set
    *  or the simplified tag set [a, r, v, n]
    * @return {string[]} an array of alliterations matching criteria in the options object
    */
@@ -715,7 +718,7 @@ class RiTa {
   }
 }
 
-// CLASSES
+// CLASSES (for testing)
 RiTa.RiGrammar = RiGrammar;
 RiTa.RiMarkov = RiMarkov;
 RiTa.Stemmer = Stemmer;
@@ -778,4 +781,4 @@ RiTa.RiScript = RiScript;
 
 RiTa.riscript = new RiScript({ RiTa });
 
-export { RiTa };
+export { RiTa, RiMarkov };
