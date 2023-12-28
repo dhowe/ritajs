@@ -60,6 +60,7 @@ class RiTa {
    * @returns {string} - the word with an article, e.g., 'honor' -> 'an honor'
    */
   static articlize(word) {
+    // @ts-ignore
     return RiScript.articlize(word, RiTa);
   }
 
