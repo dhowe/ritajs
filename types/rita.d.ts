@@ -1,6 +1,6 @@
 export class RiTa {
-    static grammar(rules?: object, context?: object): RiGrammar;
-    static addTransform(name: string, definition: Function): void;
+    static grammar(rules?: object, context?: object): any;
+    static addTransform(name: string, definition: object): void;
     static removeTransform(name: string): void;
     static getTransforms(): string[];
     static articlize(word: string): string;
@@ -11,8 +11,8 @@ export class RiTa {
         text?: string | string[];
         maxLengthMatch?: number;
         maxAttempts?: number;
-        tokenize?: Function;
-        untokenize?: Function;
+        tokenize?: object;
+        untokenize?: object;
         disableInputChecks?: boolean;
         trace?: boolean;
     }): RiMarkov;
@@ -35,7 +35,7 @@ export class RiTa {
     static isVowel(char: string): boolean;
     static isConsonant(char: string): boolean;
     static capitalize(string: string): string;
-    static randomWord(pattern?: (string | RegExp), options?: {
+    static randomWord(pattern?: string | RegExp, options?: {
         minLength?: number;
         maxLength?: number;
         numSyllables?: number;
@@ -85,7 +85,7 @@ export class RiTa {
         matchSpelling?: boolean;
         pos?: string;
     }): Promise<string[]>;
-    static pos(word: (string | string[]), options?: {
+    static pos(word: string | string[], options?: {
         simple?: boolean;
     }): string | string[];
     static isNoun(word: string): string;
@@ -98,7 +98,7 @@ export class RiTa {
     }): string;
     static singularize(word: string): string;
     static pluralize(word: string): string;
-    static search(pattern?: (string | RegExp), options?: {
+    static search(pattern?: string | RegExp, options?: {
         minLength?: number;
         maxLength?: number;
         numSyllables?: number;
@@ -120,7 +120,7 @@ export class RiTa {
         splitContractions?: boolean;
     }): string[];
     static untokenize(input: string[], delim?: string): string;
-    static sentences(text: string, pattern?: (string | RegExp)): string[];
+    static sentences(text: string, pattern?: string | RegExp): string[];
     static isStopWord(word: string): boolean;
     static stem(word: string): string;
     static presentPart(verbWord: string): string;
@@ -166,7 +166,7 @@ export class RiTa {
         shuffle?: boolean;
         pos?: string;
     }): string[];
-    static searchSync(pattern?: (string | RegExp), options?: {
+    static searchSync(pattern?: string | RegExp, options?: {
         minLength?: number;
         maxLength?: number;
         numSyllables?: number;
@@ -183,58 +183,71 @@ export class RiTa {
         shuffle?: boolean;
         pos?: string;
     }): string[];
-    static randi(param1: number, param2?: number, ...args: any[]): number;
-    static random(param1?: number | object[], param2?: number, ...args: any[]): number | object;
+    static randi(param1: number, param2?: number): number;
+    static random(param1?: number | object[], param2?: number): number | object;
+
+    static VERSION: string;
+    static SILENT: boolean;
+    static SILENCE_LTS: boolean;
+    static SPLIT_CONTRACTIONS: boolean;
+
+    static STRESS: string;
+    static NOSTRESS: string;
+    static PHONE_BOUNDARY: string;
+    static WORD_BOUNDARY: string;
+    static SYLLABLE_BOUNDARY: string;
+    static SENTENCE_BOUNDARY: string;
+    static VOWELS: string;
+    static PHONES: string[];
+    static ABRV: string[];
+    static QUESTIONS: string[];
+    static STOP_WORDS: string[];
+    static MASS_NOUNS: string[];
+
+    static INFINITIVE: number;
+    static FIRST: number;
+    static SECOND: number;
+    static THIRD: number;
+    static PAST: number;
+    static PRESENT: number;
+    static FUTURE: number;
+    static SINGULAR: number;
+    static PLURAL: number;
+    static NORMAL: number;
+    static GERUND: number;
 }
-export namespace RiTa {
-    export { RiGrammar };
-    export { RiMarkov };
-    export { Stemmer };
-    export let randomizer: RandGen;
-    export let tagger: Tagger;
-    export let analyzer: Analyzer;
-    export let concorder: Concorder;
-    export let tokenizer: Tokenizer;
-    export let inflector: Inflector;
-    export let lexicon: Lexicon;
-    export let conjugator: Conjugator;
-    export let SILENT: boolean;
-    export let SILENCE_LTS: boolean;
-    export let VERSION: string;
-    export let FIRST: number;
-    export let SECOND: number;
-    export let THIRD: number;
-    export let PAST: number;
-    export let PRESENT: number;
-    export let FUTURE: number;
-    export let SINGULAR: number;
-    export let PLURAL: number;
-    export let NORMAL: number;
-    export let STRESS: string;
-    export let NOSTRESS: string;
-    export let PHONE_BOUNDARY: string;
-    export let WORD_BOUNDARY: string;
-    export let SYLLABLE_BOUNDARY: string;
-    export let SENTENCE_BOUNDARY: string;
-    export let VOWELS: string;
-    export let PHONES: string[];
-    export let ABRV: string[];
-    export let QUESTIONS: string[];
-    export let STOP_WORDS: string[];
-    export let MASS_NOUNS: string[];
-    export let INFINITIVE: number;
-    export let GERUND: number;
-    export let SPLIT_CONTRACTIONS: boolean;
-    export let riscript: any;
+
+export class RiMarkov {
+    static fromJSON(json: string): RiMarkov;
+    constructor(n?: number, options?: {
+        text?: string | string[];
+        trace?: boolean;
+        maxLengthMatch?: number;
+        maxAttempts?: number;
+        tokenizer?: object;
+        untokenizer?: object;
+        disableInputChecks?: boolean;
+    });
+    n: number;
+    addText(text: string | string[], multiplier?: number): RiMarkov;
+    generate(count: number, options?: {
+        minLength?: number;
+        maxLength?: number;
+        temperature?: number;
+        allowDuplicates?: boolean;
+        seed?: string | string[];
+    }): string[];
+    generate(options?: {
+        minLength?: number;
+        maxLength?: number;
+        temperature?: number;
+        allowDuplicates?: boolean;
+        seed?: string | string[];
+    }): string;
+    toJSON(): string;
+    completions(pre: string[], post?: string[]): string[];
+    probabilities(path: string | string[], temperature?: number): object;
+    probability(data: string | string[]): number;
+    toString(root: object, sort: boolean): string;
+    size(): number;
 }
-import RiMarkov from './markov.js';
-import Stemmer from './stemmer.js';
-import RandGen from './randgen.js';
-import Tagger from './tagger.js';
-import Analyzer from './analyzer.js';
-import Concorder from './concorder.js';
-import Tokenizer from './tokenizer.js';
-import Inflector from './inflector.js';
-import Lexicon from './lexicon.js';
-import Conjugator from './conjugator.js';
-export { RiMarkov };
