@@ -9,17 +9,23 @@
   "scripts": {
     "test": "NODE_ENV=dev npx mocha",
     "test:dist": "NODE_ENV=dev npx mocha test/dist",
-    "build": "rm -rf dist/ && npx tsup && cp types/rita.d.ts dist/",
+    "build": "rm -rf dist/ && npx tsup && cp types/rita.d.* dist/",
     "types": "npx tsc",
     "pub": "./npnb/source/cli.js --no-release-draft --test-script test:dist patch",
     "prepub": "npm version patch && npm run build"
   },
-  "types": "dist/rita.d.ts",
   "main": "dist/rita.js",
+  "browser": "./dist/rita.min.js",
   "exports": {
     ".": {
-      "import": "./dist/rita.js",
-      "require": "./dist/rita.cjs"
+      "import": {
+        "default": "./dist/rita.js",
+        "types": "./dist/rita.d.ts"
+      },
+      "require": {
+        "default": "./dist/rita.cjs",
+        "types": "./dist/rita.d.cts"
+      }
     }
   },
   "files": [
@@ -40,7 +46,6 @@
   "bugs": {
     "url": "https://github.com/dhowe/ritajs/issues"
   },
-  "browser": "./dist/rita.min.js",
   "devDependencies": {
     "@types/chai": "^4.3.9",
     "@types/mocha": "^10.0.3",
