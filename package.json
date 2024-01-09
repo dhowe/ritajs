@@ -15,17 +15,12 @@
     "prepub": "npm version patch && npm run build"
   },
   "main": "dist/rita.js",
+  "types": "dist/rita.d.ts",
   "browser": "./dist/rita.min.js",
   "exports": {
     ".": {
-      "import": {
-        "default": "./dist/rita.js",
-        "types": "./dist/rita.d.ts"
-      },
-      "require": {
-        "default": "./dist/rita.cjs",
-        "types": "./dist/rita.d.cts"
-      }
+      "import": "./dist/rita.js",
+      "require": "./dist/rita.cjs"
     }
   },
   "files": [
