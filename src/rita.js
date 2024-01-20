@@ -23,10 +23,11 @@ class RiTa {
    * Create a RiTa grammar instance
    * @param {object} [rules] - the rules of the grammar
    * @param {object} [context] - the context of the grammar
+   * @param {object} [options] - options for the grammar
    * @returns {RiGrammar} - a new RiGrammar instance
    */
-  static grammar(rules, context) {
-    return new RiGrammar(rules, context);
+  static grammar(rules, context, options) {
+    return new RiGrammar(rules, context, { ...options, RiTa });
   }
 
   /**
@@ -73,7 +74,7 @@ class RiTa {
    * @returns {string} the result of the evaluation
    */
   static evaluate(script, context, options) {
-    return RiTa.riscript.evaluate(script, context, options);
+    return RiTa.riscript.evaluate(script, context, { ...options });
   }
 
   /**

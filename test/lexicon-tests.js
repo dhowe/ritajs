@@ -847,7 +847,7 @@ describe('Lexicon', function () {
   it('Should call rhymesSync', function () {
     expect(RiTa.lexicon.rhymesSync('dog', { limit: 1 })).eql(['cog']);
     expect(RiTa.lexicon.rhymesSync('dog', { limit: 2 })).eql(['cog', 'log']);
-    expect(RiTa.lexicon.rhymesSync('dog')).eql(['cog', 'log']);
+    expect(RiTa.lexicon.rhymesSync('dog')).eql(['cog', 'log']); // TODO: should be more ?
   });
 
   it('Should call rhymes', async function () {
