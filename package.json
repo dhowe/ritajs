@@ -53,6 +53,6 @@
   },
   "dependencies": {
     "@ungap/structured-clone": "^1.2.0",
-    "riscript": "^1.0.59"
+    "riscript": "^1.0.66"
   }
 }
