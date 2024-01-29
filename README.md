@@ -236,6 +236,8 @@ Create a new file on your desktop called 'test.html' with the following lines, s
   </script>
 </html>
 ```
+Note that if you already have a sketch, you can simply add `<script src="https://unpkg.com/rita"></script>` to include RiTa.
+
 
 #### With [node.js](http://nodejs.org/) and [npm](https://www.npmjs.com/)
  
