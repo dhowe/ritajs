@@ -124,6 +124,8 @@ RiScript is a minor language designed for writers working in computational media
 
 ## &nbsp;
 
+<br>
+
 ## Developing
 To install/build the library and run tests (with npm/mocha and node v14.x):
 ```sh
