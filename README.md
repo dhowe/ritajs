@@ -192,9 +192,9 @@ Create a new file on your desktop called 'test.html' with the following lines, s
     };
   </script>
   <div id="content" width=200 height=200></div>
+  <hr style="border:0.1px solid gray">
 <html>
 ```
-<hr style="border:0.1px solid gray">
 
 #### An ESM browser sketch
  
