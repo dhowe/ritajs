@@ -194,7 +194,6 @@ Create a new file on your desktop called 'test.html' with the following lines, s
   <div id="content" width=200 height=200></div>
 <html>
 ```
-<hr style="border:1px solid gray">
 
 #### An ESM browser sketch
  
@@ -237,7 +236,7 @@ Create a new file on your desktop called 'test.html' with the following lines, s
   </script>
 </html>
 ```
-If you already have a sketch, simply add `<script src="https://unpkg.com/rita"></script>` to your index.html to include RiTa.
+<small>If you already have a sketch, simply add `<script src="https://unpkg.com/rita"></script>` to your index.html to include RiTa.</small>
 
 
 #### With [node.js](http://nodejs.org/) and [npm](https://www.npmjs.com/)
