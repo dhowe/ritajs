@@ -122,11 +122,7 @@ console.log(grammar.expand());
 
 RiScript is a minor language designed for writers working in computational media. RiScript primitives: choices, symbols, gates, transforms, etc. can be used as part of any RiTa [grammar](https://rednoise.org/rita/reference/RiTa/grammar/) or executed directly using [RiTa.evaluate](https://rednoise.org/rita/reference/RiTa/evaluate/). For more info, see [this interactive notebook](https://observablehq.com/@dhowe/riscript) on observable.
 
-<br>
-
-<hr>
-
-<br>
+## &nbsp;
 
 ## Developing
 To install/build the library and run tests (with npm/mocha and node v14.x):
