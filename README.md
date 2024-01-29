@@ -194,6 +194,7 @@ Create a new file on your desktop called 'test.html' with the following lines, s
   <div id="content" width=200 height=200></div>
 <html>
 ```
+<hr>
 
 #### An ESM browser sketch
  
