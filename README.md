@@ -120,7 +120,7 @@ console.log(grammar.expand());
 
 ## RiScript
 
-RiScript is a minor language designed for writers working in computational media. RiScript primitives -- choices, symbols, gates, transforms, etc. -- can be used as part of any RiTa [grammar](https://rednoise.org/rita/reference/RiTa/grammar/) or executed directly using [RiTa.evaluate](https://rednoise.org/rita/reference/RiTa/evaluate/). For more info, see [this interactive notebook](https://observablehq.com/@dhowe/riscript) on observable.
+RiScript is a minor language designed for writers working in computational media. RiScript primitives: choices, symbols, gates, transforms, etc. can be used as part of any RiTa [grammar](https://rednoise.org/rita/reference/RiTa/grammar/) or executed directly using [RiTa.evaluate](https://rednoise.org/rita/reference/RiTa/evaluate/). For more info, see [this interactive notebook](https://observablehq.com/@dhowe/riscript) on observable.
 
 <br>
 
@@ -236,7 +236,7 @@ Create a new file on your desktop called 'test.html' with the following lines, s
   </script>
 </html>
 ```
-<small>If you already have a sketch, simply add `<script src="https://unpkg.com/rita"></script>` to your index.html to include RiTa.</small>
+If you already have a sketch, simply add `<script src="https://unpkg.com/rita"></script>` to your index.html to include RiTa.
 
 
 #### With [node.js](http://nodejs.org/) and [npm](https://www.npmjs.com/)
