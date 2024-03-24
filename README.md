@@ -22,6 +22,7 @@ Note: version 3.0 contains breaking changes -- please check the [release notes](
 * For [node](#with-nodejs-and-npm): `$ npm install rita`  
    ```let { RiTa }  = require('rita');```
 * For [browsers](#a-simple-browser-sketch): ```<script src="https://unpkg.com/rita"></script>```
+* For [p5.js](#With [p5.js](http://p5js.org/): ```<script src="https://unpkg.com/rita"></script>```
 * For [developers](#developing)
 
 
