@@ -587,7 +587,7 @@ class Lexicon {
       }
       regex = opts.regex; // do we have regex in opts?
       if (typeof regex === 'string') {
-        if (opts && opts.type === 'stresses') {
+        if (opts && /^stress(es)?$/.test(opts.type)) {
           if (/^\^?[01]+\$?$/.test(regex)) {
             regex = regex.replace(/([01])(?=([01]))/g, "$1/");
           }
