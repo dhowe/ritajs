@@ -424,6 +424,7 @@ class Lexicon {
     if (tpos && tpos.length) {
       opts.pluralize = (tpos === "nns");
       opts.conjugate = (tpos[0] === "v" && tpos.length > 2);
+      // simple pos conversion
       if (tpos[0] === "n") tpos = "nn";
       else if (tpos[0] === "v") tpos = "vb";
       else if (tpos === "r") tpos = "rb";

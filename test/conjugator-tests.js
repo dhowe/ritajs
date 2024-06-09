@@ -1,10 +1,17 @@
 import { expect } from 'chai';
 
 import { RiTa } from './index.js';
+import Conjugator from '../src/conjugator.js';
 
 let hasLex = true;
 
 describe('Conjugator', function () {
+
+  it('Should be constructed', function () {
+    let conjugator = new Conjugator(RiTa);
+    expect(conjugator).to.be.an('object');
+    expect(conjugator.verbsEndingInE).to.be.an('array');
+  });
 
   it('Should call pastPart', function () {
 
@@ -528,6 +535,7 @@ describe('Conjugator', function () {
 
     if (!hasLex) this.skip();
 
+    expect(RiTa.conjugator.unconjugate("accessing")).eq("access");
     expect(RiTa.conjugator.unconjugate("trepanning")).eq("trepan");
 
     // 3rd person singular (regular)

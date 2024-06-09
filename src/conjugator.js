@@ -1,3 +1,5 @@
+import { log } from "@tensorflow/tfjs";
+
 /**
  * @memberof module:rita
  */
@@ -39,12 +41,13 @@ class Conjugator {
   constructor(parent) {
     this.RiTa = parent;
     this._reset();
-    this.RiTa.search({ pos: 'v', limit: -1, minLength: -1 })
-      .then(res => {
-        this.allVerbs = res;
-        this.verbsEndingInE = res.filter(v => v.endsWith("e"));
-        this.verbsEndingInDouble = res.filter(v => /([^])\1$/.test(v));
-      });
+    let { data } = parent.lexicon;
+    this.allVerbs = Object.keys(data).filter(word => data[word][1].split(' ').includes('vb'));
+    //console.log('Conjugator', 'allVerbs', this.allVerbs.slice(0, 100) + '...');
+    // this.allVerbs.slice(0,100).forEach(v => console.log(v, data[v]));
+    // console.log(this.RiTa.searchSync({ pos: 'v', limit: -1, minLength: -1 }).length, 'vs', this.allVerbs.length);
+    this.verbsEndingInE = this.allVerbs.filter(v => v.endsWith("e"));
+    this.verbsEndingInDouble = this.allVerbs.filter(v => /([^])\1$/.test(v));
   }
 
   // TODO: add handling of past tense modals.

@@ -9,6 +9,11 @@ describe('Lexicon', function () {
   this.timeout(10000);
 
   it('Should call hasWord', function () {
+    
+    expect(RiTa.hasWord("accessing")).to.be.true;
+    expect(RiTa.hasWord("Accessing")).to.be.true;
+    expect(RiTa.hasWord("accessed")).to.be.true;
+    expect(RiTa.hasWord("Accessed")).to.be.true;
 
     for (let i = 0; i < 10; i++) {
       expect(RiTa.hasWord(RiTa.randomWord())).to.be.true;

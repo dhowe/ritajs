@@ -55,7 +55,7 @@ class SeededRandom {
   */
   pselect(probs) {
     if (!probs || !probs.length) throw Error('arg required');
-    let point = this._rndf(), cutoff = 0;
+    let point = Math.random(), cutoff = 0;
     for (let i = 0; i < probs.length - 1; ++i) {
       cutoff += probs[i];
       if (point < cutoff) return i;
@@ -75,12 +75,13 @@ class SeededRandom {
   }
 
   /*
-    Returns a normalised probability distribution (summing to 1) for arbitrary positive weights
-    If temperature is provided this is basically the softmax, otherwise it simple normalisation
-    Temperature parameter: range is between 0 and +Infinity (excluding both).
-    Lower values move the highest-weighted output toward a probability of 1.0.
-    Higher values tend to even out all the probabilities
-  */
+   * Returns a normalised probability distribution (summing to 1) for arbitrary positive weights
+   * If temperature is provided this is basically the softmax, otherwise it is simple normalisation
+   *
+   * Temperature parameter: range is between 0 and +Infinity (excluding both).
+   * Lower values move the highest-weighted output toward a probability of 1.0.
+   * Higher values tend to even out all the probabilities
+   */
   ndist(weights, temp) {
     let probs = [], sum = 0;
     if (!temp) { // no temp here
