@@ -39,12 +39,10 @@ class Conjugator {
   constructor(parent) {
     this.RiTa = parent;
     this._reset();
-    this.RiTa.search({ pos: 'v', limit: -1, minLength: -1 })
-      .then(res => {
-        this.allVerbs = res;
-        this.verbsEndingInE = res.filter(v => v.endsWith("e"));
-        this.verbsEndingInDouble = res.filter(v => /([^])\1$/.test(v));
-      });
+    let data = this.RiTa.lexicon.data;
+    this.allVerbs = Object.keys(data).filter(word => data[word][1].split(' ').includes('vb'));
+    this.verbsEndingInE = this.allVerbs.filter(v => v.endsWith("e"));
+    this.verbsEndingInDouble = this.allVerbs.filter(v => /([^])\1$/.test(v));
   }
 
   // TODO: add handling of past tense modals.
