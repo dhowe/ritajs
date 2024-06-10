@@ -28,6 +28,7 @@ describe('Ngram', function () {
     //console.log(ngram.data);
     //console.log('-'.repeat(20));
     let tokens = RiTa.tokenize(txt);
+
     tokens.forEach((t, i) => {
       let seq = padLeft(tokens.slice(0, i + 1), n).join('|');
       let next = tokens[i + 1];
@@ -36,21 +37,25 @@ describe('Ngram', function () {
       expect(ngram.data.get(seq)).to.include(next);
     });
     //console.log(ngram.data);
-    expect(ngram.data.size).to.equal(tokens.length + (n - 1));
+    let total = Array.from(ngram.data.values()).reduce((a, b) => a + b.length, 0);
+    expect(total).to.equal(tokens.length + (n - 1));
+
 
     ngram = new Ngram(n);
     ngram.addText(sample);
+    //console.log(ngram.data);
     tokens = RiTa.tokenize(sample);
+    //console.log('found:', tokens.length, 'tokens');
     tokens.forEach((t, i) => {
       let seq = padLeft(tokens.slice(0, i + 1), n).join('|');
       let next = tokens[i + 1];
       expect(ngram.data.has(seq), seq).to.be.true;
       expect(ngram.data.get(seq)).to.include(next);
     });
-    
-    // WORKING HERE ****
 
-    expect(ngram.data.size).to.equal(tokens.length + (n - 1));
+    total = Array.from(ngram.data.values()).reduce((a, b) => a + b.length, 0);
+    expect(total).to.equal(tokens.length + (n - 1));
+
   });
 
   it('should convert to JSON', function () {

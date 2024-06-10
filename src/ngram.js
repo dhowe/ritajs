@@ -41,7 +41,9 @@ class Ngram {
     }
 
     let that = this;
+    let pads = 0;
     let addSeq = function (start, end, next, pad) {
+      if (pad) pads++;
       let toks = tokens.slice(start, end);
       if (pad === 'left') toks = padLeft(toks, that.n);
       if (pad === 'right') toks = padRight(toks, that.n);
@@ -59,14 +61,13 @@ class Ngram {
       if (i < this.n - 1) { // first n-1, pad left
         addSeq(0, i + 1, tokens[i + 1], 'left');
       }
-      if (i + this.n > tokens.length) { // last n-1, pad right
-        addSeq(i, i + this.n, tokens[i + this.n - 1], 'right');
-      }
-      else { // middle, no padding
+      if (i + this.n <= tokens.length) {  // no pad
         addSeq(i, i + this.n, tokens[i + this.n]);
       }
+      else {// last n-1, pad right 
+        addSeq(i, i + this.n, tokens[i + this.n - 1], 'right');
+      }
     }
-
     return this;
   }
 
