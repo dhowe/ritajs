@@ -21,14 +21,36 @@ describe('Ngram', function () {
   });
 
   it('should call ngram.addText', function () {
-    let ngram = new Ngram(3);
-    ngram.addText("The dog ate the fox.");
-    console.log(ngram.data);
-    expect(ngram.data.size).to.be.above(0);
+    let txt = "The dog ate the fox.";
+    let n = 3;
+    let ngram = new Ngram(n);
+    ngram.addText(txt);
+    //console.log(ngram.data);
+    //console.log('-'.repeat(20));
+    let tokens = RiTa.tokenize(txt);
+    tokens.forEach((t, i) => {
+      let seq = padLeft(tokens.slice(0, i + 1), n).join('|');
+      let next = tokens[i + 1];
+      //console.log(i, seq, '-> ' + next);
+      expect(ngram.data.has(seq), seq).to.be.true;
+      expect(ngram.data.get(seq)).to.include(next);
+    });
+    //console.log(ngram.data);
+    expect(ngram.data.size).to.equal(tokens.length + (n - 1));
 
-    // ngram = new Ngram(3);
-    // ngram.addText(sample);
-    // expect(ngram.data.size).to.be.above(0);
+    ngram = new Ngram(n);
+    ngram.addText(sample);
+    tokens = RiTa.tokenize(sample);
+    tokens.forEach((t, i) => {
+      let seq = padLeft(tokens.slice(0, i + 1), n).join('|');
+      let next = tokens[i + 1];
+      expect(ngram.data.has(seq), seq).to.be.true;
+      expect(ngram.data.get(seq)).to.include(next);
+    });
+    
+    // WORKING HERE ****
+
+    expect(ngram.data.size).to.equal(tokens.length + (n - 1));
   });
 
   it('should convert to JSON', function () {
@@ -167,3 +189,9 @@ describe('Ngram', function () {
     expect(res).eql(expec);
   });
 });
+function padLeft(arr, len, fill = '') {
+  return Array(len).fill(fill).concat(arr).slice(arr.length);
+}
+function padRight(arr, len, fill = '') {
+  return arr.concat(Array(len).fill(fill)).slice(0, len);
+}

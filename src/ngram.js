@@ -39,34 +39,34 @@ class Ngram {
         //tokens.push(Ngram.separator); // sentence-end
       }
     }
-    console.log('found ' + tokens.length + ' tokens');
-    for (let i = 0; i < tokens.length; i++) {
-      let toks;
-      if (i < this.n) {
-        toks = padLeft(tokens.slice(0, i + 1), this.n);
-      }
-      else if (i + this.n > tokens.length) {
-        toks = padRight(tokens.slice(i, i + this.n), this.n);
-      }
-      else {
-        toks = tokens.slice(i, i + this.n)
-      }
-      let seq = toks.join(Ngram.separator);
-      console.log(i, seq);
 
-      let next;
-      if (i < this.n) {
-        next = tokens[i + 1];
-      }
-      else if (i + this.n > tokens.length) {
-        next = tokens[i + this.n - 1];
-      }
-      else {
-        next = tokens[i + this.n];
-      }
-      if (!this.data.has(seq)) this.data.set(seq, []);
-      if (next) this.data.get(seq).push(next);
+    let that = this;
+    let addSeq = function (start, end, next, pad) {
+      let toks = tokens.slice(start, end);
+      if (pad === 'left') toks = padLeft(toks, that.n);
+      if (pad === 'right') toks = padRight(toks, that.n);
+      let seq = toks.join(Ngram.separator)
+      if (!that.data.has(seq)) that.data.set(seq, []);
+      //console.log(seq, '-> ' + next);//, pad ? 'pad-'+pad : '-');
+      that.data.get(seq).push(next);
     }
+
+    // for (let i = 0; i < this.n - 1; i++) {
+    //   addSeq(0, i + 1, tokens[i + 1], 'left');
+    // }
+
+    for (let i = 0; i < tokens.length; i++) {
+      if (i < this.n - 1) { // first n-1, pad left
+        addSeq(0, i + 1, tokens[i + 1], 'left');
+      }
+      if (i + this.n > tokens.length) { // last n-1, pad right
+        addSeq(i, i + this.n, tokens[i + this.n - 1], 'right');
+      }
+      else { // middle, no padding
+        addSeq(i, i + this.n, tokens[i + this.n]);
+      }
+    }
+
     return this;
   }
 
@@ -99,7 +99,7 @@ class Ngram {
   probabilities(path, temperature) {
     if (!Array.isArray(path)) path = this.tokenize(path);
 
-    if (path.length < this.n) path = path.slice(0, this.n);
+    if (path.length > this.n) path = path.slice(0, this.n);
 
     let choices;
     if (path.length === this.n) {
