@@ -445,8 +445,8 @@ class RiMarkov {
   }
 
   /**
-   * Returns either the raw (unigram) probability for a single token in the model (0 if it does not exist), OR
-   * the probability of a sequence of K tokens where K is less than `n` (0 if the sequence does not exist).
+   * Returns either the raw (unigram) probability for a single token in the model 
+   * (0 if it does not exist), OR the probability of a sequence of K tokens where K is <= `n`
    * @param {string|string[]} data - the token or array of tokens to check
    * @return {number} - the probability of the token or sequence
    */

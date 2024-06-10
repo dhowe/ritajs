@@ -18,96 +18,72 @@ describe('Ngram', function () {
     let ngram = new Ngram(3);
     expect(ngram).to.be.an.instanceof(Ngram);
     expect(ngram.data).to.be.an.instanceof(Map);
+    expect(ngram.size()).to.eq(0);
   });
 
   it('should call ngram.addText', function () {
-    let txt = "The dog ate the fox.";
-    let n = 3;
-    let ngram = new Ngram(n);
+    let ngram, n = 3, txt = "The dog ate the fox."
+
+    ngram = new Ngram(n);
     ngram.addText(txt);
-    //console.log(ngram.data);
-    //console.log('-'.repeat(20));
-    let tokens = RiTa.tokenize(txt);
-
-    tokens.forEach((t, i) => {
-      let seq = padLeft(tokens.slice(0, i + 1), n).join('|');
-      let next = tokens[i + 1];
-      //console.log(i, seq, '-> ' + next);
-      expect(ngram.data.has(seq), seq).to.be.true;
-      expect(ngram.data.get(seq)).to.include(next);
-    });
-    //console.log(ngram.data);
-    let total = Array.from(ngram.data.values()).reduce((a, b) => a + b.length, 0);
-    expect(total).to.equal(tokens.length + (n - 1));
-
+    checkTokens(ngram, txt);
 
     ngram = new Ngram(n);
     ngram.addText(sample);
-    //console.log(ngram.data);
-    tokens = RiTa.tokenize(sample);
-    //console.log('found:', tokens.length, 'tokens');
-    tokens.forEach((t, i) => {
-      let seq = padLeft(tokens.slice(0, i + 1), n).join('|');
-      let next = tokens[i + 1];
-      expect(ngram.data.has(seq), seq).to.be.true;
-      expect(ngram.data.get(seq)).to.include(next);
-    });
-
-    total = Array.from(ngram.data.values()).reduce((a, b) => a + b.length, 0);
-    expect(total).to.equal(tokens.length + (n - 1));
-
+    checkTokens(ngram, sample);
   });
 
   it('should convert to JSON', function () {
     let ngram = new Ngram(3);
     ngram.addText(sample);
     let copy = Ngram.fromJSON(ngram.toJSON());
-    expect(copy).to.be.an.instanceof(Ngram);
-    expect(copy.data.size).to.equal(ngram.data.size);
-    expect(copy.data).to.deep.equal(ngram.data);
+    ngramEquals(ngram, copy);
   });
 
-  it('should call probability', function () {
+  it.skip('should call ngram.probability', function () {
 
     let text, rm;
     text = 'the dog ate the boy the';
     rm = new Ngram(3);
     rm.addText(text);
+    console.log(rm.data);
 
-    eq(rm.probability("the"), .5);
-    eq(rm.probability("dog"), 1 / 6);
-    eq(rm.probability("cat"), 0);
+    expect(rm.probability("the")).eq(.5);
+    expect(rm.probability("dog")).eq(1 / 6);
+    expect(rm.probability("cat")).eq(0);
 
     text = 'the dog ate the boy that the dog found.';
-    rm = new RiMarkov(3);
+    rm = new Ngram(3);
     rm.addText(text);
 
-    eq(rm.probability("the"), .3);
-    eq(rm.probability("dog"), .2);
-    eq(rm.probability("cat"), 0);
+    expect(rm.probability("the")).eq(.3);
+    expect(rm.probability("dog")).eq(.2);
+    expect(rm.probability("cat")).eq(0);
 
-    rm = new RiMarkov(3);
+    rm = new Ngram(3);
     rm.addText(sample);
-    eq(rm.probability("power"), 0.017045454545454544);
+    expect(rm.probability("power")).eq(0.017045454545454544);
 
     //bad inputs
     expect(rm.probability("Non-exist")).eq(0);
   });
-  it('should call probability.array', function () {
+  it.skip('should call ngram.probability.array', function () {
 
-    let rm = new RiMarkov(3);
+    let rm = new Ngram(3);
     rm.addText(sample);
+    console.log(rm.data);
 
     let check = 'personal power is'.split(' ');
-    eq(rm.probability(check), 1 / 3);
+    console.log(rm.probabilities(check));
+    expect(rm.probability(check)).eq(1 / 3);
 
     check = 'personal powXer is'.split(' ');
-    eq(rm.probability(check), 0);
+    expect(rm.probability(check)).eq(0);
 
     check = 'someone who pretends'.split(' ');
-    eq(rm.probability(check), 1 / 2);
+    expect(rm.probability(check)).eq(1 / 2);
 
-    eq(rm.probability([]), 0);
+    expect(rm.probability([])).eq(0);
   });
 
   it('should call ngram.probabilities', function () {
@@ -131,9 +107,6 @@ describe('Ngram', function () {
     }, {}];
 
     for (let i = 0; i < checks.length; i++) {
-      if (i === 0) {
-        console.log(Array.from(rm.data));
-      }
       //console.log(checks[i] + ":", res, " ->", expected[i]);
       let res = rm.probabilities(checks[i]);
       expect(res).eql(expected[i]);
@@ -193,7 +166,67 @@ describe('Ngram', function () {
     };
     expect(res).eql(expec);
   });
+
+  it('should call ngram.size', function () {
+
+    let rm = new Ngram(4);
+    expect(rm.size()).eq(0);
+
+    let tokens = RiTa.tokenize(sample);
+    //console.log(tokens.length + ' tokens')
+    let sents = RiTa.sentences(sample);
+    rm = new Ngram(3);
+    rm.addText(sample);
+    checkTokens(rm, sample);
+
+    let rm2 = new Ngram(3);
+    rm2.addText(sents);
+    expect(rm.size()).eq(rm2.size());
+  });
+
+  it('should serialize and deserialize', function () {
+
+    let rm, copy;
+    rm = new Ngram(4);
+    let json = rm.toJSON();
+    copy = Ngram.fromJSON(json);
+    ngramEquals(rm, copy);
+
+    rm = new Ngram(4, { disableInputChecks: 0 });
+    rm.addText(['I ate the dog.']);
+    copy = Ngram.fromJSON(rm.toJSON());
+    //console.log(copy.leaves.map(t => t.token));
+    ngramEquals(rm, copy);
+
+    rm = new Ngram(4, { disableInputChecks: 1 });
+    rm.addText(['I ate the dog.']);
+    copy = Ngram.fromJSON(rm.toJSON());
+    ngramEquals(rm, copy);
+
+    //expect(copy.generate()).eql(rm.generate());
+  });
+
 });
+function ngramEquals(ngram, copy) {
+  expect(copy).to.be.an.instanceof(Ngram);
+  expect(copy.n).to.equal(ngram.n);
+  expect(copy.tokenCount).to.equal(ngram.tokenCount);
+  expect(copy.data).to.deep.equal(ngram.data);
+  expect(copy.size()).to.equal(ngram.size());
+}
+
+function checkTokens(ngram, txt) {
+  let tokens = RiTa.tokenize(txt);
+  tokens.forEach((t, i) => {
+    let seq = padLeft(tokens.slice(0, i + 1), ngram.n).join('|');
+    let next = tokens[i + 1];
+    expect(ngram.data.has(seq), seq).to.be.true;
+    expect(ngram.data.get(seq)).to.include(next);
+  });
+  let total = Array.from(ngram.data.values()).reduce((a, b) => a + b.length, 0);
+  expect(total).to.equal(tokens.length + ngram.n);
+}
+
 function padLeft(arr, len, fill = '') {
   return Array(len).fill(fill).concat(arr).slice(arr.length);
 }

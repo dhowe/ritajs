@@ -11,7 +11,9 @@ class Ngram {
   constructor(n, options = {}) {
 
     this.n = n;
+    this.tokenCount = 0;
     this.data = new Map();
+
     this.trace = options.trace ?? false;
     this.mlm = options.maxLengthMatch ?? 999;
     this.maxAttempts = options.maxAttempts || 999;
@@ -39,6 +41,7 @@ class Ngram {
         //tokens.push(Ngram.separator); // sentence-end
       }
     }
+    this.tokenCount += tokens.length;
 
     let that = this;
     let pads = 0;
@@ -57,6 +60,7 @@ class Ngram {
     //   addSeq(0, i + 1, tokens[i + 1], 'left');
     // }
 
+    addSeq(0, 0, tokens[0], 'left');
     for (let i = 0; i < tokens.length; i++) {
       if (i < this.n - 1) { // first n-1, pad left
         addSeq(0, i + 1, tokens[i + 1], 'left');
@@ -78,7 +82,9 @@ class Ngram {
     return {
       n: this.n,
       mlm: this.mlm,
+      tokenCount: this.tokenCount,
       maxAttempts: this.maxAttempts,
+      // options
       data: Array.from(this.data)
     };
   }
@@ -91,6 +97,7 @@ class Ngram {
     for (let [k, v] of json.data) {
       ngram.data.set(k, v);
     }
+    ngram.tokenCount = json.tokenCount;
     return ngram;
   }
 
@@ -120,24 +127,35 @@ class Ngram {
     return Ngram.normalizeDist(pdist);
   }
 
-  probability(data) {
-    if (!Array.isArray(data)) throw Error('data must be an array');
-    let choices;
-    if (data.length === this.n) {
-      let seq = data.join(Ngram.separator);
-      choices = this.data.get(seq);
-    }
-    else {
-      let seq = data.length > 1 ? data.join(Ngram.separator) : data[0];
-      choices = Object.keys(this.data).filter(k => k.startsWith());
-    }
-    let pdist = choices.reduce((acc, k) => {
-      acc[k] = (acc[k] || 0) + 1;
-      return acc;
-    });
+  // probability(path) {
+  //   if (!Array.isArray(path)) path = [path];//throw Error('data must be an array');
 
-    return Ngram.normalizeDist(pdist);
-  }
+  //   if (path.length > this.n) path = path.slice(0, this.n);
+
+  //   let choices;
+  //   if (path.length === this.n) {
+  //     let seq = path.join(Ngram.separator);
+  //     let hits = this.data.get(seq).length;
+  //     return hits / this.tokenCount;
+  //   }
+  //   else if (path.length === 1) {
+  //     let vals = Array.from(this.data.values()).flat();
+  //     let hits = countInArray(path[0], vals);
+  //     return hits / this.tokenCount;
+  //   }
+  //   else {
+  //     let seq = path.length > 1 ? path.join(Ngram.separator) : Ngram.separator + path[0];
+  //     let matches = Array.from(this.data.keys()).filter(k => k.endsWith(seq));
+  //     choices = matches.map(k => this.data.get(k)).flat();
+  //   }
+
+  //   let pdist = choices.reduce((acc, k) => {
+  //     acc[k] = (acc[k] || 0) + 1;
+  //     return acc;
+  //   });
+
+  //   return Ngram.normalizeDist(pdist);
+  // }
 
   toString(root, sort) {
     root = root || this.root;
@@ -145,7 +163,11 @@ class Ngram {
   }
 
   size() {
-    return this.data.size;
+    return this.tokens().length;
+  }
+
+  tokens() {
+    return Array.from(this.data.values()).flat();
   }
 
   static normalizeDist(mapping, temp = 0) {
@@ -176,9 +198,17 @@ class Ngram {
   }
 }
 
+function countInArray(ele, array) {
+  return array.reduce((a, b) => {
+    if (ele === b) a++;
+    return a;
+  }, 0);
+}
+
 function padLeft(arr, len, fill = '') {
   return Array(len).fill(fill).concat(arr).slice(arr.length);
 }
+
 function padRight(arr, len, fill = '') {
   return arr.concat(Array(len).fill(fill)).slice(0, len);
 }
