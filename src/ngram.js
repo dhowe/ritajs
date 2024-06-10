@@ -76,6 +76,29 @@ class Ngram {
   }
 
   generate(count, options = {}) {
+    if (this.tokenCount === 0) throw Error('No data in model');
+
+    let returnArr = (typeof count === 'number' && count > 1) ? true : false;
+
+    if (arguments.length === 1 && typeof count === 'object') {
+      options = count;
+      count = 1;
+    }
+    const num = count ?? 1;
+    const rand = Ngram.parent.randomChoice;
+    const minLength = options.minLength || 5;
+    const maxLength = options.maxLength || 35;
+    
+    // WORKING HERE -- pick first token....
+
+    let firstToken = rand(Array.from(this.data.keys()).filter());
+    let sofar = [firstToken];
+    while (sofar.length < num) {
+      let next = this.probabilities(sofar, options.temperature);
+      let choice = Ngram.parent.randomChoice(next);
+      // NEXT:
+      if (attempts++ > this.maxAttempts) throw Error('Max attempts exceeded');
+    }
   }
 
   toJSON() {
@@ -105,8 +128,8 @@ class Ngram {
   }
 
   probabilities(path, temperature) {
-    if (!Array.isArray(path)) path = this.tokenize(path);
 
+    if (!Array.isArray(path)) path = this.tokenize(path);
     if (path.length > this.n) path = path.slice(0, this.n);
 
     let choices;
@@ -124,7 +147,8 @@ class Ngram {
       return acc;
     }, {});
 
-    return Ngram.normalizeDist(pdist);
+    
+    return Ngram.normalizeDist(pdist, temperature);
   }
 
   // probability(path) {
@@ -198,12 +222,12 @@ class Ngram {
   }
 }
 
-function countInArray(ele, array) {
-  return array.reduce((a, b) => {
-    if (ele === b) a++;
-    return a;
-  }, 0);
-}
+// function countInArray(ele, array) {
+//   return array.reduce((a, b) => {
+//     if (ele === b) a++;
+//     return a;
+//   }, 0);
+// }
 
 function padLeft(arr, len, fill = '') {
   return Array(len).fill(fill).concat(arr).slice(arr.length);

@@ -21,6 +21,11 @@ describe('Ngram', function () {
     expect(ngram.size()).to.eq(0);
   });
 
+  it('should throw on generate for empty model', function () {
+    let rm = new Ngram(4, { maxLengthMatch: 6 });
+    expect(() => rm.generate(5)).to.throw;
+  });
+
   it('should call ngram.addText', function () {
     let ngram, n = 3, txt = "The dog ate the fox."
 
