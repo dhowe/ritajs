@@ -31,6 +31,7 @@ describe('Ngram', function () {
 
     ngram = new Ngram(n);
     ngram.addText(txt);
+    console.log(ngram.data);
     checkTokens(ngram, txt);
 
     ngram = new Ngram(n);
