@@ -258,10 +258,13 @@ describe("Tokenizer", () => {
       expect(res).eql(outputs[i]);
     }
   });
-  it("Should call tokenize", function() {
+  it("Should call tokenize only", function() {
     expect(RiTa.tokenize("")).eql([""]);
     expect(RiTa.tokenize(" ")).eql([""]);
     expect(RiTa.tokenize("The dog")).eql(["The", "dog"]);
+    expect(RiTa.tokenize("The programs.")).eql(["The", "programs", "."]);
+    expect(RiTa.tokenize("The find.")).eql(["The", "find", "."]);
+    expect(RiTa.tokenize("The bancor.", { debug: 0 })).eql(["The", "bancor", "."]);
     let input, expected, output;
     input = "The student said 'learning is fun'";
     expected = ["The", "student", "said", "'", "learning", "is", "fun", "'"];

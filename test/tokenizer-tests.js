@@ -12,7 +12,7 @@ describe('Tokenizer', () => {
     expect(tokens).eql(['a', 'small', 'one', 'is', 'like', 'big']);
 
     tokens = RiTa.tokens("One escaped, she'd thought.", { splitContractions: true });
-    expect(tokens).eql([ 'one', 'escaped', 'she', 'had', 'thought' ]);
+    expect(tokens).eql(['one', 'escaped', 'she', 'had', 'thought']);
 
     let input = "She wrote: \"I don't paint anymore. For a while she thought it was just a phase that she'd gotten over.\"";
 
@@ -91,7 +91,7 @@ describe('Tokenizer', () => {
     tokens = RiTa.tokens(input, { splitContractions: true, sort: true });
     expect(tokens).eql([
       'a', 'anymore', 'do',
-      'for', 'gotten', 'had',  'i',
+      'for', 'gotten', 'had', 'i',
       'it', 'just', 'not',
       'over', 'paint', 'phase',
       'she', 'that', 'thought',
@@ -180,11 +180,14 @@ describe('Tokenizer', () => {
     }
   });
 
-  it('Should call tokenize', function () {
+  it('Should call tokenize only', function () {
 
     expect(RiTa.tokenize("")).eql([""]);
     expect(RiTa.tokenize(" ")).eql([""]);
     expect(RiTa.tokenize("The dog")).eql(["The", "dog"]);
+    expect(RiTa.tokenize("The programs.")).eql(["The", "programs", "."]);
+    expect(RiTa.tokenize("The find.")).eql(["The", "find", "."]);
+    expect(RiTa.tokenize("The bancor.", { debug: 0 })).eql(["The", "bancor", "."]);
 
     let input, expected, output;
 

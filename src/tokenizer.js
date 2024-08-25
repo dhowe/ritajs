@@ -40,6 +40,7 @@ class Tokenizer {
 
   tokenize(input, opts = {
     // regex: null,
+    // debug: false,
     // splitHyphens: false,
     // splitContractions: false
   }) {
@@ -50,7 +51,11 @@ class Tokenizer {
     let { tags, text } = this.pushTags(input.trim());
 
     for (let i = 0; i < TOKENIZE_RE.length; i += 2) {
+      if (opts.debug) var pre = text;
       text = text.replace(TOKENIZE_RE[i], TOKENIZE_RE[i + 1]);
+      if (opts.debug && text !== pre) console.log('HIT' + i, pre + ' -> '
+        + text, TOKENIZE_RE[i], TOKENIZE_RE[i + 1]);
+
     }
 
     // https://github.com/dhowe/rita/issues/65
@@ -311,39 +316,39 @@ const DOMAIN_RE = /^(com|org|edu|net|xyz|gov|int|eu|hk|tw|cn|de|ch|fr)$/;
 const SQUOTE_RE = /^[\u2019\u2018`']+$/, ALPHA_RE = /^[A-Za-z’']+$/, WS_RE = / +/;
 const APOS_RE = /^[\u2019']+$/, NL_RE = /(\r?\n)+/g, WWW_RE = /^(www[0-9]?|WWW[0-9]?)$/;
 const NOSP_BF_PUNCT_RE = /^[,\.\;\:\?\!\)""\u201c\u201d\u2019\u2018`'%\u2026\u2103\^\*\u00b0\/\u2044\u2012\u2013\u2014\-@]+$/;
-const LINEBREAK_RE = /[\n\r\036]/;
+const LINEBREAK_RE = /\r?\n/;//[\n\r\036]/;
 const URL_RE = /((http[s]?):(\/\/))?([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b)([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/;
 const EMAIL_RE = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 const TOKENIZE_RE = [
   // save  --------
-  /([Ee])[.]([Gg])[.]/g, "_$1$2_", //E.g
-  /([Ii])[.]([Ee])[.]/g, "_$1$2_", //i.e
-  /([Aa])[.]([Mm])[.]/g, "_$1$2_", //a.m.
-  /([Pp])[.]([Mm])[.]/g, "_$1$2_", //p.m.
-  /(Cap)[\.]/g, "_Cap_", //Cap.
-  /([Cc])[\.]/g, "_$1_", //c.
-  /([Ee][Tt])[\s]([Aa][Ll])[\.]/, "_$1zzz$2_", // et al.
-  /(etc|ETC)[\.]/g, "_$1_", //etc.
-  /([Pp])[\.]([Ss])[\.]/g, "_$1$2dot_", // p.s.
-  /([Pp])[\.]([Ss])/g, "_$1$2_", // p.s
-  /([Pp])([Hh])[\.]([Dd])/g, "_$1$2$3_", // Ph.D
-  /([Rr])[\.]([Ii])[\.]([Pp])/g, "_$1$2$3_", // R.I.P
-  /([Vv])([Ss]?)[\.]/g, "_$1$2_", // vs. and v.
-  /([Mm])([Rr]|[Ss]|[Xx])[\.]/g, "_$1$2_", // Mr. Ms. and Mx.
-  /([Dd])([Rr])[\.]/g, "_$1$2_", // Dr.
-  /([Pp])([Ff])[\.]/g, "_$1$2_", // Pf.
-  /([Ii])([Nn])([Dd]|[Cc])[\.]/g, "_$1$2$3_", // Ind. and Inc.
-  /([Cc])([Oo])[\.][\,][\s]([Ll])([Tt])([Dd])[\.]/g, "_$1$2dcs$3$4$5_", // co., ltd.
-  /([Cc])([Oo])[\.][\s]([Ll])([Tt])([Dd])[\.]/g, "_$1$2ds$3$4$5_", // co. ltd.
-  /([Cc])([Oo])[\.][\,]([Ll])([Tt])([Dd])[\.]/g, "_$1$2dc$3$4$5_", // co.,ltd.
-  /([Cc])([Oo])([Rr]?)([Pp]?)[\.]/g, "_$1$2$3$4_", // Corp. and Co.
-  /([Ll])([Tt])([Dd])[\.]/g, "_$1$2$3_", // ltd.
-  /(prof|Prof|PROF)[\.]/g, "_$1_", //Prof. 
+  /\b([Ee])[.]([Gg])[.]/g, "_$1$2_", //E.g
+  /\b([Ii])[.]([Ee])[.]/g, "_$1$2_", //i.e
+  /\b([Aa])[.]([Mm])[.]/g, "_$1$2_", //a.m.
+  /\b([Pp])[.]([Mm])[.]/g, "_$1$2_", //p.m.
+  /\b(Cap)[\.]/g, "_Cap_", //Cap.
+  /\b([Cc])[\.]/g, "_$1_", //c.
+  /\b([Ee][Tt])[\s]([Aa][Ll])[\.]/, "_$1zzz$2_", // et al.
+  /\b(etc|ETC)[\.]/g, "_$1_", //etc.
+  /\b([Pp])[\.]([Ss])[\.]/g, "_$1$2dot_", // p.s.
+  /\b([Pp])[\.]([Ss])/g, "_$1$2_", // p.s
+  /\b([Pp])([Hh])[\.]([Dd])/g, "_$1$2$3_", // Ph.D
+  /\b([Rr])[\.]([Ii])[\.]([Pp])/g, "_$1$2$3_", // R.I.P
+  /\b([Vv])([Ss]?)[\.]/g, "_$1$2_", // vs. and v.
+  /\b([Mm])([Rr]|[Ss]|[Xx])\./g, "_$1$2_", // Mr. Ms. and Mx.
+  /\b([Dd])([Rr])[\.]/g, "_$1$2_", // Dr.
+  /\b([Pp])([Ff])[\.]/g, "_$1$2_", // Pf.
+  /\b([Ii])([Nn])([Dd]|[Cc])[\.]/g, "_$1$2$3_", // Ind. and Inc.
+  /\b([Cc])([Oo])[\.][\,][\s]([Ll])([Tt])([Dd])[\.]/g, "_$1$2dcs$3$4$5_", // co., ltd.
+  /\b([Cc])([Oo])[\.][\s]([Ll])([Tt])([Dd])[\.]/g, "_$1$2ds$3$4$5_", // co. ltd.
+  /\b([Cc])([Oo])[\.][\,]([Ll])([Tt])([Dd])[\.]/g, "_$1$2dc$3$4$5_", // co.,ltd.
+  /\b([Cc])([Oo])([Rr]?)([Pp]?)[\.]/g, "_$1$2$3$4_", // Corp. and Co.
+  /\b([Ll])([Tt])([Dd])[\.]/g, "_$1$2$3_", // ltd.
+  /\b(prof|Prof|PROF)[\.]/g, "_$1_", //Prof. 
   //   /(\w+([\.-_]?\w+)*)@(\w+([\.-_]?\w+)*)\.(\w{2,3})/g, "$1__AT__$3.$5", //email addresses
   // /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/g, "$1__AT__$2", //email addresses
-  /([\w.]+)@(\w+\.\w+)/g, "$1__AT__$2",
-  /((http[s]?):(\/\/))([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b)([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/g, "$2COLON$3$4$5", //urls with http(s)
+  /\b([\w.]+)@(\w+\.\w+)/g, "$1__AT__$2",
+  /\b((http[s]?):(\/\/))([-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b)([-a-zA-Z0-9()@:%_\+.~#?&\/\/=]*)/g, "$2COLON$3$4$5", //urls with http(s)
   //decimal #
   /([\-]?[0-9]+)\.([0-9]+)/g, "$1DECIMALDOT$2_", //(-)27.3
   /([\-]?[0-9]+)\.([0-9]+)e([\-]?[0-9]+)/g, "_$1DECIMALDOT$2POWERE$3_", //(-)1.2e10
@@ -355,9 +360,9 @@ const TOKENIZE_RE = [
   /\n\r/g, " _LINEFEEDCARRIAGERETURN_ ", // LF CR
   /\n/g, " _LINEFEED_ ", // LF
   /\r/g, " _CARRIAGERETURN_ ", // CR
-  /\036/g, " _RECORDSEPARATOR_ ", // RS
+  ///\036/g, " _RECORDSEPARATOR_ ", // RS
   //--------------------------
-  /\.\.\.\s/g, "_elipsisDDD_ ",
+  /\.\.\.\s/g, "_elipsis_ ",
   /([\?!\"\u201C\.,;:@#$%&])/g, " $1 ",
   /\u2026/g, " \u2026 ",
   /\s+/g, ' ',
@@ -377,7 +382,7 @@ const TOKENIZE_RE = [
   /^\s+/g, '',
   /\^/g, " ^ ",
   /\u00b0/g, " \u00b0 ",
-  /_elipsisDDD_/g, " ... ",
+  /_elipsis_/g, " ... ",
 
   //pop ------------------
   /_([Ee])([Gg])_/g, "$1.$2.", //Eg
@@ -414,19 +419,21 @@ const TOKENIZE_RE = [
   /_CARRIAGERETURN_/g, "\r", // CR
   /_CARRIAGERETURNLINEFEED_/g, "\r\n", // CR LF
   /_LINEFEEDCARRIAGERETURN_/g, "\n\r", // LF CR
-  /_RECORDSEPARATOR_/g, "\\036", // RS
+  ///_RECORDSEPARATOR_/g, "\\036", // RS
 ];
 
 const CONTRACTS_RE = [
   // TODO: 'She'd have wanted' -> 'She would have wanted'
-  /([Cc])an['\u2019]t/g, "$1an not",
-  /([Dd])idn['\u2019]t/g, "$1id not",
-  /([CcWw])ouldn['\u2019]t/g, "$1ould not",
-  /([Ss])houldn['\u2019]t/g, "$1hould not",
-  /([Ii])t['\u2019]s/g, "$1t is",
-  /([tT]hat)['\u2019]s/g, "$1 is",
-  /(she|he|you|they|i)['\u2019]d/gi, "$1 had", // changed from would, 12/8/23
-  /(she|he|you|they|i)['\u2019]ll/gi, "$1 will",
+
+  // WORKING HERE: add word boundaries \b to these
+  /\b([Cc])an['\u2019]t/g, "$1an not",
+  /\b([Dd])idn['\u2019]t/g, "$1id not",
+  /\b([CcWw])ouldn['\u2019]t/g, "$1ould not",
+  /\b([Ss])houldn['\u2019]t/g, "$1hould not",
+  /\b([Ii])t['\u2019]s/g, "$1t is",
+  /\b([tT]hat)['\u2019]s/g, "$1 is",
+  /\b(she|he|you|they|i)['\u2019]d/gi, "$1 had", // changed from would, 12/8/23
+  /\b(she|he|you|they|i)['\u2019]ll/gi, "$1 will",
   /n['\u2019]t /g, " not ",
   /['\u2019]ve /g, " have ",
   /['\u2019]re /g, " are "
