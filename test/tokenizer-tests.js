@@ -188,8 +188,14 @@ describe('Tokenizer', () => {
     expect(RiTa.tokenize("The programs.")).eql(["The", "programs", "."]);
     expect(RiTa.tokenize("The find.")).eql(["The", "find", "."]);
     expect(RiTa.tokenize("The bancor.", { debug: 0 })).eql(["The", "bancor", "."]);
+    expect(RiTa.tokenize("The prof. ate.", { debug: 0 })).eql(["The", "prof.", "ate", "."]);
 
     let input, expected, output;
+
+    input = "According to the prof. climate change was real.";
+    expected = ['According', 'to', 'the', 'prof.', 'climate', 'change', 'was', 'real', '.'];
+    output = RiTa.tokenize(input);
+    expect(output).eql(expected);
 
     input = "The student said 'learning is fun'";
     expected = ["The", "student", "said", "'", "learning", "is", "fun", "'"];

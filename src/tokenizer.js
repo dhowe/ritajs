@@ -344,7 +344,7 @@ const TOKENIZE_RE = [
   /\b([Cc])([Oo])[\.][\,]([Ll])([Tt])([Dd])[\.]/g, "_$1$2dc$3$4$5_", // co.,ltd.
   /\b([Cc])([Oo])([Rr]?)([Pp]?)[\.]/g, "_$1$2$3$4_", // Corp. and Co.
   /\b([Ll])([Tt])([Dd])[\.]/g, "_$1$2$3_", // ltd.
-  /\b(prof|Prof|PROF)[\.]/g, "_$1_", //Prof. 
+  /\b(prof|Prof|PROF)\./g, "_$1_", //Prof. 
   //   /(\w+([\.-_]?\w+)*)@(\w+([\.-_]?\w+)*)\.(\w{2,3})/g, "$1__AT__$3.$5", //email addresses
   // /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,3})+$/g, "$1__AT__$2", //email addresses
   /\b([\w.]+)@(\w+\.\w+)/g, "$1__AT__$2",
