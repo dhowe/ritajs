@@ -180,6 +180,13 @@ describe('Tokenizer', () => {
     }
   });
 
+  it('Should tokenize compound words', function () {
+
+    expect(RiTa.tokenize("snow-capped")).eql(["snow-capped"]);
+    expect(RiTa.tokenize("whole-hearted")).eql(["whole-hearted"]);
+    expect(RiTa.tokenize("dun-colored")).eql(["dun-colored"]);
+  });
+
   it('Should call tokenize only', function () {
 
     expect(RiTa.tokenize("")).eql([""]);
@@ -189,6 +196,9 @@ describe('Tokenizer', () => {
     expect(RiTa.tokenize("The find.")).eql(["The", "find", "."]);
     expect(RiTa.tokenize("The bancor.", { debug: 0 })).eql(["The", "bancor", "."]);
     expect(RiTa.tokenize("The prof. ate.", { debug: 0 })).eql(["The", "prof.", "ate", "."]);
+    expect(RiTa.tokenize("The snow-capped peaks")).eql(["The","snow-capped","peaks"]);
+    expect(RiTa.tokenize("The whole-hearted sighs")).eql(["The","whole-hearted","sighs"]);
+    expect(RiTa.tokenize("The dun-colored hills")).eql(["The","dun-colored","hills"]);
 
     let input, expected, output;
 
