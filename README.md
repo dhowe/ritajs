@@ -153,12 +153,6 @@ Please make contributions via [fork-and-pull](https://reflectoring.io/github-for
 
 Once you have things running with npm/mocha/tsup, you might also try [VSCode](https://code.visualstudio.com/).
 
-Some of the following extensions may also be useful:
-
-* hbenl.vscode-mocha-test-adapter
-* hbenl.vscode-test-explorer
-* ms-vscode.test-adapter-converter
-
 Here you can see the tests in the VSCode _Testing_ view
 
 <img width="800" alt="vscode-tests" src="https://github.com/dhowe/ritajs/assets/737638/103665fb-3dc8-448b-9ed3-d706be6797fc">
