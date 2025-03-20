@@ -24,8 +24,8 @@ Note: version 3.0 contains breaking changes -- please check the [release notes](
 * For [esm](#an-esm-browser-sketch): ```import { RiTa } from "https://esm.sh/rita";```
 * For [node](#with-nodejs-and-npm): `$ npm install rita`  
    ```let { RiTa }  = require('rita');```
-* For [browsers](#a-simple-browser-sketch): ```<script src="https://unpkg.com/rita"></script>```
-* For [p5.js](#with-p5js): ```<script src="https://unpkg.com/rita"></script>```
+* For [browsers](#a-simple-browser-sketch): ```<script src="https://cdn.jsdelivr.net/npm/rita"></script>```
+* For [p5.js](#with-p5js): ```<script src="https://cdn.jsdelivr.net/npm/rita"></script>```
 * For [developers](#developing)
 
 
@@ -184,7 +184,7 @@ Create a new file on your desktop called 'test.html' with the following lines, s
 
 ```html
 <html>
-  <script src="https://unpkg.com/rita"></script>
+  <script src="https://cdn.jsdelivr.net/npm/rita"></script>
   <script>
     window.onload = function() {
       let words = RiTa.tokenize("The elephant took a bite!");
@@ -218,8 +218,8 @@ Create a new file on your desktop called 'test.html' with the following lines, s
 
 ```html
 <html>
-  <script src="https://unpkg.com/p5"></script>
-  <script src="https://unpkg.com/rita"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/rita"></script>
   <script>
   function setup() {
 
@@ -236,7 +236,7 @@ Create a new file on your desktop called 'test.html' with the following lines, s
   </script>
 </html>
 ```
-If you already have a sketch, simply add `<script src="https://unpkg.com/rita"></script>` to your index.html to include RiTa.
+If you already have a sketch, simply add `<script src="https://cdn.jsdelivr.net/npm/rita"></script>` to your index.html to include RiTa.
 
 
 #### With [node.js](http://nodejs.org/) and [npm](https://www.npmjs.com/)
