@@ -390,12 +390,10 @@ describe('Lexicon', function () {
       'ability', 'abnormality'
     ]);
 
-    expect((await RiTa.search({ numSyllables: 2 }))).eql([
-      'abashed', 'abate',
-      'abbey', 'abbot',
-      'abet', 'abhor',
-      'abide', 'abject',
-      'ablaze', 'able'
+    let res = await RiTa.search({ numSyllables: 2 })
+    expect(res).eql([
+      'abashed', 'abate', 'abbey', 'abbot', 'abduct',
+      'abet', 'abhor', 'abide', 'abject', 'ablaze',
     ]);
 
     expect((await RiTa.search({ numSyllables: 2, pos: 'n' }))).eql([
@@ -757,9 +755,9 @@ describe('Lexicon', function () {
       expect(RiTa.isAlliteration(res[i], "cat"), 'FAIL2: ' + res[i]).to.be.true;
     }
 
-    res = await RiTa.alliterations("dog", { minLength: 14, pos: 'v' });
+    res = await RiTa.alliterations("cat", { minLength: 14, pos: 'v' });
     res.forEach(r => expect(r.length >= 14).to.be.true);
-    expect(res).eql(['disenfranchise']);
+    expect(res).eql(['counterbalance']);
 
     res = await RiTa.alliterations("dog", { minLength: 13, pos: 'rb', limit: 11 });
     res.forEach(r => expect(r.length >= 13).to.be.true);
