@@ -1,7 +1,7 @@
-![ritajs](pen.jpg)
+<!--![ritajs](pen.jpg)-->
 
 
-<a href="https://github.com/dhowe/rjs3/actions"><img src="https://github.com/dhowe/rjs3/actions/workflows/node.js.yml/badge.svg" alt="ci tests"></a> <a href="https://www.npmjs.com/package/rita"><img src="https://img.shields.io/npm/v/rita.svg" alt="npm version"></a> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/badge/license-GPL-orange.svg" alt="license"></a>
+<a href="https://github.com/dhowe/rjs3/actions"><img src="https://github.com/dhowe/rjs3/actions/workflows/node.js.yml/badge.svg" alt="ci tests"></a> <a href="https://www.npmjs.com/package/rita"><img src="https://img.shields.io/npm/v/rita.svg" alt="npm version"></a> <a href="https://www.gnu.org/licenses/gpl-3.0.en.html"><img src="https://img.shields.io/badge/license-GPL-orange.svg" alt="license"></a> <img src="https://img.shields.io/badge/%E2%99%A8_ai--free-100%25-green" alt="100% ai-free">
 
 
 ## RiTa: tools for computational writing
@@ -24,8 +24,8 @@ Note: version 3.0 contains breaking changes -- please check the [release notes](
 * For [esm](#an-esm-browser-sketch): ```import { RiTa } from "https://esm.sh/rita";```
 * For [node](#with-nodejs-and-npm): `$ npm install rita`  
    ```let { RiTa }  = require('rita');```
-* For [browsers](#a-simple-browser-sketch): ```<script src="https://unpkg.com/rita"></script>```
-* For [p5.js](#with-p5js): ```<script src="https://unpkg.com/rita"></script>```
+* For [browsers](#a-simple-browser-sketch): ```<script src="https://cdn.jsdelivr.net/npm/rita"></script>```
+* For [p5.js](#with-p5js): ```<script src="https://cdn.jsdelivr.net/npm/rita"></script>```
 * For [developers](#developing)
 
 
@@ -153,12 +153,6 @@ Please make contributions via [fork-and-pull](https://reflectoring.io/github-for
 
 Once you have things running with npm/mocha/tsup, you might also try [VSCode](https://code.visualstudio.com/).
 
-Some of the following extensions may also be useful:
-
-* hbenl.vscode-mocha-test-adapter
-* hbenl.vscode-test-explorer
-* ms-vscode.test-adapter-converter
-
 Here you can see the tests in the VSCode _Testing_ view
 
 <img width="800" alt="vscode-tests" src="https://github.com/dhowe/ritajs/assets/737638/103665fb-3dc8-448b-9ed3-d706be6797fc">
@@ -184,7 +178,7 @@ Create a new file on your desktop called 'test.html' with the following lines, s
 
 ```html
 <html>
-  <script src="https://unpkg.com/rita"></script>
+  <script src="https://cdn.jsdelivr.net/npm/rita"></script>
   <script>
     window.onload = function() {
       let words = RiTa.tokenize("The elephant took a bite!");
@@ -218,8 +212,8 @@ Create a new file on your desktop called 'test.html' with the following lines, s
 
 ```html
 <html>
-  <script src="https://unpkg.com/p5"></script>
-  <script src="https://unpkg.com/rita"></script>
+  <script src="https://cdn.jsdelivr.net/npm/p5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/rita"></script>
   <script>
   function setup() {
 
@@ -236,7 +230,7 @@ Create a new file on your desktop called 'test.html' with the following lines, s
   </script>
 </html>
 ```
-If you already have a sketch, simply add `<script src="https://unpkg.com/rita"></script>` to your index.html to include RiTa.
+If you already have a sketch, simply add `<script src="https://cdn.jsdelivr.net/npm/rita"></script>` to your index.html to include RiTa.
 
 
 #### With [node.js](http://nodejs.org/) and [npm](https://www.npmjs.com/)
