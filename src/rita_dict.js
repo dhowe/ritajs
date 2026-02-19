@@ -12591,6 +12591,7 @@ export default {
   "myopia": ["m-ay ow1 p-iy ah", "nn"],
   "myopic": ["m-ay aa1 p-ih-k", "jj"],
   "myriad": ["m-ih1 r-iy ah-d", "jj nn"],
+  "myrrh": ["m-er1", "nn"],
   "myrtle": ["m-er1 t-ah-l", "nn"],
   "myself": ["m-ay s-eh1-l-f", "prp"],
   "mysterious": ["m-ih s-t-ih1 r-iy ah-s", "jj"],
