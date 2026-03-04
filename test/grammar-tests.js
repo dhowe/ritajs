@@ -5,9 +5,9 @@ import { RiTa } from './index.js';
 describe('Grammar', () => {
 
   const T = { trace: 1 };
-
-
-  it('Should call RiTa.grammar.expand()', function () {
+  
+  // see tests in RiScript/test/grammar-tests.js
+  it('Should call RiTa.grammar().expand()', function () {
     const context = {
       lucy: {
         name: 'Lucy',
