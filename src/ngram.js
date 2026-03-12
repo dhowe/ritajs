@@ -43,15 +43,20 @@ class Ngram {
     }
     this.tokenCount += tokens.length;
 
-    let that = this;
+    let self = this;
     let addSeq = function (start, end, next, pad) {
       let toks = tokens.slice(start, end);
-      if (pad === 'left') toks = padLeft(toks, that.n);
-      if (pad === 'right') toks = padRight(toks, that.n);
-      let seq = toks.join(Ngram.separator)
-      if (!that.data.has(seq)) that.data.set(seq, []);
-      //console.log(seq, '-> ' + next);//, pad ? 'pad-'+pad : '-');
-      that.data.get(seq).push(next);
+      if (pad === 'left') toks = padLeft(toks, self.n - 1);
+      if (pad === 'right') toks = padRight(toks, self.n - 1);
+      let seq = toks.join(Ngram.separator);
+
+      if (toks.length !== self.n - 1) throw Error('Bad sequence: len='
+        + toks.length + ' toks: [' + toks.join(',') + '] next: ' + next);
+
+
+      if (!self.data.has(seq)) self.data.set(seq, []);
+      //console.log('add: [' + seq.replace(/\|/, ',') + '] -> ' + next);//, pad ? 'pad-'+pad : '-');
+      if (next) self.data.get(seq).push(next);
     }
 
     // for (let i = 0; i < this.n - 1; i++) {
@@ -60,14 +65,14 @@ class Ngram {
 
     addSeq(0, 0, tokens[0], 'left');
     for (let i = 0; i < tokens.length; i++) {
-      if (i < this.n - 1) { // first n-1, pad left
+      if (i < this.n - 2) { // first n-1, pad left
         addSeq(0, i + 1, tokens[i + 1], 'left');
       }
       if (i + this.n <= tokens.length) {  // no pad
-        addSeq(i, i + this.n, tokens[i + this.n]);
+        addSeq(i, i + this.n - 1, tokens[i + this.n - 1]);
       }
       else {// last n-1, pad right 
-        addSeq(i, i + this.n, tokens[i + this.n - 1], 'right');
+        addSeq(i, i + this.n - 1, tokens[i + this.n - 1], 'right');
       }
     }
     return this;
@@ -125,13 +130,18 @@ class Ngram {
   completions(pre, post) {
   }
 
+  normalizePath(path, maxLength=this.n-1)  {
+    if (!Array.isArray(path)) path = this.tokenize(path);
+    if (path.length > maxLength) path = path.slice(0, maxLength);
+    return path;
+  }
+
   probabilities(path, temperature) {
 
-    if (!Array.isArray(path)) path = this.tokenize(path);
-    if (path.length > this.n) path = path.slice(0, this.n);
+    path = this.normalizePath(path);
 
     let choices;
-    if (path.length === this.n) {
+    if (path.length === this.n - 1) {
       let seq = path.join(Ngram.separator);
       choices = this.data.get(seq);
     }
@@ -156,18 +166,28 @@ class Ngram {
         return a;
       }, 0);
     }
-    if (!Array.isArray(path)) path = [path];
 
-    if (path.length === 1) {
+    let npath = this.normalizePath(path, this.n-1);
+
+    if (npath.length === 1) {
       let vals = Array.from(this.data.values()).flat();
-      let hits = countInArray(path[0], vals);
+      let hits = countInArray(npath[0], vals);
       return hits / this.tokenCount;
     }
 
-    if (path.length > this.n) path = path.slice(0, this.n);
-    let seq = path.join(Ngram.separator);
-    let hits = this.data.get(seq)?.length ?? 0;
-    return hits / this.tokenCount;
+    // TODO: not sure what this function is supposed to do -- prob of last token in path given preceding tokens? -- need to rewrite
+
+    if (npath.length === this.n) { // corrected?
+      let last = npath[npath.length - 1];
+      let seq = npath.slice(0, npath.length - 1).join(Ngram.separator);
+      let dist = this.data.get(seq);
+      if (!dist) return 0;
+      let hits = countInArray(last, dist);
+      return hits / dist.length;
+    }
+
+    // let dist = this.probabilities(path);
+    // return dist[check[check.length - 1]] || 0;
   }
 
   // probability(path) {

@@ -4,7 +4,7 @@ import Ngram from '../src/ngram.js';
 import { RiTa } from './index.js';
 
 describe('Ngram', function () {
-
+  
   let sample = "One reason people lie is to achieve personal power. Achieving personal power is helpful for one who pretends to be more confident than he really is. For example, one of my friends threw a party at his house last month. He asked me to come to his party and bring a date. However, I did not have a girlfriend. One of my other friends, who had a date to go to the party with, asked me about my date. I did not want to be embarrassed, so I claimed that I had a lot of work to do. I said I could easily find a date even better than his if I wanted to. I also told him that his date was ugly. I achieved power to help me feel confident; however, I embarrassed my friend and his date. Although this lie helped me at the time, since then it has made me look down on myself.";
   let sample2 = "One reason people lie is to achieve personal power. Achieving personal power is helpful for one who pretends to be more confident than he really is. For example, one of my friends threw a party at his house last month. He asked me to come to his party and bring a date. However, I did not have a girlfriend. One of my other friends, who had a date to go to the party with, asked me about my date. I did not want to be embarrassed, so I claimed that I had a lot of work to do. I said I could easily find a date even better than his if I wanted to. I also told him that his date was ugly. I achieved power to help me feel confident; however, I embarrassed my friend and his date. Although this lie helped me at the time, since then it has made me look down on myself. After all, I did occasionally want to be embarrassed.";
   let sample3 = sample + ' One reason people are dishonest is to achieve power.';
@@ -31,7 +31,7 @@ describe('Ngram', function () {
 
     ngram = new Ngram(n);
     ngram.addText(txt);
-//    console.log(ngram.data);
+    //console.log(ngram.data);
     checkTokens(ngram, txt);
 
     ngram = new Ngram(n);
@@ -48,11 +48,14 @@ describe('Ngram', function () {
 
   it('should call ngram.probability', function () {
 
+    // TODO: remove this function from api
+
+
     let text, rm;
     text = 'the dog ate the boy the';
     rm = new Ngram(3);
     rm.addText(text);
-    console.log(rm.data);
+    //console.log(rm.data);
 
     expect(rm.probability("the")).eq(.5);
     expect(rm.probability("dog")).eq(1 / 6);
@@ -74,11 +77,12 @@ describe('Ngram', function () {
     expect(rm.probability("Non-exist")).eq(0);
   });
 
-  it.skip('should call ngram.probability.array', function () {
+  it('should call ngram.probability.array', function () {
+    // TODO: remove this function from api
 
     let rm = new Ngram(3);
     rm.addText(sample);
-    console.log(rm.data);
+    //console.log(rm.data);
 
     let check = 'personal power is'.split(' ');
     console.log(rm.probabilities(check));
@@ -115,7 +119,7 @@ describe('Ngram', function () {
 
     for (let i = 0; i < checks.length; i++) {
       let res = rm.probabilities(checks[i]);
-      console.log(checks[i] + ":", res, " ->", expected[i]);
+      //console.log(checks[i] + ":", res, " ->", expected[i]);
       expect(res).eql(expected[i]);
     }
   });
@@ -225,13 +229,15 @@ function ngramEquals(ngram, copy) {
 function checkTokens(ngram, txt) {
   let tokens = RiTa.tokenize(txt);
   tokens.forEach((t, i) => {
-    let seq = padLeft(tokens.slice(0, i + 1), ngram.n).join('|');
+    let seq = padLeft(tokens.slice(0, i + 1), ngram.n - 1).join('|');
     let next = tokens[i + 1];
     expect(ngram.data.has(seq), seq).to.be.true;
-    expect(ngram.data.get(seq)).to.include(next);
+    if (next) {
+      expect(ngram.data.get(seq)).to.include(next);
+    }
   });
   let total = Array.from(ngram.data.values()).reduce((a, b) => a + b.length, 0);
-  expect(total).to.equal(tokens.length + ngram.n);
+  expect(total).to.equal(tokens.length);// + ngram.n);
 }
 
 function padLeft(arr, len, fill = '') {
