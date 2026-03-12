@@ -31,7 +31,7 @@ describe('Ngram', function () {
 
     ngram = new Ngram(n);
     ngram.addText(txt);
-    console.log(ngram.data);
+//    console.log(ngram.data);
     checkTokens(ngram, txt);
 
     ngram = new Ngram(n);
@@ -46,7 +46,7 @@ describe('Ngram', function () {
     ngramEquals(ngram, copy);
   });
 
-  it.skip('should call ngram.probability', function () {
+  it('should call ngram.probability', function () {
 
     let text, rm;
     text = 'the dog ate the boy the';
@@ -70,9 +70,10 @@ describe('Ngram', function () {
     rm.addText(sample);
     expect(rm.probability("power")).eq(0.017045454545454544);
 
-    //bad inputs
+    // non-existent input
     expect(rm.probability("Non-exist")).eq(0);
   });
+
   it.skip('should call ngram.probability.array', function () {
 
     let rm = new Ngram(3);
@@ -113,8 +114,8 @@ describe('Ngram', function () {
     }, {}];
 
     for (let i = 0; i < checks.length; i++) {
-      //console.log(checks[i] + ":", res, " ->", expected[i]);
       let res = rm.probabilities(checks[i]);
+      console.log(checks[i] + ":", res, " ->", expected[i]);
       expect(res).eql(expected[i]);
     }
   });

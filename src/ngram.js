@@ -44,9 +44,7 @@ class Ngram {
     this.tokenCount += tokens.length;
 
     let that = this;
-    let pads = 0;
     let addSeq = function (start, end, next, pad) {
-      if (pad) pads++;
       let toks = tokens.slice(start, end);
       if (pad === 'left') toks = padLeft(toks, that.n);
       if (pad === 'right') toks = padRight(toks, that.n);
@@ -88,7 +86,7 @@ class Ngram {
     const rand = Ngram.parent.randomChoice;
     const minLength = options.minLength || 5;
     const maxLength = options.maxLength || 35;
-    
+
     // WORKING HERE -- pick first token....
 
     let firstToken = rand(Array.from(this.data.keys()).filter());
@@ -142,13 +140,34 @@ class Ngram {
       let matches = Array.from(this.data.keys()).filter(k => k.endsWith(seq));
       choices = matches.map(k => this.data.get(k)).flat();
     }
+
     let pdist = choices.reduce((acc, k) => {
       acc[k] = (acc[k] || 0) + 1;
       return acc;
     }, {});
 
-    
     return Ngram.normalizeDist(pdist, temperature);
+  }
+
+  probability(path) {
+    function countInArray(ele, array) {
+      return array.reduce((a, b) => {
+        if (ele === b) a++;
+        return a;
+      }, 0);
+    }
+    if (!Array.isArray(path)) path = [path];
+
+    if (path.length === 1) {
+      let vals = Array.from(this.data.values()).flat();
+      let hits = countInArray(path[0], vals);
+      return hits / this.tokenCount;
+    }
+
+    if (path.length > this.n) path = path.slice(0, this.n);
+    let seq = path.join(Ngram.separator);
+    let hits = this.data.get(seq)?.length ?? 0;
+    return hits / this.tokenCount;
   }
 
   // probability(path) {
@@ -221,13 +240,6 @@ class Ngram {
     return tdist;
   }
 }
-
-// function countInArray(ele, array) {
-//   return array.reduce((a, b) => {
-//     if (ele === b) a++;
-//     return a;
-//   }, 0);
-// }
 
 function padLeft(arr, len, fill = '') {
   return Array(len).fill(fill).concat(arr).slice(arr.length);
