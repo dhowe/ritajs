@@ -1,10 +1,10 @@
 
-import {expect} from 'chai';
+import { expect } from 'chai';
 
 import { RiTa } from './index.js';
 
 describe('Analyzer', function () {
-  
+
   let hasLex = true;
 
   /*it('Should one-off', function () {
@@ -119,10 +119,10 @@ describe('Analyzer', function () {
     feats = RiTa.analyze("bit");
     expect(feats.pos).eq("vbd");
     expect(feats.syllables).eq("b-ih-t");
-    
+
     //'bit': as a vbd
     feats = RiTa.analyze("It bit me.");
-    expect(feats.pos).eq("prp vbd prp ."); 
+    expect(feats.pos).eq("prp vbd prp .");
     //'bit': as an nn
     feats = RiTa.analyze("Give the duck a bit of bread.");
     expect(feats.pos).eq("vb dt nn dt nn in nn .");
@@ -145,7 +145,7 @@ describe('Analyzer', function () {
     //remade as a vbn
     feats = RiTa.analyze("They will be remade into something else.");
     0 && expect(feats.pos).eq("prp md vb vbn in nn rb .");
-     
+
     //become
     feats = RiTa.analyze("She becomes a companion to a foreigner.");
     expect(feats.pos).eq("prp vbz dt nn to dt nn .");
@@ -205,9 +205,9 @@ describe('Analyzer', function () {
     { pos: 'jj', tokens: 'on-campus', phones: 'aa-n-k-ae-m-p-ah-s', stresses: '1-1/0', syllables: 'aa-n/k-ae-m/p-ah-s' },
     { pos: 'jj', tokens: 'family-run', phones: 'f-ae-m-ah-l-iy-r-ah-n', stresses: '1/0/0-1', syllables: 'f-ae/m-ah/l-iy/r-ah-n' },
     { pos: 'jj', tokens: 'low-grade', phones: 'l-ow-g-r-ey-d', stresses: '1-1', syllables: 'l-ow/g-r-ey-d' },
-    { pos: 'jj', tokens: 'round-trip', phones: 'r-aw-n-d-t-r-ih-p', stresses: '1-1', syllables: 'r-aw-n-d/t-r-ih-p'}
-  ];
-    
+    { pos: 'jj', tokens: 'round-trip', phones: 'r-aw-n-d-t-r-ih-p', stresses: '1-1', syllables: 'r-aw-n-d/t-r-ih-p' }
+    ];
+
     for (let i = 0; i < pool1.length; i++) {
       const feats = RiTa.analyze(pool1[i]);
       eq(feats.pos, feats1[i].pos, '[pos]fail at ' + pool1[i]);
@@ -237,7 +237,7 @@ describe('Analyzer', function () {
       { pos: 'jj', tokens: 'cold-blooded', phones: 'k-ow-l-d-b-l-ah-d-ah-d', stresses: '1-1/0', syllables: 'k-ow-l-d/b-l-ah/d-ah-d' },
       { pos: 'nn', tokens: 'bell-bottoms', phones: 'b-eh-l-b-aa-t-ah-m-z', stresses: '1-1/0', syllables: 'b-eh-l/b-aa/t-ah-m-z' },
       { pos: 'jj', tokens: 'corn-fed', phones: 'k-ao-r-n-f-eh-d', stresses: '1-1', syllables: 'k-ao-r-n/f-eh-d' },
-      { pos: 'jj', tokens: 'able-bodied', phones: 'ey-b-ah-l-b-aa-d-iy-d', stresses: '1/0-1/0', syllables: 'ey/b-ah-l/b-aa/d-iy-d'}
+      { pos: 'jj', tokens: 'able-bodied', phones: 'ey-b-ah-l-b-aa-d-iy-d', stresses: '1/0-1/0', syllables: 'ey/b-ah-l/b-aa/d-iy-d' }
     ];
     for (let i = 0; i < pool2A.length; i++) {
       const feats = RiTa.analyze(pool2A[i]);
@@ -262,7 +262,7 @@ describe('Analyzer', function () {
       { pos: 'nn', tokens: 'x-ray', phones: 'eh-k-z-r-ey', stresses: '1-1', syllables: 'eh-k-z/r-ey' },
       { pos: 'nn', tokens: 'a-frame', phones: 'ey-f-r-ey-m', stresses: '1-1', syllables: 'ey/f-r-ey-m' },
       { pos: 'jj', tokens: 'high-tech', phones: 'hh-ay-t-eh-k', stresses: '1-1', syllables: 'hh-ay/t-eh-k' },
-      { pos: 'nn', tokens: 'nitty-gritty', phones: 'n-ih-t-iy-g-r-ih-t-iy', stresses: '1/0-1/0', syllables: 'n-ih/t-iy/g-r-ih/t-iy'}
+      { pos: 'nn', tokens: 'nitty-gritty', phones: 'n-ih-t-iy-g-r-ih-t-iy', stresses: '1/0-1/0', syllables: 'n-ih/t-iy/g-r-ih/t-iy' }
     ];
     for (let i = 0; i < pool2B.length; i++) {
       const feats = RiTa.analyze(pool2B[i]);
@@ -280,7 +280,7 @@ describe('Analyzer', function () {
     let feats3 = [
       { pos: 'nn', tokens: 'co-op', phones: 'k-ow-ah-p', stresses: '0-0', syllables: 'k-ow/ah-p' },
       { pos: 'jj', tokens: 'roly-poly', phones: 'r-ow-l-iy-p-aa-l-iy', stresses: '1/0-1/0', syllables: 'r-ow/l-iy/p-aa/l-iy' },
-      { pos: 'jj', tokens: 'topsy-turvy', phones: 't-aa-p-s-iy-t-er-v-iy', stresses: '1/0-1/0', syllables: 't-aa-p/s-iy/t-er/v-iy'}
+      { pos: 'jj', tokens: 'topsy-turvy', phones: 't-aa-p-s-iy-t-er-v-iy', stresses: '1/0-1/0', syllables: 't-aa-p/s-iy/t-er/v-iy' }
     ];
     for (let i = 0; i < pool3.length; i++) {
       const feats = RiTa.analyze(pool3[i]);
@@ -351,7 +351,7 @@ describe('Analyzer', function () {
     RiTa.SILENCE_LTS = lts; // reset
   });
 
-  it('Should handle dashes', function(){
+  it('Should handle dashes', function () {
     // https://github.com/dhowe/rita/issues/176
 
     let lts = RiTa.SILENCE_LTS;
@@ -363,7 +363,7 @@ describe('Analyzer', function () {
     eq(feats["pos"], "vbg ‒ dt nn vbz rb vbd to prp .");
     eq(feats["tokens"], "Teaching \u2012 the profession has always appealed to me .");
     eql(feats["tokens"].split(' '), RiTa.tokenize(sentence));
-   
+
     // U+2013
     sentence = "The teacher assigned pages 101–181 for tonight's reading material. "
     feats = RiTa.analyze(sentence);
@@ -372,8 +372,8 @@ describe('Analyzer', function () {
     eql(feats["tokens"].split(' '), RiTa.tokenize(sentence));
 
     //U+2014
-     sentence = "Type two hyphens—without a space before, after, or between them."
-     feats = RiTa.analyze(sentence);
+    sentence = "Type two hyphens—without a space before, after, or between them."
+    feats = RiTa.analyze(sentence);
     eq(feats["pos"], "nn cd nns \u2014 in dt nn in , in , cc in prp .");
     eq(feats["tokens"], "Type two hyphens — without a space before , after , or between them .");
     eql(feats["tokens"].split(' '), RiTa.tokenize(sentence));
@@ -386,7 +386,7 @@ describe('Analyzer', function () {
     eql(feats["tokens"].split(' '), RiTa.tokenize(sentence));
 
     // "--"
-    sentence ="He is afraid of two things--spiders and senior prom." ;
+    sentence = "He is afraid of two things--spiders and senior prom.";
     feats = RiTa.analyze(sentence);
     eq(feats["pos"], "prp vbz jj in cd nns -- nns cc jj nn .");
     eq(feats["tokens"], "He is afraid of two things -- spiders and senior prom .");
@@ -692,7 +692,7 @@ describe('Analyzer', function () {
       'grandchildren', 'grandchild',
       'menus', 'menu',
       'gurus', 'guru',
-      'hardness', 'hardness', 
+      'hardness', 'hardness',
       'fish', 'fish',
       'ooze', 'ooze',
       'enterprises', 'enterprise',
@@ -818,10 +818,10 @@ describe('Analyzer', function () {
       let plural = testPairs[i];
       let singular = testPairs[i + 1];
 
-      res1 = RiTa.singularize(plural, { dbug: dbug });
-      res2 = RiTa.pluralize(singular, { dbug: dbug });
-      res3 = RiTa.inflector.isPlural(plural, { dbug: dbug, fatal: false });
-      res4 = RiTa.inflector.isPlural(singular, { dbug: dbug, fatal: false });
+      res1 = RiTa.singularize(plural, { dbug });
+      res2 = RiTa.pluralize(singular, { dbug });
+      res3 = RiTa.inflector.isPlural(plural, { dbug });
+      res4 = RiTa.inflector.isPlural(singular, { dbug });
 
       // singularize
       expect(res1).eq(singular, 'FAIL1: singularize(' + plural
@@ -842,7 +842,7 @@ describe('Analyzer', function () {
       if (!isMass && !isModal) {
         expect(res4).eq(false, 'FAIL4: isPlural(' + singular + ') was true for singular noun,'
           + ' isMassNoun=' + RiTa.MASS_NOUNS.includes(singular.toLowerCase()));
-          //+ ' isModalException=' + RiTa.MODAL_EXCEPTIONS.includes(singular.toLowerCase()) + '\n\n');
+        //+ ' isModalException=' + RiTa.MODAL_EXCEPTIONS.includes(singular.toLowerCase()) + '\n\n');
       }
 
       // TODO: add isSingular
@@ -855,7 +855,7 @@ describe('Analyzer', function () {
     expect(RiTa.analyzer.phonesToStress("ah b-ae1-n d-ah-n")).eq("0/1/0");
   });
 
-  it('Should not pluralize/singularize uncountables', function(){
+  it('Should not pluralize/singularize uncountables', function () {
     expect(RiTa.pluralize("honey")).eq("honey");
     expect(RiTa.pluralize("pasta")).eq("pasta");
     expect(RiTa.pluralize("advice")).eq("advice");

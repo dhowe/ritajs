@@ -487,8 +487,7 @@ class Lexicon {
   rawPhones(word, opts) {
 
     let noLts = opts && opts.noLts;
-    let fatal = opts && opts.fatal;
-    let rdata = this._lookupRaw(word, fatal);
+    let rdata = this._lookupRaw(word);
     if (rdata && rdata.length) return rdata[0];
 
     if (!noLts) {
@@ -686,17 +685,17 @@ class Lexicon {
     }
   }
 
-  _posData(word, fatal) {
-    let rdata = this._lookupRaw(word, fatal);
+  _posData(word) {
+    let rdata = this._lookupRaw(word);
     if (rdata && rdata.length === 2) return rdata[1];
   }
 
-  _posArr(word, fatal) {
-    let rdata = this._lookupRaw(word, fatal);
+  _posArr(word) {
+    let rdata = this._lookupRaw(word);
     if (rdata && rdata.length === 2) return rdata[1].split(' ');
   }
 
-  _lookupRaw(word, fatal) {
+  _lookupRaw(word) {
     word = word && word.toLowerCase();
     return this.data[word];
   }
