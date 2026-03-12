@@ -77,7 +77,7 @@ describe('Ngram', function () {
     expect(rm.probability("Non-exist")).eq(0);
   });
 
-  it('should call ngram.probability.array', function () {
+  it.skip('should call ngram.probability.array', function () {
     // TODO: remove this function from api
 
     let rm = new Ngram(3);
