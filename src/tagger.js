@@ -75,17 +75,28 @@ class Tagger {
 
   allTags(word, opts = {}) { // returns an array of choices
 
+    let tags = [];
     let noGuessing = opts.noGuessing || false;
     let noDerivations = opts.noDerivations || false;
 
     if (word && typeof word === 'string' && word.length) {
       let posData = this.RiTa.lexicon._posArr(word);
-      if (posData && posData.length > 0) return posData;
-      if (word.includes("-") && opts.noGuessingOnHyphenated) return [];  //#HWF
-      if (!noDerivations) return this._derivePosData(word, noGuessing);
+      if (posData && posData.length > 0) tags = posData;
+      else if (word.includes("-") && opts.noGuessingOnHyphenated) tags = [];  //#HWF
+      else if (!noDerivations) tags = this._derivePosData(word, noGuessing);
     }
 
-    return []; // empty array
+    if (opts.simple) { // convert to simple tags
+      for (let i = 0; i < tags.length; i++) {
+        if (NOUNS.includes(tags[i])) tags[i] = 'n';
+        else if (VERBS.includes(tags[i])) tags[i] = 'v';
+        else if (ADJS.includes(tags[i])) tags[i] = 'a';
+        else if (ADVS.includes(tags[i])) tags[i] = 'r';
+        else tags[i] = '-'; // default: other
+      }
+    }
+
+    return tags;
   }
 
   /**

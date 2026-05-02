@@ -257,7 +257,6 @@ describe('Lexicon', function () {
   });
 
   it("Should handle an augmented lexicon", function () {
-
     let toAdd = {
       'deg': ['d-eh1-g', 'nn'],
       'wadly': ['w-ae1-d l-iy', 'rb'],
@@ -315,7 +314,7 @@ describe('Lexicon', function () {
       // TODO: occasional problem here, examples: beaux
 
       //No nn & vbg, No -ness, -ism
-      let pos = RiTa.lexicon._posData(result);
+      let pos = RiTa.lexicon._posData(result);      
       expect(!pos || pos.indexOf("vbg") < 0, "randomWord nns: " + result).to.be.true;
       expect(!result.endsWith("ness"), "randomWord nns: " + result).to.be.true;
       expect(!result.endsWith("isms"), "randomWord nns: " + result).to.be.true;
@@ -358,6 +357,8 @@ describe('Lexicon', function () {
       }
     }
     expect(results.length > 1).to.be.true; // 10 words not the same
+
+    
   });
 
   it('Should call randomWord with syllables', async function () {
