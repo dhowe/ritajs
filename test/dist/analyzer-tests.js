@@ -829,8 +829,8 @@ describe("Analyzer", function() {
       let singular = testPairs[i + 1];
       res1 = RiTa.singularize(plural, { dbug });
       res2 = RiTa.pluralize(singular, { dbug });
-      res3 = RiTa.inflector.isPlural(plural, { dbug, fatal: false });
-      res4 = RiTa.inflector.isPlural(singular, { dbug, fatal: false });
+      res3 = RiTa.inflector.isPlural(plural, { dbug });
+      res4 = RiTa.inflector.isPlural(singular, { dbug });
       expect(res1).eq(singular, "FAIL1: singularize(" + plural + ") was " + res1 + ", but expected " + singular + "\n        pluralize(" + singular + ") was " + res2 + "\n\n");
       expect(res2).eq(plural, "FAIL2: pluralize(" + singular + ") was " + res2 + ", but expected " + plural + "\n        singularize(" + plural + ") was " + res1 + "\n\n");
       expect(res3).eq(true, "FAIL3: isPlural(" + plural + ") was false for plural noun\n\n");
