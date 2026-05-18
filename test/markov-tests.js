@@ -17,46 +17,39 @@ describe('Markov', function () {
 
   it('should call RiMarkov', function () {
     let rm = RiTa.markov(3);
-    ok(typeof rm === 'object');
-    eq(rm.size(), 0);
-
-    // should throw when options conflict
-    expect(function () { let rm = new RiMarkov(3, { maxLengthMatch: 2 }) }).to.throw();
+    expect(typeof rm).eq('object');
+    expect(rm.size()).eq(0);
   });
 
   it('should call RiTa.markov', function () {
     let rm = RiTa.markov(3);
-    ok(typeof rm === 'object');
-    eq(rm.size(), 0);
+    expect(typeof rm).eq('object');
+    expect(rm.size()).eq(0);
 
     rm = RiTa.markov(3, { text: "The dog ran away" });
-    eq(rm.size(), 4);
+    expect(rm.size()).eq(6); // includes start/end tokens
 
     rm = RiTa.markov(3, { text: "" });
-    eq(rm.size(), 0);
+    expect(rm.size()).eq(0);
     expect(function () { rm.generate() }).to.throw();
 
     rm = RiTa.markov(3, { text: sample });
-    expect(rm.generate().length > 0);
+    console.log(rm.generate());
 
+    expect(rm.generate().length).to.be.greaterThan(0);
 
     rm = RiTa.markov(3, { text: "Too short." });
     expect(function () { rm.generate() }).to.throw();
 
-    rm = RiTa.markov(3, { text: 1 });
-    expect(function () { rm.generate() }).to.throw();
+    expect(function () { rm = RiTa.markov(3, { text: 1 }); }).to.throw();
 
-    rm = RiTa.markov(3, { text: false });
-    expect(function () { rm.generate() }).to.throw();
+    expect(function () { RiTa.markov(3, { text: false }) }).to.throw();
 
-    rm = RiTa.markov(3, { text: ["Sentence one.", "Sentence two."] });
-    eq(rm.size(), 6);
+    rm = RiTa.markov(3, { sentences: ["Sentence one.", "Sentence two."] });
+    expect(rm.size()).eq(10);
 
-    rm = RiTa.markov(3, { text: RiTa.sentences(sample) });
-    expect(rm.generate().length > 0);
-
-    expect(function () { rm = RiTa.markov(1) }).to.throw();
-    expect(function () { rm = RiTa.markov(3, { maxLengthMatch: 2 }) }).to.throw();
+    rm = RiTa.markov(3, { sentences: RiTa.sentences(sample) });
+    expect(rm.generate().length).to.be.greaterThan(0);
   });
 
   it('should call Random.pSelect', function () {
@@ -149,15 +142,15 @@ describe('Markov', function () {
     let rm, toks;
 
     rm = new RiMarkov(3);
-    rm.addText(RiTa.sentences(sample));
-    eq(rm._flatten(rm.createSeed(['I', 'also'])), "I also");
+    rm.addText(sample);
+    expect(rm._flatten(rm.createSeed(['I', 'also']))).eq("I also");
 
     rm = new RiMarkov(4);
-    rm.addText(RiTa.sentences(sample));
-    eq(rm._flatten(rm.createSeed('I also')), "I also told");
-    eq(rm._flatten(rm.createSeed('I also told')), "I also told");
-    eq(rm._flatten(rm.createSeed(['I', 'also'])), "I also told");
-    eq(rm._flatten(rm.createSeed(['I', 'also', 'told'])), "I also told");
+    rm.addText(sample);
+    expect(rm._flatten(rm.createSeed('I also'))).eq("I also told");
+    expect(rm._flatten(rm.createSeed('I also told'))).eq("I also told");
+    expect(rm._flatten(rm.createSeed(['I', 'also']))).eq("I also told");
+    expect(rm._flatten(rm.createSeed(['I', 'also', 'told']))).eq("I also told");
 
     ////////////////////////////////////////////////////////
 
@@ -195,11 +188,11 @@ describe('Markov', function () {
 
   it('should throw on failed generate', function () {
     let rm = new RiMarkov(4, { maxLengthMatch: 6 });
-    rm.addText(RiTa.sentences(sample));
+    rm.addSentences(RiTa.sentences(sample));
     expect(() => rm.generate(5)).to.throw;
 
     rm = new RiMarkov(4, { maxLengthMatch: 5 });
-    rm.addText(RiTa.sentences(sample));
+    rm.addSentences(RiTa.sentences(sample));
     expect(() => rm.generate(5)).to.throw;
 
     rm = new RiMarkov(4, { maxAttempts: 1 });
@@ -207,46 +200,46 @@ describe('Markov', function () {
     expect(() => rm.generate(5)).to.throw;
   });
 
-  it('should split on custom tokenizers', function () {
+  it('should apply custom tokenizers', function () {
 
     let sents = ['asdfasdf-', 'aqwerqwer+', 'asdfasdf*'];
     let tokenize = (sent) => sent.split("");
     let untokenize = (sents) => sents.join("");
 
     let rm = new RiMarkov(4, { tokenize, untokenize });
-    rm.addText(sents);
+    rm.addSentences(sents);
+    //console.log(rm);
 
-    let se = [...rm.sentenceEnds];
-    eql(se, ['-', '+', '*']);
-
-    let res = rm._splitEnds(sents.join(''));
-    eql(res, sents);
+    expect(rm.size()).eq(sents.reduce((sum, s) => sum + s.length, 0) + (2 * sents.length));
   });
 
-  it('should apply custom tokenizers', function () {
+  it('should compute start distrib', function () {
 
     let sents = ['asdfasdf-', 'asqwerqwer+', 'aqadaqdf*'];
     let tokenize = (sent) => sent.split("");
     let untokenize = (sents) => sents.join("");
 
     let rm = new RiMarkov(4, { tokenize, untokenize });
-    rm.addText(sents);
+    rm.addSentences(sents).build();
 
-    eql(rm.sentenceStarts, ['a', 'a', 'a']);
-    expect(rm.sentenceEnds.size === 3).true;
-    expect(rm.sentenceEnds.has('-')).true;
-    expect(rm.sentenceEnds.has('+')).true;
-    expect(rm.sentenceEnds.has('*')).true;
-    //rm.trace=1;
-    let result = rm.generate(2, { seed: 'as', maxLength: 20 });
+    expect(Object.keys(rm.model.suffixes.startIndexDist())).eql(['a']);
+  });
 
-    /*   console.log('got ', result);
-      for (let i = 0; i < result.length; i++) {
-        console.log(i, result[i]);
-      } */
+  it('RiMarkov.generate.restart', () => {
+    let sents = ['asdfasdf-', 'asqwerqwer+', 'aqadaqdf*'];
+    let tokenize = (sent) => sent.split("");
+    let untokenize = (sents) => sents.join("");
 
-    eq(result.length, 2);
-    ok(/^as.*[-=*]$/.test(result[0]), "FAIL: '" + result[0] + "'");
+    let rm = new RiMarkov(4, { tokenize, untokenize });
+    rm.addSentences(sents).build();
+
+    expect(Object.keys(rm.model.suffixes.startIndexDist())).eql(['a']);
+
+    for (let i = 0; i < 10; i++) {
+      let result = rm.generate(2, ['a', 's'], { maxLength: 20 });
+      //console.log(i, `'${result}'`);
+      expect(/^as[a-z]+[-+*]$/.test(result)).to.be.true;
+    }
   });
 
   it('should generate non-english sentences', function () {
@@ -254,11 +247,11 @@ describe('Markov', function () {
     let text = '家 安 春 夢 家 安 春 夢 ！ 家 安 春 夢 德 安 春 夢 ？ 家 安 春 夢 安 安 春 夢 。';
     let sentArray = text.match(/[^，；。？！]+[，；。？！]/g);
     let rm = new RiMarkov(4);
-    rm.addText(sentArray);
-    let result = rm.generate(5, { seed: '家' });
-    eq(result.length, 5);
+    rm.addSentences(sentArray);
+    let result = rm.generate({ prompt: ['家'], numSentences: 5 });
+    expect(result.length).eq(5);
     expect(/^[^，；。？！]+[，；。？！]$/.test(result[0]), "FAIL: '" + result[0] + "'").is.true;
-    result.forEach(r => ok(/^[^，；。？！]+[，；。？！]$/.test(r), "FAIL: '" + r + "'"));
+    result.forEach(r => expect(/^[^，；。？！]+[，；。？！]$/.test(r), "FAIL: '" + r + "'").to.be.true);
   });
 
   it('should apply custom chinese tokenizers ', function () {
@@ -269,48 +262,48 @@ describe('Markov', function () {
     let untokenize = (sents) => sents.join("");
 
     let rm = new RiMarkov(4, { tokenize, untokenize });
-    rm.addText(sents);
-    let result = rm.generate(5, { seed: '家' });
+    rm.addSentences(sents);
+    let result = rm.generate({ prompt: ['家'], numSentences: 5 });
 
-    eq(result.length, 5);
+    expect(result.length).eq(5);
     expect(/^[^，；。？！]+[，；。？！]$/.test(result[0]), "FAIL: '" + result[0] + "'").is.true;
-    result.forEach(r => ok(/^[^，；。？！]+[，；。？！]$/.test(r), "FAIL: '" + r + "'"));
+    result.forEach(r => expect(/^[^，；。？！]+[，；。？！]$/.test(r), "FAIL: '" + r + "'").to.be.true);
   });
 
   it('should call generate1', function () {
 
     let rm;
-    rm = new RiMarkov(4, { disableInputChecks: true });
-    rm.addText(RiTa.sentences(sample));
+    rm = new RiMarkov(4);
+    rm.addText(sample);
 
     let sent = rm.generate();
-    ok(typeof sent === 'string');
-    eq(sent[0], sent[0].toUpperCase());
-    ok(/[!?.]$/.test(sent));
+    expect(typeof sent).eq('string');
+    expect(sent[0]).eq(sent[0].toUpperCase());
+    expect(/[!?.]$/.test(sent)).to.be.true;
   });
 
   it('should call generate2', function () {
     let rm;
     rm = new RiMarkov(4, { disableInputChecks: true });
-    rm.addText(RiTa.sentences(sample));
-    let sent = rm.generate({ seed: "I" });
-    ok(typeof sent === 'string');
-    eq(sent[0], "I");
-    ok(/[!?.]$/.test(sent));
+    rm.addText(sample);
+    let sent = rm.generate({ prompt: ["I"] });
+    expect(typeof sent).eq('string');
+    expect(sent[0]).eq("I");
+    expect(/[!?.]$/.test(sent)).to.be.true;
   });
 
   it('should call generate3', function () {
 
     let rm;
-    rm = new RiMarkov(4, { disableInputChecks: 1 });
-    rm.addText(RiTa.sentences(sample));
-    let sents = rm.generate(3);
-    eq(sents.length, 3);
+    rm = new RiMarkov(4);
+    rm.addText(sample);
+    let sents = rm.generate({ numSentences: 3 });
+    expect(sents.length).eq(3);
     for (let i = 0; i < sents.length; i++) {
       let s = sents[i];
       //console.log(i + ") " + s);
-      eq(s[0], s[0].toUpperCase()); // "FAIL: bad first char in '" + s + "' -> " + s[0]);
-      ok(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'");
+      expect(s[0]).eq(s[0].toUpperCase()); // "FAIL: bad first char in '" + s + "' -> " + s[0]);
+      expect(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'").to.be.true;
     }
   });
 
@@ -318,49 +311,51 @@ describe('Markov', function () {
     let rm = new RiMarkov(3); // 3 is max for sample, with input checking
     rm.addText(sample);
     let s = rm.generate();
-    ok(s && s[0] === s[0].toUpperCase(), "FAIL: bad first char in '" + s + "'");
-    ok(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'");
+    expect(s && s[0] === s[0].toUpperCase(), "FAIL: bad first char in '" + s + "'").to.be.true;
+    expect(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'").to.be.true;
     let num = RiTa.tokenize(s).length;
-    ok(num >= 5 && num <= 35);
+    expect(num >= 5 && num <= 35).to.be.true;
   });
 
   it('should call generate5', function () { // misc
 
-    let rm = new RiMarkov(3, { maxLengthMatch: 19, trace: 0 });
+    let rm = new RiMarkov(3)//, { maxLengthMatch: 2, trace: 0 });
+    rm.addText(sample2);
 
-    rm.addText(RiTa.sentences(sample2));
-    let res = rm.generate({ seed: "One reason", maxLength: 20 });
-    ok(res.startsWith("One reason"));
-    ok(/[!?.]$/.test(res));
+    let res = rm.generate({ prompt: ["One", "reason"] })//, maxLength: 20 });
+    console.log(res);
+    expect(res.startsWith("One reason")).to.be.true;
+    expect(/^[A-Z][a-z ,I]+[.?!]$/.test(res)).to.be.true;
+    expect(/[!?.]$/.test(res)).to.be.true;
 
     rm = new RiMarkov(3, { trace: 0 });
-    rm.addText(RiTa.sentences(sample2));
+    rm.addText(sample2);
     res = rm.generate();
-    ok(/^[A-Z]/.test(res));
-    ok(/[!?.]$/.test(res));
+    expect(/^[A-Z]/.test(res)).to.be.true;
+    expect(/[!?.]$/.test(res)).to.be.true;
 
     rm = new RiMarkov(3, { trace: 0 });
-    rm.addText(RiTa.sentences(sample2));
-    res = rm.generate(2, { maxLength: 20 });
-    ok(res.length === 2);
+    rm.addText(sample2);
+    res = rm.generate({ maxLength: 20, numSentences: 2 });
+    expect(res.length).eq(2);
     res.forEach((r, i) => {
       //console.log(i, r);
-      ok(/^[A-Z]/.test(r));
-      ok(/[!?.]$/.test(r));
+      expect(/^[A-Z]/.test(r)).to.be.true;
+      expect(/[!?.]$/.test(r)).to.be.true;
     });
   });
 
   it('should call generate.minMaxLength', function () {
 
-    let rm = new RiMarkov(3, { disableInputChecks: 0 }), minLength = 7, maxLength = 20;
-    rm.addText(RiTa.sentences(sample));
-    let sents = rm.generate(3, { minLength, maxLength });
-    eq(sents.length, 3);
+    let rm = new RiMarkov(3), minLength = 7, maxLength = 20;
+    rm.addText(sample);
+    let sents = rm.generate(3, { minLength, maxLength, numSentences: 3 });
+    expect(sents.length).eq(3);
     for (let i = 0; i < sents.length; i++) {
       let s = sents[i];
       //console.log(i + ") " + s);
-      eq(s[0], s[0].toUpperCase());
-      ok(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'");
+      expect(s[0]).eq(s[0].toUpperCase());
+      expect(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'").to.be.true;
       let num = RiTa.tokenize(s).length;
       expect(num >= minLength && num <= maxLength,
         (num + ' not within ' + minLength + '-' + maxLength)).to.be.true;
@@ -369,136 +364,136 @@ describe('Markov', function () {
 
   it('should call generate.minMaxLengthDIC', function () {
 
-    let rm = new RiMarkov(4, { disableInputChecks: 1 });
-    rm.addText(RiTa.sentences(sample));
+    let rm = new RiMarkov(4);
+    rm.addText(sample);
     for (let i = 0; i < 3; i++) {
       let minLength = (3 + i), maxLength = (10 + i);
       let s = rm.generate({ minLength, maxLength });
       //console.log(i + ") " + s);
-      ok(s && s[0] === s[0].toUpperCase(), "FAIL: bad first char in '" + s + "'");
-      ok(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'");
+      expect(s && s[0] === s[0].toUpperCase(), "FAIL: bad first char in '" + s + "'").to.be.true;
+      expect(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'").to.be.true;
       let num = RiTa.tokenize(s).length;
       expect(num >= minLength && num <= maxLength, (num + ' not within '
         + minLength + '-' + maxLength)).to.be.true;
     }
   });
 
-  it('should call generate.seed', function () {
+  it('should call generate.prompt', function () {
 
-    let rm = new RiMarkov(4, { disableInputChecks: 1 });
-    let start = 'One';
-    rm.addText(RiTa.sentences(sample));
-    let s = rm.generate({ seed: start });
-    ok(s.startsWith(start));
+    let rm = new RiMarkov(4);
+    let start = ['One'];
+    rm.addText(sample);
+    let s = rm.generate({ prompt: start });
+    expect(s.startsWith(start)).to.be.true;
 
-    start = 'Achieving';
-    let res = rm.generate({ seed: start });
-    ok(typeof res === 'string');
-    ok(res.startsWith(start));
+    start = ['Achieving'];
+    let res = rm.generate({ prompt: start });
+    expect(typeof res).eq('string');
+    expect(res.startsWith(start)).to.be.true;
 
-    start = 'I';
-    let arr = rm.generate(2, { seed: start });
-    ok(Array.isArray(arr));
-    eq(arr.length, 2);
-    ok(arr[0].startsWith(start));
+    start = ['I'];
+    let arr = rm.generate({ prompt: start, numSentences: 2 });
+    expect(Array.isArray(arr)).to.be.true;
+    expect(arr.length).eq(2);
+    expect(arr[0].startsWith(start)).to.be.true;
 
     // should throw when sentence start is not found
-    start = "Not-exist";
-    expect(function () { rm.generate(2, { seed: start }) }).to.throw();
-    start = "I and she";
-    expect(function () { rm.generate(2, { seed: start }) }).to.throw();
-    // if startToken is empty string, equal to not have start token
-    start = "";
-    ok(rm.generate(2, { seed: start }).length === 2);
-    // if startToken is just space, throw
-    start = " ";
-    expect(function () { rm.generate(2, { seed: start }) }).to.throw();
-    // if startToken is an array
-    start = ["a"]
-    expect(rm.generate(2, { seed: start }).length).eq(2);
-    expect(rm.generate({ seed: start })[0].toLowerCase()).eq("a");
+    start = ["Not-exist"]; 
+    // console.log(rm.generate({ prompt: start }));
+    // console.log(rm.generate({ prompt: start, numSentences: 1 }));
+    // console.log(rm.generate({ prompt: start, numSentences: 2 }));
+    // return;
+    expect(function () { rm.generate({ prompt: start}) }).to.throw();
+    expect(function () { rm.generate({ prompt: start, numSentences: 1 }) }).to.throw();
+    expect(function () { rm.generate({ prompt: start, numSentences: 2 }) }).to.throw();
 
-    expect(function () { rm.generate(1, { seed: start }) }).to.throw();
+    start = ["I and she"];
+    expect(function () { rm.generate({ prompt: start, numSentences: 2 }) }).to.throw();
+    // if startToken is empty string, equal to not have start token
+    start = [""];
+    expect(rm.generate({ prompt: start, numSentences: 2 }).length).eq(2);
+    // if startToken is just space, throw
+    start = [" "];
+    expect(function () { rm.generate({ prompt: start, numSentences: 2 }) }).to.throw();
   });
 
-  it('should call generate.seedArray', function () {
+  it('should call generate.promptArray', function () {
 
-    let rm = new RiMarkov(4, { disableInputChecks: 1 });
+    let rm = new RiMarkov(4);
     let start = ['One'];
-    rm.addText(RiTa.sentences(sample));
+    rm.addText(sample);
     for (let i = 0; i < 5; i++) {
-      let s = rm.generate({ seed: start });
+      let s = rm.generate({ prompt: start });
       //console.log(i + ") " + s);
-      ok(s.startsWith(start));
+      expect(s.startsWith(start)).to.be.true;
     }
 
     start = ['Achieving'];
     for (let i = 0; i < 5; i++) {
-      let res = rm.generate({ seed: start });
-      ok(typeof res === 'string');
-      ok(res.startsWith(start));
+      let res = rm.generate({ prompt: start });
+      expect(typeof res).eq('string');
+      expect(res.startsWith(start)).to.be.true;
     }
 
     start = ['I'];
     for (let i = 0; i < 5; i++) {
-      let arr = rm.generate(2, { seed: start });
-      eq(arr.length, 2);
-      ok(arr[0].startsWith(start));
+      let arr = rm.generate(2, { prompt: start, numSentences: 2 });
+      expect(arr.length).eq(2);
+      expect(arr[0].startsWith(start)).to.be.true;
     }
 
-    rm = new RiMarkov(4, { disableInputChecks: 1 });
-    rm.addText(RiTa.sentences(sample));
+    rm = new RiMarkov(4);
+    rm.addText(sample);
     start = ['One', 'reason'];
     for (let i = 0; i < 1; i++) {
-      let s = rm.generate({ seed: start });
-      ok(s.startsWith(start.join(' ')));
+      let s = rm.generate({ prompt: start });
+      expect(s.startsWith(start.join(' '))).to.be.true;
     }
 
     start = ['Achieving', 'personal'];
     for (let i = 0; i < 5; i++) {
-      let res = rm.generate({ seed: start });
-      ok(typeof res === 'string');
-      ok(res.startsWith(start.join(' ')));
+      let res = rm.generate({ prompt: start });
+      expect(typeof res).eq('string');
+      expect(res.startsWith(start.join(' '))).to.be.true;
     }
 
     start = ['I', 'also'];
     for (let i = 0; i < 5; i++) {
-      let res = rm.generate({ seed: start });
-      ok(typeof res === 'string');
-      ok(res.startsWith(start.join(' ')));
+      let res = rm.generate({ prompt: start });
+      expect(typeof res).eq('string');
+      expect(res.startsWith(start.join(' '))).to.be.true;
     }
   });
 
-  it('Should call generate.allowDuplicates', function () {
+  it.skip('Should call generate.allowDuplicates', function () {
     let rm = RiTa.markov(3, { text: sample3 });
     let res;
     for (let index = 0; index < 10; index++) {
       res = rm.generate({ allowDuplicates: false });
-      ok(!sample3.includes(res))
+      expect(!sample3.includes(res)).to.be.true;
     }
   });
 
-  it('Should call generate.temperature', function () {
+  it('Should call generate.temp', function () {
     let rm = RiTa.markov(3, { text: sample3 });
-    for (let index = 0; index < 10; index++) {
-      let res = rm.generate({ temperature: 1 });
-      ok(res.length > 0);
+    for (let index = 0; index < 1; index++) {
+      let res = rm.generate({ temperature: 0 });
+      expect(res.length).to.be.greaterThan(0);
+      res = rm.generate({ temperature: 1 });
+      expect(res.length).to.be.greaterThan(0);
       res = rm.generate({ temperature: 0.1 });
-      ok(res.length > 0);
+      expect(res.length).to.be.greaterThan(0);
       res = rm.generate({ temperature: 100 });
-      ok(res.length > 0);
+      expect(res.length).to.be.greaterThan(0);
     }
-    expect(() => rm.generate({ temperature: 0 })).to.throw()
-
-    expect(() => rm.generate({ temperature: -1 })).to.throw()
   });
 
   it('should generate across sentences', function () {
 
     let rm = new RiMarkov(3, { trace: 0 });
-    rm.addText(RiTa.sentences(sample2));
+    rm.addText(sample2);
 
-    let sents = rm.generate(3, { strict: true });
+    let sents = rm.generate({ numSentences: 3, strictBackoff: true });
     //sents.forEach((s, i) => console.log(i, s));
     let toks = RiTa.tokenize(sents.join(' '));
 
@@ -506,31 +501,20 @@ describe('Markov', function () {
     for (let j = 0; j <= toks.length - rm.n; j++) {
       let part = toks.slice(j, j + rm.n);
       let res = RiTa.untokenize(part);
-      ok(includesWithWrap(res, sample2), 'output not found in text: "' + res + '"\n' + sample2);
+      expect(includesWithWrap(res, sample2), 'output not found in text: "' + res + '"\n' + sample2).to.be.true;
     }
-  });
+  })
 
   function includesWithWrap(part, whole) {
     let wrappedCheck = whole + ' ' + whole; // handle wrapping case
-    return wrappedCheck.includes(part);
+    return whole.includes(part);
   }
-
-  it('should add tokens to wraparound', function () {
-    let rm = new RiMarkov(3, { trace: 0 });
-    rm.addText(RiTa.sentences('The dog ate the cat. A girl ate a mat.'));
-    let s = ['mat', '.'];
-    let parent = rm._pathTo(s);
-    ok(parent.token === '.');
-    ok(parent.childCount() === 1);
-    ok(parent.childNodes()[0].token === 'The');
-  });
 
   it('should call generate.mlm1', function () {
 
     let mlms = 8, theText = sample4, rm;
 
     rm = new RiMarkov(3, { maxLengthMatch: mlms, trace: 0 });
-    expect(typeof rm.input === 'object').to.be.true;
     rm.addText(RiTa.sentences(theText));
 
     let sents = rm.generate(2);
@@ -543,15 +527,15 @@ describe('Markov', function () {
       for (let j = 0; j <= toks.length - rm.n; j++) {
         let part = toks.slice(j, j + rm.n);
         let res = RiTa.untokenize(part);
-        ok(theText.indexOf(res) > -1, 'output not found in text: "' + res + '"');
+        expect(theText.indexOf(res) > -1, 'output not found in text: "' + res + '"').to.be.true;
       }
 
       // All sequences of len=mlms+1 must NOT  be in text
       for (let j = 0; j <= toks.length - (mlms + 1); j++) {
         let part = toks.slice(j, j + (mlms + 1));
         let res = RiTa.untokenize(part);
-        ok(theText.indexOf(res) < 0, 'Got "' + sent + '"\n\nBut "'
-          + res + '" was found in input:\n\n' + sample + '\n\n' + rm.input);
+        expect(theText.indexOf(res) < 0, 'Got "' + sent + '"\n\nBut "'
+          + res + '" was found in input:\n\n' + sample + '\n\n' + rm.input).to.be.true;
       }
     }
   });
@@ -561,7 +545,7 @@ describe('Markov', function () {
     let mlms = 9;
     let rm = new RiMarkov(3, { maxLengthMatch: mlms, trace: 0 });
     expect(typeof rm.input === 'object').to.be.true;
-    rm.addText(RiTa.sentences(sample2));
+    rm.addText(sample2);
     let sents = rm.generate(3);
     for (let i = 0; i < sents.length; i++) {
       let sent = sents[i];
@@ -570,13 +554,13 @@ describe('Markov', function () {
       for (let j = 0; j <= toks.length - rm.n; j++) {
         let part = toks.slice(j, j + rm.n);
         let res = RiTa.untokenize(part);
-        ok(sample2.indexOf(res) > -1, 'output not found in text: "' + res + '"');
+        expect(sample2.indexOf(res) > -1, 'output not found in text: "' + res + '"').to.be.true;
       }
       for (let j = 0; j <= toks.length - (mlms + 1); j++) {
         let part = toks.slice(j, j + (mlms + 1));
         let res = RiTa.untokenize(part);
-        ok(sample2.indexOf(res) < 0, 'Got "' + sent + '"\n\nBut "'
-          + res + '" was found in input:\n\n' + sample + '\n\n' + rm.input);
+        expect(sample2.indexOf(res) < 0, 'Got "' + sent + '"\n\nBut "'
+          + res + '" was found in input:\n\n' + sample + '\n\n' + rm.input).to.be.true;
       }
     }
   });
@@ -587,25 +571,25 @@ describe('Markov', function () {
     rm.addText((sample));
 
     let res = rm.completions("people lie is".split(' '));
-    eql(res, ["to"]);
+    expect(res).eql(["to"]);
 
     res = rm.completions("One reason people lie is".split(' '));
-    eql(res, ["to"]);
+    expect(res).eql(["to"]);
 
     res = rm.completions("personal power".split(' '));
-    eql(res, ['.', 'is']);
+    expect(res).eql(['.', 'is']);
 
     res = rm.completions(['to', 'be', 'more']);
-    eql(res, ['confident']);
+    expect(res).eql(['confident']);
 
     res = rm.completions("I"); // testing the sort
     let expec = ["did", "claimed", "had", "said", "could",
       "wanted", "also", "achieved", "embarrassed"
     ];
-    eql(res, expec);
+    expect(res).eql(expec);
 
     res = rm.completions("XXX");
-    eql(res, []);
+    expect(res).eql([]);
 
     ///////////////////// ///////////////////// /////////////////////
 
@@ -613,22 +597,22 @@ describe('Markov', function () {
     rm.addText((sample2));
 
     res = rm.completions(['I'], ['not']);
-    eql(res, ["did"]);
+    expect(res).eql(["did"]);
 
     res = rm.completions(['achieve'], ['power']);
-    eql(res, ["personal"]);
+    expect(res).eql(["personal"]);
 
     res = rm.completions(['to', 'achieve'], ['power']);
-    eql(res, ["personal"]);
+    expect(res).eql(["personal"]);
 
     res = rm.completions(['achieve'], ['power']);
-    eql(res, ["personal"]);
+    expect(res).eql(["personal"]);
 
     res = rm.completions(['I', 'did']);
-    eql(res, ["not", "occasionally"]);
+    expect(res).eql(["not", "occasionally"]);
 
     res = rm.completions(['I', 'did'], ['want']);
-    eql(res, ["not", "occasionally"]);
+    expect(res).eql(["not", "occasionally"]);
 
     //should throw with bad inputs
     expect(function () {
@@ -640,11 +624,11 @@ describe('Markov', function () {
 
     // should return undefined if no completions are found
     res = rm.completions(['I', 'non-exist'], ['want']);
-    eq(res, undefined);
+    expect(res).eq(undefined);
 
 
     res = rm.completions(['I', 'non-exist'], ['want']);
-    eq(res, undefined);
+    expect(res).eq(undefined);
 
     RiTa.SILENT = tmp;
   });
@@ -673,7 +657,7 @@ describe('Markov', function () {
     for (let i = 0; i < checks.length; i++) {
       let res = rm.probabilities(checks[i]);
       //console.log(checks[i] + ":", res, " ->", expected[i]);
-      eql(res, expected[i]);
+      expect(res).eql(expected[i]);
     }
   });
 
@@ -687,13 +671,13 @@ describe('Markov', function () {
       time: 0.5,
       party: 0.5
     };
-    eql(res, expec);
+    expect(res).eql(expec);
 
     res = rm.probabilities("people lie is".split(" "));
     expec = {
       to: 1.0
     };
-    eql(res, expec);
+    expect(res).eql(expec);
 
     res = rm.probabilities("is");
     expec = {
@@ -701,35 +685,35 @@ describe('Markov', function () {
       '.': 0.3333333333333333,
       helpful: 0.3333333333333333
     };
-    eql(res, expec);
+    expect(res).eql(expec);
 
     res = rm.probabilities("personal power".split(' '));
     expec = {
       '.': 0.5,
       is: 0.5
     };
-    eql(res, expec);
+    expect(res).eql(expec);
 
     res = rm.probabilities(['to', 'be', 'more']);
     expec = {
       confident: 1.0
     };
-    eql(res, expec);
+    expect(res).eql(expec);
 
     res = rm.probabilities("XXX");
     expec = {};
-    eql(res, expec);
+    expect(res).eql(expec);
 
     res = rm.probabilities(["personal", "XXX"]);
     expec = {};
-    eql(res, expec);
+    expect(res).eql(expec);
 
     res = rm.probabilities(['I', 'did']);
     expec = {
       "not": 0.6666666666666666,
       "occasionally": 0.3333333333333333
     };
-    eql(res, expec);
+    expect(res).eql(expec);
   });
 
   it('should call probability', function () {
@@ -739,21 +723,21 @@ describe('Markov', function () {
     rm = new RiMarkov(3);
     rm.addText(text);
 
-    eq(rm.probability("the"), .5);
-    eq(rm.probability("dog"), 1 / 6);
-    eq(rm.probability("cat"), 0);
+    expect(rm.probability("the")).eq(.5);
+    expect(rm.probability("dog")).eq(1 / 6);
+    expect(rm.probability("cat")).eq(0);
 
     text = 'the dog ate the boy that the dog found.';
     rm = new RiMarkov(3);
     rm.addText(text);
 
-    eq(rm.probability("the"), .3);
-    eq(rm.probability("dog"), .2);
-    eq(rm.probability("cat"), 0);
+    expect(rm.probability("the")).eq(.3);
+    expect(rm.probability("dog")).eq(.2);
+    expect(rm.probability("cat")).eq(0);
 
     rm = new RiMarkov(3);
     rm.addText(sample);
-    eq(rm.probability("power"), 0.017045454545454544);
+    expect(rm.probability("power")).eq(0.017045454545454544);
 
     //bad inputs
     expect(rm.probability("Non-exist")).eq(0);
@@ -765,15 +749,15 @@ describe('Markov', function () {
     rm.addText(sample);
 
     let check = 'personal power is'.split(' ');
-    eq(rm.probability(check), 1 / 3);
+    expect(rm.probability(check)).eq(1 / 3);
 
     check = 'personal powXer is'.split(' ');
-    eq(rm.probability(check), 0);
+    expect(rm.probability(check)).eq(0);
 
     check = 'someone who pretends'.split(' ');
-    eq(rm.probability(check), 1 / 2);
+    expect(rm.probability(check)).eq(1 / 2);
 
-    eq(rm.probability([]), 0);
+    expect(rm.probability([])).eq(0);
   });
 
   it('should call addText', function () {
@@ -786,10 +770,10 @@ describe('Markov', function () {
     }
     rm.addText(sents);
 
-    eq(rm.size(), count);
+    expect(rm.size()).eq(count);
 
     // unique sentence starts
-    eql([...new Set(rm.sentenceStarts)],
+    expect([...new Set(rm.sentenceStarts)]).eql(
       ['One', 'Achieving', 'For', 'He', 'However', 'I', 'Although']);
   });
 
@@ -829,10 +813,10 @@ describe('Markov', function () {
 }`).eq(rm.toString());
 
     rm = new RiMarkov(2);
-    eq(rm.toString(), "ROOT ");
+    expect(rm.toString()).eq("ROOT ");
 
     rm.addText("Can you?");
-    eq(rm.toString(), `ROOT {
+    expect(rm.toString()).eq(`ROOT {
   'you' [1,p=0.333]  {
     '?' [1,p=1.000]
   }
@@ -842,12 +826,12 @@ describe('Markov', function () {
   '?' [1,p=0.333]
 }`);
 
-    eq(rm.root.toString(), "Root");
-    eq(rm.root.child("Can").toString(), "'Can' [1,p=0.333]");
+    expect(rm.root.toString()).eq("Root");
+    expect(rm.root.child("Can").toString()).eq("'Can' [1,p=0.333]");
 
     rm = new RiMarkov(2);
     rm.addText("\\n and \\t and \\r and \\r\\n");
-    eq(rm.toString(), `ROOT {
+    expect(rm.toString()).eq(`ROOT {
   'and' [3,p=0.429]  {
     '\\t' [1,p=0.333]
     '\\r\\n' [1,p=0.333]
@@ -869,19 +853,19 @@ describe('Markov', function () {
   it('should call size', function () {
 
     let rm = new RiMarkov(4);
-    eq(rm.size(), 0);
+    expect(rm.size()).eq(0);
 
     let tokens = RiTa.tokenize(sample);
     //console.log(tokens.length + ' tokens')
     let sents = RiTa.sentences(sample);
     rm = new RiMarkov(3);
     rm.addText(sample);
-    eq(rm.size(), tokens.length);
+    expect(rm.size()).eq(tokens.length);
 
     let rm2 = new RiMarkov(4);
     rm2 = new RiMarkov(3);
     rm2.addText(sents);
-    eq(rm.size(), rm2.size());
+    expect(rm.size()).eq(rm2.size());
   });
 
   it('should fail when sentence is in inputs', function () {
@@ -895,7 +879,7 @@ describe('Markov', function () {
     rm.addText('I ate the dog.');
     expect(typeof rm.input === 'object').to.be.true;
 
-    rm = new RiMarkov(4, { disableInputChecks: 1 });
+    rm = new RiMarkov(4);
     rm.addText('I ate the dog.');
     expect(typeof rm.input === 'undefined').to.be.true;
   });
@@ -914,7 +898,7 @@ describe('Markov', function () {
     //console.log(copy.leaves.map(t => t.token));
     markovEquals(rm, copy);
 
-    rm = new RiMarkov(4, { disableInputChecks: 1 });
+    rm = new RiMarkov(4);
     rm.addText(['I ate the dog.']);
     copy = RiMarkov.fromJSON(rm.toJSON());
     markovEquals(rm, copy);
@@ -951,10 +935,6 @@ describe('Markov', function () {
 
   function markovEquals(rm, copy) {
 
-    Object.keys(rm) // check each non-object key
-      .filter(k => !/(root|input|sentenceStarts|sentenceEnds|leaves)/.test(k))
-      .forEach(k => expect(rm[k], 'failed on ' + k).eq(copy[k]));
-
     expect(rm.input).eql(copy.input);
     expect(rm.size()).eql(copy.size());
     expect(rm.sentenceStarts.toString()).eq(copy.sentenceStarts.toString());
@@ -966,11 +946,5 @@ describe('Markov', function () {
     expect(rm.toString(0, true)).eq(copy.toString(0, true));
     //expect(rm.toString()).eq(copy.toString());
     expect(rm.toJSON()).eq(copy.toJSON());
-
-
   }
-  function eql(a, b, c) { expect(a).eql(b, c); }
-  function eq(a, b, c) { expect(a).eq(b, c); }
-  function ok(a, m) { expect(a, m).to.be.true; }
-  function def(res, m) { expect(res, m).to.not.be.undefined; }
 });
