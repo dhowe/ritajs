@@ -1,32 +1,36 @@
-import { RiTa } from 'rita';
 import { SuffixArray } from "./suffixes.js";
 
 export class Model {
 
   static SILENT = false;
+  static RiTa = undefined; // for default tokenizer/untokenizer
 
-  static __props__ = { // default options
+  static defaults = { // default options
     debug: false,
     ready: false,
     suffixes: false,
     compressed: false,
     startToken: SuffixArray.SEQ_START_TOKEN,
     endToken: SuffixArray.SEQ_END_TOKEN,
-    tokenize: RiTa.tokenize,
-    untokenize: RiTa.untokenize
+    tokenize: undefined,
+    untokenize: undefined
   };
 
-  static __dict__ = Object.keys(Model.__props__);
+  static options = Object.keys(Model.defaults);
 
   constructor(input, opts) {
 
-    // to be set in build()
-    this.suffixes = undefined; 
+    Model.defaults.tokenize ??= Model.RiTa.tokenize;
+    Model.defaults.untokenize ??= Model.RiTa.untokenize;
+
     this.startToken = undefined;
     this.endToken = undefined;
     this.tokenize = undefined;
     this.untokenize = undefined;
 
+    // to be set in build()
+    this.suffixes = undefined; 
+    
     // only an options object
     if (Model.isObject(input) && typeof opts === 'undefined') {
       opts = input;
@@ -34,8 +38,8 @@ export class Model {
     }
 
     // initialize with options or default values
-    Model.__dict__.forEach(key => {
-      this[key] = Model.__props__[key]; // default value
+    Model.options.forEach(key => {
+      this[key] = Model.defaults[key]; // default value
       if (typeof opts?.[key] !== 'undefined') {
         this[key] = opts?.[key]
       }
@@ -116,7 +120,7 @@ export class Model {
     if (typeof rawText !== 'string') {
       throw Error('String required: if adding an array see addTokens() or addSentences()');
     }
-    return rawText.length ? this.addSentences(RiTa.sentences(rawText)) : this;
+    return rawText.length ? this.addSentences(Model.RiTa.sentences(rawText)) : this;
   }
 
   /**

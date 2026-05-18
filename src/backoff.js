@@ -42,10 +42,10 @@ export class BackoffModel extends Model {
   }
 
   /**
-   * Generate `numSentences` sentences using streamTokens.
-   * When prompt is empty, picks a random sentence-starter and re-seeds on each
-   * failed attempt. For multi-sentence generation, the last n-1 content tokens
-   * of each closed sentence become the prompt for the next.
+   * Generate `numSentences` sentences using a single continuous streamTokens call.
+   * Uses a stateful `generateUntil` that stops after seeing `numSentences` end tokens,
+   * so cross-sentence transitions are natural corpus n-gram transitions — no manual
+   * reseeding required.
    *
    * @param {number}   n            - n-gram order
    * @param {string[]} prompt       - initial prompt tokens
@@ -53,32 +53,26 @@ export class BackoffModel extends Model {
    * @param {number}   [opts.numSentences=1] - number of sentences to generate
    * @param {number}   [opts.temp=1]         - sampling temperature
    * @param {number}   [opts.maxLength=999]  - max tokens to generate per sentence before giving up
-   * @param {number}   [opts.maxAttempts=999]   - max attempts before giving up (including retries on generation failure)
+   * @param {number}   [opts.maxAttempts=999]   - max attempts before giving up
    * @param {boolean}  [opts.allowSpecial=false] - whether to allow special tokens in the output
-   * @param {number}   [opts.maxLengthMatch=Infinity] - if > n, filter out any generated token that would create a sequence of length maxLengthMatch that appears in the training data. E.g. with n=3 and maxLengthMatch=5, if the current context is ['the', 'cat'] and the model tries to generate 'sat', check whether ['the', 'cat', 'sat'] appears anywhere in the corpus;
+   * @param {number}   [opts.maxLengthMatch=Infinity] - max length of sequence allowed to match training data
    * @returns {string | string[]} string if count = 1, else array of sentences, length = numSentences
    */
   generateSentences(n, prompt, opts = {}) {
     const numSentences = opts.numSentences ?? 2;
-    const { numSentences: _ns, maxAttempts: _ma } = opts;
 
-    let options = { ...opts };
-    options.allowSpecial = true;
-    options.maxLength ??= BackoffModel.generationDefaults.maxLength;
-
+    const perSentenceMax = opts.maxLength ?? BackoffModel.generationDefaults.maxLength;
     const maxAttempts = opts.maxAttempts ?? BackoffModel.generationDefaults.maxAttempts;
 
-    // pick a random sentence-starter when no prompt is supplied
     const randomStarter = () => {
       if (prompt.length > 0) return [...prompt];
       return [this.pselect(this.suffixes.startIndexDist())];
     };
 
     // validate that the prompt exists in the corpus
-    const nonEmptyPrompt = prompt.filter(t => t && t.length > 0);  // exclude ""
-    const validPrompt = nonEmptyPrompt.filter(t => t.trim().length > 0);  // exclude whitespace-only
+    const nonEmptyPrompt = prompt.filter(t => t && t.length > 0);
+    const validPrompt = nonEmptyPrompt.filter(t => t.trim().length > 0);
     if (nonEmptyPrompt.length > 0 && validPrompt.length === 0) {
-      // prompt had tokens but all were whitespace-only
       throw Error(`generate() failed: prompt contains only whitespace tokens`);
     }
     if (validPrompt.length > 0) {
@@ -86,7 +80,6 @@ export class BackoffModel extends Model {
       if (!dist || Object.keys(dist).length === 0) {
         throw Error(`generate() failed: prompt [${validPrompt.join(', ')}] not found in model`);
       }
-      // for single-sentence generation, prompt must begin at a sentence boundary
       if (numSentences === 1) {
         const startDist = this.suffixes.startIndexDist();
         if (!startDist[validPrompt[0]]) {
@@ -95,45 +88,40 @@ export class BackoffModel extends Model {
       }
     }
 
-    // streamTokens yields only new tokens; seed current with the prompt for the first sentence
-    let attempts = 0, currentPrompt = randomStarter(), current = [...currentPrompt];
+    let attempts = 0;
+    while (++attempts <= maxAttempts) {
+      // Fresh counter each attempt — stops the stream after numSentences end tokens
+      let endsSeen = 0;
+      const options = {
+        ...opts,
+        allowSpecial: true,
+        maxLength: perSentenceMax * numSentences,
+        generateUntil: (t) => t === this.endToken && ++endsSeen >= numSentences,
+      };
 
-    const sentences = [];
-    const lastTokens = [];  // mirrors sentences[] — raw tokens of the most recent closed sentence
-    while (sentences.length < numSentences) {
-      if (++attempts > maxAttempts) {
-        throw Error(`generateSentences() failed after ${maxAttempts} attempts`);
+      const initialPrompt = randomStarter();
+      const allTokens = [...initialPrompt]; // streamTokens doesn't yield the prompt itself
+      for (const token of this.streamTokens(n, initialPrompt, options)) {
+        allTokens.push(token);
       }
 
-      let sentenceComplete = false;
-      for (const token of this.streamTokens(n, currentPrompt, options)) {
-        if (token === this.startToken) continue;
-        if (token === this.endToken) {
-          // endToken marks the sentence boundary — don't include it in content
-          sentences.push(this.untokenize(current));
-          lastTokens.push([...current]);
+      // Split token stream on endToken boundaries into individual sentences
+      const sentences = [];
+      let current = [];
+      for (const tok of allTokens) {
+        if (tok === this.endToken) {
+          if (current.length > 0) sentences.push(this.untokenize(current));
           current = [];
-          sentenceComplete = true;
-          break;
+        } else if (tok !== this.startToken) {
+          current.push(tok);
         }
-        current.push(token);
       }
 
-      if (sentenceComplete) {
-        if (sentences.length >= numSentences) return sentences;
-        // Reseed with (n-2) content words from the closed sentence + endToken + startToken.
-        // e.g. for n=3: ['dog', '</s>', '<s>'] — the (n+1)-token boundary context that
-        // appears in the corpus, giving proper cross-sentence n-gram probs
-        const prevWords = lastTokens[lastTokens.length - 1].slice(-(n - 2));
-        currentPrompt = [...prevWords, this.endToken, this.startToken];
-      } else {
-        // Stream exhausted (hit maxLength) without closing — reset and retry
-        currentPrompt = randomStarter();
-        current = [...currentPrompt];  // re-seed current so prompt tokens appear in output
-      }
+      if (sentences.length === numSentences) return sentences;
+      // Stream hit maxLength before producing enough sentences — retry
     }
 
-    return sentences;
+    throw Error(`generateSentences() failed after ${maxAttempts} attempts`);
   }
 
   /**

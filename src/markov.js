@@ -1,49 +1,31 @@
-import { RiTa } from 'rita';
-
 import { Model } from './model.js';
-import { BackoffModel } from './backoffer.js';
-import { SuffixArray } from './suffixes.js';
+import { BackoffModel } from './backoff.js';
 
 export default class RiMarkov {
 
-  static defaults = {
-    startToken: SuffixArray.SEQ_START_TOKEN,
-    endToken: SuffixArray.SEQ_END_TOKEN,
-    tokenizer: RiTa.tokenize,
-    untokenizer: RiTa.untokenize
-  };
-
-  static parent = undefined;
+  static RiTa = undefined;
 
   /**
    * Creates an instance of RiMarkov.
    * @param {*} input
-   * @param {*} [opts={}]
+   * @param {*} [opts]
    * @memberof RiMarkov
    */
-  constructor(input, opts={}) {
+  constructor(input, opts) {
+    this.n = -1;
     if (typeof input === 'number') {
       // for compatibility with v3.x constructor
       this.n = input;
-      input = opts.text || opts.tokens;
+      input = opts ? opts?.text || opts?.tokens : undefined;
     }
     else if (Model.isObject(input) && typeof opts === 'undefined') {
       opts = input;
-      input = undefined;
+      input = opts?.text || opts?.tokens;
     }
 
-    if (opts?.n) this.n = opts.n;
+    if (isFinite(opts?.n)) this.n = opts.n;
 
-    if (typeof input !== 'undefined' && typeof input !== 'string' && !Array.isArray(input)) {
-      throw Error('String or array required for input');
-    }
-    
     this.model = new BackoffModel(input, opts);
-
-    // if opts.sentences is provided, use it directly
-    if (typeof input === 'undefined' && Array.isArray(opts?.sentences)) {
-      input = this.model.addSentences(opts.sentences);
-    }
   }
 
   /**
@@ -60,7 +42,7 @@ export default class RiMarkov {
    * @yields {string} one token at a time
    */
   * stream(n, prompt = [], opts = {}) {
-    
+
     ({ prompt, opts } = this._resolveArgs(n, prompt, opts));
 
     if (!this.model.ready) this.model.build(); // ensure model is built before generating
@@ -245,13 +227,18 @@ export default class RiMarkov {
 
   toJSON() {
     if (!this.model.ready) this.model.build();
-    return this.model.toJSON();
+    let data = { n: this.n || -1, ...this.model.toJSON() };
+    let s = JSON.stringify(data);
+    return s;
   }
 
   static fromJSON(json) {
-    let rn = new RiMarkov();
-    rn.model = BackoffModel.fromJSON(json);
-    return rn;
+    if (typeof json !== 'string') throw Error('String required for fromJSON()');
+    let rm = new RiMarkov();
+    let parsed = JSON.parse(json);
+    rm.model = BackoffModel.fromJSON(parsed.model);
+    rm.n = parsed.n;
+    return rm;
   }
 
   /**
@@ -286,9 +273,9 @@ export default class RiMarkov {
     }
 
     if (!Array.isArray(prompt)) throw Error('Array required for prompt');
-    
+
     this.n = n ?? opts?.n ?? this.n;
-    if (typeof this.n === 'undefined') {
+    if (this.n < 2) {
       throw Error('n must be specified before calling generate() or stream()');
     }
 

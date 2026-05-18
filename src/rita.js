@@ -8,6 +8,9 @@ import Analyzer from './analyzer.js';
 import Concorder from './concorder.js';
 import RandGen from './randgen.js';
 import RiMarkov from './markov.js';
+import { SuffixArray } from './suffixes.js';
+import { Model } from './model.js';
+import { BackoffModel } from './backoff.js';
 
 import { RiScript, RiGrammar } from 'riscript';
 
@@ -731,6 +734,11 @@ RiTa.RiGrammar = RiGrammar;
 RiTa.RiMarkov = RiMarkov;
 RiTa.Stemmer = Stemmer;
 
+// INTERNAL Markov classes
+RiTa.Model = Model;
+RiTa.BackoffModel = BackoffModel;
+RiTa.SuffixArray = SuffixArray;
+
 // COMPONENTS
 RiTa.randomizer = new RandGen();
 RiTa.tagger = new Tagger(RiTa);
@@ -742,7 +750,8 @@ RiTa.lexicon = new Lexicon(RiTa);
 RiTa.conjugator = new Conjugator(RiTa);
 
 // BACKREFS
-RiMarkov.parent = RiTa;
+RiMarkov.RiTa = RiTa;
+RiTa.Model.RiTa = RiTa;
 Stemmer.tokenizer = RiTa.tokenizer;
 
 // MESSAGES
