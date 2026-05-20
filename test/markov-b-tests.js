@@ -315,7 +315,7 @@ describe('Markov.B2', () => {
     expect(() => rm2.generate(undefined, ['The'], {})).to.throw();
   });
 
-  it('RiMarkov.probability', () => {
+  it.skip('RiMarkov.probability', () => {
     const rm = new RiMarkov(exampleStr);
 
     // single-arg form: probability of a sequence (no prompt), unknown returns 0

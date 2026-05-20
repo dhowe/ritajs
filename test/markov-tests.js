@@ -730,7 +730,7 @@ describe('Markov.A', function () {
     expect(res).eql(expec);
   });
 
-  it('should call probability', function () {
+  it.skip('should call probability', function () {
 
     let text, rm;
     text = 'the dog ate the boy the';

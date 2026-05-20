@@ -171,56 +171,10 @@ export default class RiMarkov {
 
   /**
    * @deprecated
-   *
-   * @param {*} prompt
-   * @param {*} next
-   * @return {*} 
-   * @memberof RiMarkov
    */
   probability(prompt, next) {
-
-    if (!this.model.ready) this.model.build();
-
-    // single-argument form: probability(['the', 'cat', 'sat'])
-    // returns P(last_token | preceding n-2 tokens) — the raw model probability
-    if (typeof next === 'undefined') {
-      if (!Array.isArray(prompt) || prompt.length === 0) return 0;
-      next = [prompt[prompt.length - 1]];
-      prompt = prompt.slice(-(this.n - 1), -1);  // up to n-2 tokens of context
-    }
-
-    if (!Array.isArray(prompt)) throw Error('Array required for prompt');
-    if (typeof next === 'string') next = [next];
-    if (!Array.isArray(next)) throw Error('String or array required for next');
-    if (next.length === 0) return 0;
-
-    const sa = this.model.suffixes;
-    const startTok = this.model.startToken;
-    const endTok = this.model.endToken;
-
-    // For multi-token `next`, use chain rule: P(t0|ctx) * P(t1|ctx+t0) * ...
-    // but treat the whole of `prompt + next[:-1]` as context for the first step.
-    let prob = 1;
-    let context = [...prompt];
-    for (const token of next) {
-      if (context.length === 0) {
-        // unigram: count(token) / total content-token count (excluding <s> and </s>)
-        const [min, max] = sa.find([token]);
-        const count = max - min;
-        const encoded = sa._encode([startTok, endTok]);
-        const contentLength = sa.input.filter(t => t !== encoded[0] && t !== encoded[1]).length;
-        prob *= count > 0 ? count / contentLength : 0;
-      } else {
-        // P(token | context): use last n-2 tokens as context (n-gram order minus 1)
-        const ctx = context.slice(-(this.n - 2) || context.length);
-        const dist = sa.pdist(ctx);
-        prob *= dist?.[token] ?? 0;
-      }
-      if (prob === 0) return 0;
-      context.push(token);
-    }
-
-    return prob;
+    throw Error('probability() is deprecated. Use probabilities() to get the full distribution,'
+      + ' or compute probability of a sequence with completions() and pdist().');
   }
 
   /**

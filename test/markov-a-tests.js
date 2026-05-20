@@ -730,7 +730,7 @@ describe('Markov.A', function () {
     expect(res).eql(expec);
   });
 
-  it('should call probability', function () {
+  it.skip('should call probability', function () {
 
     let text, rm;
     text = 'the dog ate the boy the';
@@ -766,7 +766,7 @@ describe('Markov.A', function () {
     expect(rm.probability(["Non-exist"])).eq(0);
   });
 
-  it('should call probability.array', function () {
+  it.skip('should call probability.array', function () {
 
     let rm = new RiMarkov(3);
     rm.addText(sample);
