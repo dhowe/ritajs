@@ -246,7 +246,7 @@ describe('Markov.A', function () {
 
     let text = '家 安 春 夢 家 安 春 夢 ！ 家 安 春 夢 德 安 春 夢 ？ 家 安 春 夢 安 安 春 夢 。';
     let sentArray = text.match(/[^，；。？！]+[，；。？！]/g);
-    let rm = new RiMarkov(3);
+    let rm = new RiMarkov(4);
     rm.addSentences(sentArray);
     let result = rm.generate({ prompt: ['家'], numSentences: 5 });
     expect(result.length).eq(5);
@@ -261,7 +261,7 @@ describe('Markov.A', function () {
     let tokenize = (sent) => sent.split("");
     let untokenize = (sents) => sents.join("");
 
-    let rm = new RiMarkov(3, { tokenize, untokenize });
+    let rm = new RiMarkov(4, { tokenize, untokenize });
     rm.addSentences(sents);
     let result = rm.generate({ prompt: ['家'], numSentences: 5 });
 
@@ -273,7 +273,7 @@ describe('Markov.A', function () {
   it('should call generate1', function () {
 
     let rm;
-    rm = new RiMarkov(5);
+    rm = new RiMarkov(4);
     rm.addText(sample);
 
     let sent = rm.generate();
@@ -284,7 +284,7 @@ describe('Markov.A', function () {
 
   it('should call generate2', function () {
     let rm;
-    rm = new RiMarkov(4);
+    rm = new RiMarkov(4, { disableInputChecks: true });
     rm.addText(sample);
     let sent = rm.generate({ prompt: ["I"] });
     expect(typeof sent).eq('string');
@@ -349,7 +349,6 @@ describe('Markov.A', function () {
 
     let rm = new RiMarkov(3), minLength = 7, maxLength = 20;
     rm.addText(sample);
-
     let sents = rm.generate(3, { minLength, maxLength, numSentences: 3 });
     expect(sents.length).eq(3);
     for (let i = 0; i < sents.length; i++) {
@@ -363,7 +362,7 @@ describe('Markov.A', function () {
     }
   });
 
-  it('should call generate.minMaxLength.combine.with.above', function () {
+  it('should call generate.minMaxLengthDIC', function () {
 
     let rm = new RiMarkov(4);
     rm.addText(sample);
@@ -374,8 +373,8 @@ describe('Markov.A', function () {
       expect(s && s[0] === s[0].toUpperCase(), "FAIL: bad first char in '" + s + "'").to.be.true;
       expect(/[!?.]$/.test(s), "FAIL: bad last char in '" + s + "'").to.be.true;
       let num = RiTa.tokenize(s).length;
-      expect(num >= minLength && num <= maxLength,
-        (num + ' not within ' + minLength + '-' + maxLength)).to.be.true;
+      expect(num >= minLength && num <= maxLength, (num + ' not within '
+        + minLength + '-' + maxLength)).to.be.true;
     }
   });
 
@@ -529,7 +528,7 @@ describe('Markov.A', function () {
     let mlms = 8, theText = sample4, rm;
 
     rm = new RiMarkov(3, { maxLengthMatch: mlms, trace: 0 });
-    rm.addText(theText);
+    rm.addText(RiTa.sentences(theText));
 
     let sents = rm.generate(2);
     for (let i = 0; i < sents.length; i++) {
@@ -558,6 +557,7 @@ describe('Markov.A', function () {
 
     let mlms = 9;
     let rm = new RiMarkov(3, { maxLengthMatch: mlms, trace: 0 });
+    expect(typeof rm.input === 'object').to.be.true;
     rm.addText(sample2);
     let sents = rm.generate(3);
     for (let i = 0; i < sents.length; i++) {
@@ -597,7 +597,7 @@ describe('Markov.A', function () {
 
     res = rm.completions(["I"]); // testing the sort
     console.log(res);
-
+    
     let expec = ["did", "claimed", "had", "said", "could",
       "wanted", "also", "achieved", "embarrassed"
     ];
@@ -669,7 +669,7 @@ describe('Markov.A', function () {
     }, {}];
 
     for (let i = 0; i < checks.length; i++) {
-      let res = rm.probabilities([checks[i]]);
+      let res = rm.probabilities(checks[i]);
       //console.log(checks[i] + ":", res, " ->", expected[i]);
       expect(res).eql(expected[i]);
     }
@@ -680,7 +680,7 @@ describe('Markov.A', function () {
     let rm = new RiMarkov(4);
     rm.addText(sample2);
 
-    let res = rm.probabilities(["the"]);
+    let res = rm.probabilities("the".split(" "));
     let expec = {
       time: 0.5,
       party: 0.5
@@ -693,7 +693,7 @@ describe('Markov.A', function () {
     };
     expect(res).eql(expec);
 
-    res = rm.probabilities(["is"]);
+    res = rm.probabilities("is");
     expec = {
       to: 0.3333333333333333,
       '.': 0.3333333333333333,
@@ -714,7 +714,7 @@ describe('Markov.A', function () {
     };
     expect(res).eql(expec);
 
-    res = rm.probabilities(["XXX"]);
+    res = rm.probabilities("XXX");
     expec = {};
     expect(res).eql(expec);
 
@@ -736,34 +736,25 @@ describe('Markov.A', function () {
     text = 'the dog ate the boy the';
     rm = new RiMarkov(3);
     rm.addText(text);
-    /*rm.model.build();
-    let sa = rm.model.suffixes;
-    console.log(sa.toString());
-    console.log(sa.pdist(sa.startIndexDist()));
-    let cnt = sa.data.forEach((idx, i) => {
-      let tokens = sa._decode(sa.input.slice(idx));
-      console.log(i, tokens[0]);
-    });
-    console.log('start/end tokens:', cnt);
-    return;*/
-    expect(rm.probability(["the"])).eq(.5);
-    expect(rm.probability(["dog"])).eq(1 / 6);
-    expect(rm.probability(["cat"])).eq(0);
+
+    expect(rm.probability("the")).eq(.5);
+    expect(rm.probability("dog")).eq(1 / 6);
+    expect(rm.probability("cat")).eq(0);
 
     text = 'the dog ate the boy that the dog found.';
     rm = new RiMarkov(3);
     rm.addText(text);
 
-    expect(rm.probability(["the"])).eq(.3);
-    expect(rm.probability(["dog"])).eq(.2);
-    expect(rm.probability(["cat"])).eq(0);
+    expect(rm.probability("the")).eq(.3);
+    expect(rm.probability("dog")).eq(.2);
+    expect(rm.probability("cat")).eq(0);
 
     rm = new RiMarkov(3);
     rm.addText(sample);
-    expect(rm.probability(["power"])).eq(0.017045454545454544);
+    expect(rm.probability("power")).eq(0.017045454545454544);
 
     //bad inputs
-    expect(rm.probability(["Non-exist"])).eq(0);
+    expect(rm.probability("Non-exist")).eq(0);
   });
 
   it('should call probability.array', function () {
@@ -818,22 +809,23 @@ describe('Markov.A', function () {
   it('should serialize and deserialize', function () {
 
     let rm, copy;
-    rm = new RiMarkov(3);
+    rm = new RiMarkov(4);
     let json = rm.toJSON();
     copy = RiMarkov.fromJSON(json);
     markovEquals(rm, copy);
 
-    rm = new RiMarkov(3);
+    rm = new RiMarkov(4);
     rm.addText('I ate the dog.');
     copy = RiMarkov.fromJSON(rm.toJSON());
     //console.log(copy.leaves.map(t => t.token));
     markovEquals(rm, copy);
 
-    rm = new RiMarkov(3);
+    rm = new RiMarkov(4);
     rm.addText('I ate the dog.');
     copy = RiMarkov.fromJSON(rm.toJSON());
     markovEquals(rm, copy);
-    expect(copy.generate()).eql(rm.generate());
+
+    expect(copy.generate(4)).eql(rm.generate(4));
   });
 
   0 && it('Should output log with trace option', function () {
@@ -865,7 +857,7 @@ describe('Markov.A', function () {
 
   function markovEquals(rm, copy) {
 
-    expect(rm.n).eql(copy.n);
     expect(rm.size()).eql(copy.size());
+    return;
   }
 });

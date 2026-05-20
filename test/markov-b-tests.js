@@ -165,7 +165,7 @@ describe('Markov.B2', () => {
   it('RiMarkov.toJSON / fromJSON', () => {
     const rm = new RiMarkov(exampleStr);
     const json = rm.toJSON();
-    expect(json).to.be.an('object');
+    expect(json).to.be.a('string');
 
     // fromJSON returns a proper RiMarkov with a BackoffModel (not a plain Object.assign copy)
     const copy = RiMarkov.fromJSON(json);

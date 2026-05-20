@@ -12,11 +12,7 @@ export class SuffixArray {
   static USE_COMPRESSION = true;
 
   static __props__ = ['startToken', 'endToken', 'xoverWindow', 'compressed', 'length', 'decoder', 'encoder'];
-
-  static __dict__ = [
-    ...SuffixArray.__props__,
-    'input', 'seqmap', 'data', 'xovers', // generated
-  ];
+  static __dict__ = [ ...SuffixArray.__props__, 'input', 'seqmap', 'data', 'xovers' ];
 
   constructor(s, opts = {}) { // pre-tokenized input
 

@@ -15,7 +15,7 @@ export class BackoffModel extends Model {
   }
 
   static generationAliases = {
-    dbug: 'debug', dbugCache: 'debugCache', minTokens: 'minLength', 
+    dbug: 'debug', dbugCache: 'debugCache', minTokens: 'minLength',
     maxTokens: 'maxLength', seed: 'prompt', temperature: 'temp',
     mlm: 'maxLengthMatch'
   }
@@ -52,6 +52,7 @@ export class BackoffModel extends Model {
    * @param {Object}   opts
    * @param {number}   [opts.numSentences=1] - number of sentences to generate
    * @param {number}   [opts.temp=1]         - sampling temperature
+   * @param {number}   [opts.minLength=5]    - minimum tokens before stopping a sentence
    * @param {number}   [opts.maxLength=999]  - max tokens to generate per sentence before giving up
    * @param {number}   [opts.maxAttempts=999]   - max attempts before giving up
    * @param {boolean}  [opts.allowSpecial=false] - whether to allow special tokens in the output
@@ -62,6 +63,7 @@ export class BackoffModel extends Model {
     const numSentences = opts.numSentences ?? 2;
 
     const perSentenceMax = opts.maxLength ?? BackoffModel.generationDefaults.maxLength;
+    const perSentenceMin = opts.minLength ?? BackoffModel.generationDefaults.minLength;
     const maxAttempts = opts.maxAttempts ?? BackoffModel.generationDefaults.maxAttempts;
 
     const randomStarter = () => {
@@ -110,7 +112,12 @@ export class BackoffModel extends Model {
       let current = [];
       for (const tok of allTokens) {
         if (tok === this.endToken) {
-          if (current.length > 0) sentences.push(this.untokenize(current));
+          if (current.length > 0) {
+            if (current.length > perSentenceMax || current.length < perSentenceMin) {
+              break; // sentence too short/long — retry
+            }
+            sentences.push(this.untokenize(current));
+          }
           current = [];
         } else if (tok !== this.startToken) {
           current.push(tok);
@@ -118,6 +125,7 @@ export class BackoffModel extends Model {
       }
 
       if (sentences.length === numSentences) return sentences;
+
       // Stream hit maxLength before producing enough sentences — retry
     }
 
@@ -318,27 +326,32 @@ export class BackoffModel extends Model {
     if (typeof options !== 'undefined' && !Model.isObject(options)) {
       throw Error('Options must be an object');
     }
+    let resolved = { ...options };
+
     // resolve any aliases to their canonical names
     const aliases = BackoffModel.generationAliases;
-    Object.keys(options).forEach(key => {
+    Object.keys(resolved).forEach(key => {
       if (aliases.hasOwnProperty(key)) {
         const canonical = aliases[key];
-        options[canonical] ??= options[key];
-        delete options[key];
+        resolved[canonical] ??= resolved[key];
+        delete resolved[key];
       }
     });
     Object.keys(BackoffModel.generationDefaults).forEach(o => {
-      options[o] ??= BackoffModel.generationDefaults[o];
+      resolved[o] ??= BackoffModel.generationDefaults[o];
     });
-    Object.keys(options).forEach(key => {
+    Object.keys(resolved).forEach(key => {
       if (!BackoffModel.generationDefaults.hasOwnProperty(key) && !ignorableKeys.includes(key)) {
         throw Error(`Invalid option key: ${key}`);
       }
     });
-    if (isFinite(options.maxLengthMatch) && options.maxLengthMatch < n) {
-      throw Error(`maxLengthMatch (${options.maxLengthMatch}) must be >= n (${n})`)
+    if (isFinite(resolved.maxLengthMatch) && resolved.maxLengthMatch < n) {
+      throw Error(`maxLengthMatch (${resolved.maxLengthMatch}) must be >= n (${n})`)
     }
-    return { ...options, n };
+    if (isFinite(n) && n > 1) {
+      resolved.n = n;
+    }
+    return resolved;
   }
 
   /**

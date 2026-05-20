@@ -16,6 +16,17 @@ export class Model {
     untokenize: undefined
   };
 
+  static __dict__ = [
+    'ready',
+    'startToken',
+    'endToken',
+    'tokenize',
+    'untokenize',
+    'tokens',
+    'tokenCount',
+    'suffixes',
+  ]
+
   static options = Object.keys(Model.defaults);
 
   constructor(input, opts) {
@@ -27,6 +38,8 @@ export class Model {
     this.endToken = undefined;
     this.tokenize = undefined;
     this.untokenize = undefined;
+    this.tokens = [];
+    this.tokenCount = 0;
 
     // to be set in build()
     this.suffixes = undefined; 
@@ -45,9 +58,6 @@ export class Model {
       }
       //console.log(`Model.${key} = ${this[key]}`);
     });
-
-    this.tokens = [];
-    this.tokenCount = 0;
 
     if (typeof input === 'undefined') {
       if (typeof opts?.text !== 'undefined') { // use text from options

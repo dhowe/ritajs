@@ -149,14 +149,44 @@ export default class RiMarkov {
    * If only one argument is provided, it is treated as the `next` array and `prompt` is assumed
    * to be empty, eg rm.probability(['the', 'cat']) returns the raw probability of the sequence 'the cat' in the model.
    */
-  probability(prompt, next) {
+  probabilityOrig(prompt, next) {
 
     if (!this.model.ready) this.model.build();
 
     // single-argument form: probability(['the', 'cat']) — treat array as the 'next' sequence
     if (typeof next === 'undefined') {
       next = prompt;
-      prompt = [];
+      prompt = [this.model.startToken];
+    }
+    if (!Array.isArray(prompt)) throw Error('Array required for prompt');
+    if (typeof next === 'string') next = [next];
+    if (!Array.isArray(next)) throw Error('String or array required for next');
+    if (next.length === 0) return 0;
+
+    const sa = this.model.suffixes;
+    // if ()
+    // let dist = sa.pdist(prompt, { temp: 0 });
+    // if (!dist) return 0;
+  }
+
+  /**
+   * @deprecated
+   *
+   * @param {*} prompt
+   * @param {*} next
+   * @return {*} 
+   * @memberof RiMarkov
+   */
+  probability(prompt, next) {
+
+    if (!this.model.ready) this.model.build();
+
+    // single-argument form: probability(['the', 'cat', 'sat'])
+    // returns P(last_token | preceding n-2 tokens) — the raw model probability
+    if (typeof next === 'undefined') {
+      if (!Array.isArray(prompt) || prompt.length === 0) return 0;
+      next = [prompt[prompt.length - 1]];
+      prompt = prompt.slice(-(this.n - 1), -1);  // up to n-2 tokens of context
     }
 
     if (!Array.isArray(prompt)) throw Error('Array required for prompt');
@@ -165,18 +195,25 @@ export default class RiMarkov {
     if (next.length === 0) return 0;
 
     const sa = this.model.suffixes;
+    const startTok = this.model.startToken;
+    const endTok = this.model.endToken;
 
-    // chain rule: P(next[0] | prompt) * P(next[1] | prompt+next[0]) * ...
+    // For multi-token `next`, use chain rule: P(t0|ctx) * P(t1|ctx+t0) * ...
+    // but treat the whole of `prompt + next[:-1]` as context for the first step.
     let prob = 1;
     let context = [...prompt];
     for (const token of next) {
       if (context.length === 0) {
-        // unigram: count(token) / total corpus length
+        // unigram: count(token) / total content-token count (excluding <s> and </s>)
         const [min, max] = sa.find([token]);
         const count = max - min;
-        prob *= count > 0 ? count / sa.length : 0;
+        const encoded = sa._encode([startTok, endTok]);
+        const contentLength = sa.input.filter(t => t !== encoded[0] && t !== encoded[1]).length;
+        prob *= count > 0 ? count / contentLength : 0;
       } else {
-        const dist = sa.pdist(context);
+        // P(token | context): use last n-2 tokens as context (n-gram order minus 1)
+        const ctx = context.slice(-(this.n - 2) || context.length);
+        const dist = sa.pdist(ctx);
         prob *= dist?.[token] ?? 0;
       }
       if (prob === 0) return 0;
@@ -187,12 +224,18 @@ export default class RiMarkov {
   }
 
   /**
-   * Returns the full set of possible next tokens as an object, 
-   * given an array of tokens as prompt. 
+   * Returns the full set of possible next tokens as an object, given an array of tokens as prompt. 
    * 
    * For example, rm.probabilities(['the', 'cat']) might return { sat: 0.5, jumped: 0.3, meowed: 0.2 }.
    * 
    * If no tokens are provided, returns the distribution of next words following the start token.
+   * If `allowSpecial` option is false (default), special start/end tokens will be filtered out of the result. Set `allowSpecial: true` to include them.
+   * 
+   * @param {string[]} tokens - array of tokens to use as prompt/context
+   * @param {Object} [opts]
+   * @param {number} [opts.temp] - sampling temperature (default: 0, i.e. no temperature)
+   * @param {boolean} [opts.allowSpecial] - whether to include special start/end tokens in the result
+   * @returns {Object} an object mapping possible next tokens to their probabilities
    */
   probabilities(tokens, opts = {}) {
 
@@ -204,13 +247,12 @@ export default class RiMarkov {
 
     if (!Array.isArray(tokens)) throw Error('tokens[] required');
 
-    const dist = this.model.suffixes.pdist(tokens);
+    const dist = this.model.suffixes.pdist(tokens, { temp: opts?.temp || 0 });
     if (!dist) return {};
 
     // strip special tokens from result unless allowSpecial
-    const allowSpecial = opts?.allowSpecial ?? false;
     return Object.fromEntries(Object.entries(dist).filter(([t]) =>
-      allowSpecial || (t !== this.model.startToken && t !== this.model.endToken)));
+      opts?.allowSpecial || (t !== this.model.startToken && t !== this.model.endToken)));
   }
 
   /**
@@ -260,11 +302,13 @@ export default class RiMarkov {
       n = opts.n;
       delete opts.n;
       delete opts.prompt;
+
     } else if (Array.isArray(n)) {
       // two-argument form: fn(prompt, opts?)
       opts = prompt ?? {};
       prompt = n;
       n = opts.n;
+
     } else if (Model.isObject(prompt)) {
       // two-argument form: fn(n, opts)
       opts = { ...prompt };
@@ -275,9 +319,8 @@ export default class RiMarkov {
     if (!Array.isArray(prompt)) throw Error('Array required for prompt');
 
     this.n = n ?? opts?.n ?? this.n;
-    if (this.n < 2) {
-      throw Error('n must be specified before calling generate() or stream()');
-    }
+    if (this.n < 1) throw Error('n must be specified'
+      + ' before calling generate() or stream()');
 
     return { prompt, opts: opts ?? {} };
   }
