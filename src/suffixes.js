@@ -1,10 +1,10 @@
 
 import { createRequire } from 'module';
 
-// EOL used in serialization; \n is safe cross-platform for stored data
+// EOL for serialization
 const EOL = '\n';
 
-// Lazy Node.js built-in loader — no-ops in non-Node environments
+// Lazy node loader — no-ops in non-Node envs
 function nodeRequire(mod) {
   try { return createRequire(import.meta.url)(mod); } catch { return {}; }
 }
