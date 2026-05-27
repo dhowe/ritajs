@@ -1,7 +1,13 @@
 
-import fs from 'fs';
-import { EOL } from 'os'
-import readline from 'readline';
+import { createRequire } from 'module';
+
+// EOL used in serialization; \n is safe cross-platform for stored data
+const EOL = '\n';
+
+// Lazy Node.js built-in loader — no-ops in non-Node environments
+function nodeRequire(mod) {
+  try { return createRequire(import.meta.url)(mod); } catch { return {}; }
+}
 
 export default class SuffixArray {
 
@@ -70,26 +76,33 @@ export default class SuffixArray {
   }
 
   toFileSync(path) {
+    const fs = nodeRequire('fs');
     fs.writeFileSync(path, this.toRawString());
   }
 
   static fromFileSync(path) {
+    const fs = nodeRequire('fs');
+    const { EOL: eol = EOL } = nodeRequire('os');
     let data = fs.readFileSync(path, 'utf8');
-    let lines = data.split(EOL);
+    let lines = data.split(eol);
     return SuffixArray.fromRawLines(lines);
   }
 
   async toFileStream(path) {
+    const { default: fs } = await import('fs');
+    const { EOL: eol } = await import('os');
     return new Promise((resolve, reject) => {
       const outputStream = fs.createWriteStream(path);
       let records = [this.headerRecord(), ...this.dataRecords()];
-      records.forEach(r => outputStream.write(r + EOL));
+      records.forEach(r => outputStream.write(r + eol));
       outputStream.end();
       outputStream.on("finish", resolve).on('error', reject);
     });
   }
 
   static async fromFileStream(path) {
+    const { default: fs } = await import('fs');
+    const { default: readline } = await import('readline');
     return new Promise((resolve, reject) => {
       const records = [];
       readline.createInterface({

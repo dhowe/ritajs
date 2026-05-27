@@ -32,6 +32,26 @@ const cjs: Options = {
   outExtension({ format }) { return { js: `.cjs` } },
 }
 
+/** Esbuild plugin that stubs out Node-only built-ins for the browser IIFE build */
+const nodeStubPlugin = {
+  name: 'node-builtins-stub',
+  setup(build: any) {
+    const STUB = /^(fs|os|readline|module)$/;
+    build.onResolve({ filter: STUB }, (args: any) => ({
+      path: args.path, namespace: 'node-stub',
+    }));
+    build.onLoad({ filter: /.*/, namespace: 'node-stub' }, () => ({
+      // Provide harmless stubs so file-I/O methods fail gracefully at runtime
+      contents: `
+        export default {};
+        export const EOL = '\\n';
+        export const createRequire = () => () => ({});
+      `,
+      loader: 'js',
+    }));
+  },
+};
+
 const iife: Options = {
   format: ['iife'],
   ...opts,
@@ -40,7 +60,7 @@ const iife: Options = {
   globalName: "iife",
   footer: { js: "RiTa = iife.RiTa" },
   outExtension({ format }) { return { js: `.min.js` } },
-
+  esbuildPlugins: [esbuildPluginVersionInjector(), nodeStubPlugin],
 }
 
 const testEsm: Options = {
