@@ -1,6 +1,6 @@
-import { SuffixArray } from "./suffixes.js";
+import SuffixArray from "./suffixes.js";
 
-export class Model {
+export default class SuffixGram {
 
   static SILENT = false;
   static RiTa = undefined; // for default tokenizer/untokenizer
@@ -27,12 +27,12 @@ export class Model {
     'suffixes',
   ]
 
-  static options = Object.keys(Model.defaults);
+  static options = Object.keys(SuffixGram.defaults);
 
   constructor(input, opts) {
 
-    Model.defaults.tokenize ??= Model.RiTa.tokenize;
-    Model.defaults.untokenize ??= Model.RiTa.untokenize;
+    SuffixGram.defaults.tokenize ??= SuffixGram.RiTa.tokenize;
+    SuffixGram.defaults.untokenize ??= SuffixGram.RiTa.untokenize;
 
     this.startToken = undefined;
     this.endToken = undefined;
@@ -45,14 +45,14 @@ export class Model {
     this.suffixes = undefined; 
     
     // only an options object
-    if (Model.isObject(input) && typeof opts === 'undefined') {
+    if (SuffixGram.isObject(input) && typeof opts === 'undefined') {
       opts = input;
       input = undefined;
     }
 
     // initialize with options or default values
-    Model.options.forEach(key => {
-      this[key] = Model.defaults[key]; // default value
+    SuffixGram.options.forEach(key => {
+      this[key] = SuffixGram.defaults[key]; // default value
       if (typeof opts?.[key] !== 'undefined') {
         this[key] = opts?.[key]
       }
@@ -124,19 +124,19 @@ export class Model {
    * @param {string|string[]} rawText - a text string, or array of sentences, to add to the model
    * @see addSentences() for adding an array of sentences
    * @see addTokens() for adding an array of tokens
-   * @return {Model} - the model instance
+   * @return {SuffixGram} - the model instance
    */
   addText(rawText) {
     if (typeof rawText !== 'string') {
       throw Error('String required: if adding an array see addTokens() or addSentences()');
     }
-    return rawText.length ? this.addSentences(Model.RiTa.sentences(rawText)) : this;
+    return rawText.length ? this.addSentences(SuffixGram.RiTa.sentences(rawText)) : this;
   }
 
   /**
     * Loads an array of sentences into the model, each to be split into tokens via the tokenizer
     * @param {string[]} sentences - an array of sentences to add to the model
-    * @return {Model} - the model instance
+    * @return {SuffixGram} - the model instance
     */
   addSentences(sentences) {
     let toks = this._tokenizeSentences(sentences);
@@ -146,7 +146,7 @@ export class Model {
   /**
    * Loads an array of individual tokens into the model
    * @param {string[]} tokens - an array of tokens to add to the model
-   * @return {Model} - the model instance
+   * @return {SuffixGram} - the model instance
    */
   addTokens(tokens) {
     this.ready = false;
@@ -162,7 +162,7 @@ export class Model {
   /////////////////////// PRIVATES ////////////////////////
 
   _validateOptions(opts, validKeys, ignorableKeys = []) {
-    if (typeof opts !== 'undefined' && !Model.isObject(opts)) {
+    if (typeof opts !== 'undefined' && !SuffixGram.isObject(opts)) {
       throw Error('Options must be an object');
     }
     for (let key in opts) {

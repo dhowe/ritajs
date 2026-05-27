@@ -3,7 +3,7 @@ import fs from 'fs';
 import { EOL } from 'os'
 import readline from 'readline';
 
-export class SuffixArray {
+export default class SuffixArray {
 
   static SILENT = true; // set to false to enable logging
   static XOVER_WINDOW = 8;

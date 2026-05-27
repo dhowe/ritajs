@@ -1,11 +1,11 @@
-import { Model } from "./model.js";
-import { SuffixArray } from "./suffixes.js";
+import SuffixGram from "./model.js";
+import SuffixArray from "./suffixes.js";
 
 /*
  * TODO:
  *    -- checkpointing load
  */
-export class BackoffModel extends Model {
+export default class BackoffModel extends SuffixGram {
 
   static generationDefaults = {
     debug: false, debugCache: false, minLength: 5, maxLength: 999, prompt: 0,
@@ -82,7 +82,7 @@ export class BackoffModel extends Model {
 
     const randomStarter = () => {
       if (validPrompt && validPrompt.length > 0) return [...validPrompt];
-      return [Model.RiTa.randomizer.pselectObj(this.suffixes.startIndexDist())];
+      return [SuffixGram.RiTa.randomizer.pselectObj(this.suffixes.startIndexDist())];
     };
 
     if (validPrompt.length > 0) {
@@ -348,7 +348,7 @@ export class BackoffModel extends Model {
   }
 
   static resolveOpts(n, options, ignorableKeys = []) {
-    if (typeof options !== 'undefined' && !Model.isObject(options)) {
+    if (typeof options !== 'undefined' && !SuffixGram.isObject(options)) {
       throw Error('Options must be an object');
     }
     let resolved = { ...options };

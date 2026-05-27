@@ -1,5 +1,5 @@
-import { Model } from './model.js';
-import { BackoffModel } from './backoff.js';
+import SuffixGram from './model.js';
+import BackoffModel from './backoff.js';
 
 export default class RiMarkov {
 
@@ -18,7 +18,7 @@ export default class RiMarkov {
       this.n = input;
       input = opts ? opts?.text || opts?.tokens : undefined;
     }
-    else if (Model.isObject(input) && typeof opts === 'undefined') {
+    else if (SuffixGram.isObject(input) && typeof opts === 'undefined') {
       opts = input;
       input = opts?.text || opts?.tokens;
     }
@@ -260,7 +260,7 @@ export default class RiMarkov {
    */
   _resolveArgs(n, prompt, opts) {
 
-    if (Model.isObject(n)) {
+    if (SuffixGram.isObject(n)) {
       // single-argument form: fn(opts)
       opts = { ...n };
       prompt = opts.prompt ?? [];
@@ -274,7 +274,7 @@ export default class RiMarkov {
       prompt = n;
       n = opts.n;
 
-    } else if (Model.isObject(prompt)) {
+    } else if (SuffixGram.isObject(prompt)) {
       // two-argument form: fn(n, opts)
       opts = { ...prompt };
       prompt = opts.prompt ?? [];

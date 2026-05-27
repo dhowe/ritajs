@@ -8,10 +8,10 @@ import Analyzer from './analyzer.js';
 import Concorder from './concorder.js';
 import RandGen from './randgen.js';
 import RiMarkov from './markov.js';
+import SuffixArray  from './suffixes.js';
 
-import { SuffixArray } from './suffixes.js';
-import { Model } from './model.js';
-import { BackoffModel } from './backoff.js';
+import SuffixGram from './model.js';
+import BackoffModel from './backoff.js';
 
 import { RiScript, RiGrammar } from 'riscript';
 
@@ -736,7 +736,7 @@ RiTa.RiMarkov = RiMarkov;
 RiTa.Stemmer = Stemmer;
 
 // INTERNAL Markov classes
-RiTa.Model = Model;
+RiTa.Model = SuffixGram;
 RiTa.BackoffModel = BackoffModel;
 RiTa.SuffixArray = SuffixArray;
 
