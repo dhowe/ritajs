@@ -38,7 +38,12 @@ export class BackoffModel extends Model {
 
   static fromJSON(json) {
     let obj = typeof json === 'string' ? JSON.parse(json) : json;
-    return Object.assign(new BackoffModel(undefined, undefined), obj);
+    let model = Object.assign(new BackoffModel(undefined, undefined), obj);
+    // restore suffixes as a proper SuffixArray instance (plain array after JSON round-trip)
+    if (model.suffixes && !(model.suffixes instanceof SuffixArray)) {
+      model.suffixes = SuffixArray.fromJSON(model.suffixes);
+    }
+    return model;
   }
 
   /**
@@ -57,19 +62,16 @@ export class BackoffModel extends Model {
    * @param {number}   [opts.maxAttempts=999]   - max attempts before giving up
    * @param {boolean}  [opts.allowSpecial=false] - whether to allow special tokens in the output
    * @param {number}   [opts.maxLengthMatch=Infinity] - max length of sequence allowed to match training data
+   * @param {boolean}  [opts.debug=false] - whether to log debug info during generation
    * @returns {string | string[]} string if count = 1, else array of sentences, length = numSentences
    */
   generateSentences(n, prompt, opts = {}) {
     const numSentences = opts.numSentences ?? 2;
 
+    const dbug = opts.debug ? (...args) => console.log('[generateSentences]', ...args) : () => {};
     const perSentenceMax = opts.maxLength ?? BackoffModel.generationDefaults.maxLength;
     const perSentenceMin = opts.minLength ?? BackoffModel.generationDefaults.minLength;
     const maxAttempts = opts.maxAttempts ?? BackoffModel.generationDefaults.maxAttempts;
-
-    const randomStarter = () => {
-      if (prompt.length > 0) return [...prompt];
-      return [this.pselect(this.suffixes.startIndexDist())];
-    };
 
     // validate that the prompt exists in the corpus
     const nonEmptyPrompt = prompt.filter(t => t && t.length > 0);
@@ -77,6 +79,12 @@ export class BackoffModel extends Model {
     if (nonEmptyPrompt.length > 0 && validPrompt.length === 0) {
       throw Error(`generate() failed: prompt contains only whitespace tokens`);
     }
+
+    const randomStarter = () => {
+      if (validPrompt && validPrompt.length > 0) return [...validPrompt];
+      return [Model.RiTa.randomizer.pselectObj(this.suffixes.startIndexDist())];
+    };
+
     if (validPrompt.length > 0) {
       const dist = this.suffixes.pdist(validPrompt, { n });
       if (!dist || Object.keys(dist).length === 0) {
@@ -216,47 +224,64 @@ export class BackoffModel extends Model {
   * streamTokens(n, prompt, options = {}) {
     const opts = BackoffModel.resolveOpts(n, options, ['generateUntil', 'numSentences']);
 
-    let { minLength, maxLength, maxLengthMatch, temp, allowSpecial } = opts;
+    let { minLength, maxLength, maxLengthMatch, temp, allowSpecial, debug } = opts;
 
     if (opts?.forceOriginal) throw Error('`forceOriginal` invalid for streamTokens');
 
-    // generateUntil can be a string (a token to match) or a predicate function(token, tokensSoFar) => boolean.
+    // generateUntil can be a string token to match, or a predicate function(token, tokensSoFar) => boolean.
     const generateUntil = opts.generateUntil ?? this.endToken;
     const isUntil = typeof generateUntil === 'function' ? generateUntil
-      : (token) => token === generateUntil;
-    const isSpecial = (token) => token.startsWith('<') && token.endsWith('>');
+      : token => token === generateUntil;
+    const isSpecial = token => token.startsWith('<') && token.endsWith('>');
 
     const saOpts = { temp, n };
-    let context = [...prompt];
-    let generated = 0;
+    let context = [...prompt], generated = 0; // tokens generated _after_ the prompt
     while (generated < maxLength) {
-      // If context is longer than n-1 (e.g. boundary reseed with extra tokens),
+
+      // If context is longer than n-1 (e.g. a cross-boundary reseed),
       // try the full context first for a richer n-gram match, then back off.
       let query = context.slice(-(n - 1));
       let dist = context.length > n - 1
         ? (this.suffixes.pdist(context, saOpts) || this.suffixes.pdist(query, saOpts))
         : this.suffixes.pdist(query, saOpts);
-      if (!dist || Object.keys(dist).length === 0) {
-        dist = this.suffixes.pdist(query.slice(1), saOpts);
+
+      // backoff: shorten the query until we get a distribution
+      while ((!dist || Object.keys(dist).length === 0) && query.length > 1) {
+        query = query.slice(1);
+        dist = this.suffixes.pdist(query, saOpts);
       }
       if (!dist) break;
 
-      let chosenToken = null, chosenWeight = 0, weightSum = 0;
+      let chosenToken = null, weightSum = 0;
       const checkLength = isFinite(maxLengthMatch);
 
+      // total sentence length including prompt
+      const totalSoFar = prompt.length + generated; 
+
       for (const [token, prob] of Object.entries(dist)) {
-        // filter
-        if (isSpecial(token)) {
-          if (generated < minLength) continue;
+
+        if (isSpecial(token)) { // filter
+          if (totalSoFar < minLength) {
+            // violates minLength constraint — skip token and try again
+            continue;
+          }
         } else if (checkLength) {
-          const seq = [...context, token];
-          if (seq.length > maxLengthMatch && this.suffixes.hasPrefix(seq)) continue;
+          const nonSpecial = context.filter(t => !(t.startsWith('<') && t.endsWith('>')));
+          const seq = [...nonSpecial.slice(-maxLengthMatch), token];
+          const hp = this.suffixes.hasPrefix(seq);
+          if (debug) console.log(`[MLM] token="${token}" seq.len=${seq.length} mlm=${maxLengthMatch} seqGtMlm=${seq.length > maxLengthMatch} hasPrefix=${hp} seq=[${seq.join(',')}]`);
+          if (seq.length > maxLengthMatch && hp) {
+            // violates maxLengthMatch constraint — skip and try again
+            if (debug) console.log('[FAIL] '+`skipping token "${token}" due to maxLengthMatch constraint: `
+              + `sequence [${seq.join(', ')}] found in training data`);
+            
+            continue;
+          }
         }
-        // weighted reservoir sample (equivalent to normalised random pick)
+        // weighted select using BackoffModel's pselect method ??
         weightSum += prob;
-        if (Math.random() * weightSum <= prob) {
+        if (Math.random() * weightSum < prob) {
           chosenToken = token;
-          chosenWeight = prob;
         }
       }
 
@@ -264,7 +289,7 @@ export class BackoffModel extends Model {
       const token = chosenToken;
 
       // stop on non-special generateUntil match (e.g. '.') once minLength reached
-      if (!isSpecial(token) && isUntil(token, context.slice(prompt.length)) && generated + 1 >= minLength) {
+      if (!isSpecial(token) && isUntil(token, context.slice(prompt.length)) && totalSoFar + 1 >= minLength) {
         yield token;
         break;
       }
@@ -274,7 +299,7 @@ export class BackoffModel extends Model {
 
       // special tokens: stop if they match generateUntil, otherwise advance context
       if (isSpecial(token)) {
-        if (isUntil(token, context.slice(prompt.length)) && generated + 1 >= minLength) {
+        if (isUntil(token, context.slice(prompt.length)) && totalSoFar + 1 >= minLength) {
           if (allowSpecial) yield token;
           break;
         }
@@ -381,7 +406,7 @@ export class BackoffModel extends Model {
       if (isEnd && tokensSoFar < minLength) return null;
       if (!isEnd && tokensSoFar >= maxLength) return null;
       if (!isEnd && isFinite(maxLengthMatch)) {
-        const seq = [...prompt, token];
+        const seq = [...prompt.slice(-maxLengthMatch), token];
         if (seq.length > maxLengthMatch && this.suffixes.hasPrefix(seq)) return null;
       }
       if (isEnd && forceOriginal && this.suffixes.hasPrefix(prompt)) return null;

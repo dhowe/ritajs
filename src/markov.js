@@ -25,6 +25,14 @@ export default class RiMarkov {
 
     if (isFinite(opts?.n)) this.n = opts.n;
 
+    // save any generation-relevant opts for use as per-instance defaults
+    this.opts = {};
+    if (opts) {
+      for (const key of Object.keys(BackoffModel.generationDefaults)) {
+        if (typeof opts[key] !== 'undefined') this.opts[key] = opts[key];
+      }
+    }
+
     this.model = new BackoffModel(input, opts);
   }
 
@@ -44,6 +52,7 @@ export default class RiMarkov {
   * stream(n, prompt = [], opts = {}) {
 
     ({ prompt, opts } = this._resolveArgs(n, prompt, opts));
+    opts = { ...this.opts, ...opts }; // apply instance defaults
 
     if (!this.model.ready) this.model.build(); // ensure model is built before generating
 
@@ -73,6 +82,7 @@ export default class RiMarkov {
   generate(n, prompt = [], opts = {}) {
 
     ({ prompt, opts } = this._resolveArgs(n, prompt, opts));
+    opts = { ...this.opts, ...opts }; // apply instance defaults
 
     if (!this.model.ready) this.model.build();
 
@@ -232,8 +242,9 @@ export default class RiMarkov {
     if (typeof json !== 'string') throw Error('String required for fromJSON()');
     let rm = new RiMarkov();
     let parsed = JSON.parse(json);
-    rm.model = BackoffModel.fromJSON(parsed.model);
-    rm.n = parsed.n;
+    const { n, ...modelData } = parsed;
+    rm.model = BackoffModel.fromJSON(modelData);
+    rm.n = n;
     return rm;
   }
 

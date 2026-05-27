@@ -8,6 +8,7 @@ import Analyzer from './analyzer.js';
 import Concorder from './concorder.js';
 import RandGen from './randgen.js';
 import RiMarkov from './markov.js';
+
 import { SuffixArray } from './suffixes.js';
 import { Model } from './model.js';
 import { BackoffModel } from './backoff.js';

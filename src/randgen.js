@@ -19,7 +19,7 @@ class SeededRandom {
     this.seed(new Date().getTime());
   }
 
-  shuffle(arr) { 
+  shuffle(arr) {
     let newArray = arr.slice(),
       len = newArray.length,
       i = len;
@@ -50,10 +50,37 @@ class SeededRandom {
   }
 
   /*
-    Returns a single (selected) index from a normalised
-    probability distribution (with probabilities summing to 1)
+    Selects and returns the index from a probability distribution
   */
   pselect(probs) {
+    if (!Array.isArray(probs) || probs.length === 0) {
+      throw Error('Array required');
+    }
+    let point = this._rndf(), cutoff = 0;
+    for (let i = 0; i < probs.length - 1; ++i) {
+      cutoff += probs[i];
+      if (point < cutoff) return i;
+    }
+    return probs.length - 1;
+  }
+
+  /**
+   * Selects and return an element from an object distribution (mapping keys to probabilities) 
+   * 
+   * 
+   */
+  pselectObj(dist) {
+    if (!dist || typeof dist !== 'object') throw Error('arg required');
+    let point = this._rndf(), cutoff = 0;
+    for (let key in dist) {
+      cutoff += dist[key];
+      if (point < cutoff) return key;
+    }
+    console.warn('pselectObj: probabilities do not sum to 1, returning last key');
+    return Object.keys(dist)[Object.keys(dist).length - 1];
+  }
+
+  pselectIndex(probs) {
     if (!probs || !probs.length) throw Error('arg required');
     let point = this._rndf(), cutoff = 0;
     for (let i = 0; i < probs.length - 1; ++i) {
@@ -65,13 +92,12 @@ class SeededRandom {
 
   /*
    * Returns the selected index from a probability distribution
-   * (probabilities do NOT need to sum to 1)
    * TODO: test (more general version)
    */
-  pselect2(weights) {
-    let sum = weights.reduce((acc, ele) => acc + ele, 0);
+  pselect2(weightsArray) {
+    let sum = weightsArray.reduce((acc, ele) => acc + ele, 0);
     let rand = Math.random() * sum; // from 0 - sum
-    return weights.find(ele => (rand -= ele) < 0);
+    return weightsArray.find(ele => (rand -= ele) < 0);
   }
 
   /*
