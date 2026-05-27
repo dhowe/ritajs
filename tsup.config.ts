@@ -32,7 +32,7 @@ const cjs: Options = {
   outExtension({ format }) { return { js: `.cjs` } },
 }
 
-/** Esbuild plugin that stubs out Node-only built-ins for the browser IIFE build */
+/** Esbuild plugin to stub Node-only funcs for the IIFE build */
 const nodeStubPlugin = {
   name: 'node-builtins-stub',
   setup(build: any) {
@@ -41,7 +41,7 @@ const nodeStubPlugin = {
       path: args.path, namespace: 'node-stub',
     }));
     build.onLoad({ filter: /.*/, namespace: 'node-stub' }, () => ({
-      // Provide harmless stubs so file-I/O methods fail gracefully at runtime
+      // let I/O methods fail gracefully at runtime in browser
       contents: `
         export default {};
         export const EOL = '\\n';
