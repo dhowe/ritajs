@@ -1,33 +1,27 @@
 export class RiTa {
     static grammar(rules?: object, context?: object): any;
-    static addTransform(name: string, definition: object): void;
+    static addTransform(name: string, definition: ((...args: any[]) => string) | object): void;
     static removeTransform(name: string): void;
     static getTransforms(): string[];
     static articlize(word: string): string;
     static evaluate(script: string, context?: object, options?: {
         trace?: boolean;
     }): string;
-    static markov(n: number, options?: {
-        text?: string | string[];
-        maxLengthMatch?: number;
-        maxAttempts?: number;
-        tokenize?: object;
-        untokenize?: object;
-        disableInputChecks?: boolean;
-        trace?: boolean;
-    }): RiMarkov;
+    static markov(n: number, options?: MarkovOptions): RiMarkov;
+    static markov(text: string, options?: MarkovOptions): RiMarkov;
+    static markov(options?: MarkovOptions): RiMarkov;
     static kwic(keyword: string, options?: {
         numWords?: number;
         text?: string;
         words?: string[];
     }): string[];
-    static kwic(keyword: string, text: number): string[];
+    static kwic(keyword: string, numWords: number): string[];
     static concordance(text: string, options?: {
         ignoreCase?: boolean;
         ignoreStopWords?: boolean;
         ignorePunctuation?: boolean;
         wordsToIgnore?: string[];
-    }): object;
+    }): Record<string, number>;
     static randomOrdering(array: object[]): object[];
     static randomOrdering(k: number): number[];
     static randomSeed(seed: number): void;
@@ -88,10 +82,10 @@ export class RiTa {
     static pos(word: string | string[], options?: {
         simple?: boolean;
     }): string | string[];
-    static isNoun(word: string): string;
-    static isAdjective(word: string): string;
-    static isAdverb(word: string): string;
-    static isVerb(word: string): string;
+    static isNoun(word: string): boolean;
+    static isAdjective(word: string): boolean;
+    static isAdverb(word: string): boolean;
+    static isVerb(word: string): boolean;
     static isPunct(text: string): boolean;
     static posInline(sentence: string, options?: {
         simple?: boolean;
@@ -186,6 +180,11 @@ export class RiTa {
     static randi(param1: number, param2?: number): number;
     static random(param1?: number | object[], param2?: number): number | object;
 
+    static randomizer: { seed(n: number): void; random(...args: any[]): number; pselect<T>(arr: T[]): T; pselectIndex(arr: number[]): number; pselect2(arr: number[]): number; ndist(weights: number[], temp?: number): number[]; randomOrdering<T>(arr: T[]): T[]; };
+    static RiMarkov: typeof RiMarkov;
+    static BackoffModel: typeof BackoffModel;
+    static SuffixArray: typeof SuffixArray;
+
     static VERSION: string;
     static SILENT: boolean;
     static SILENCE_LTS: boolean;
@@ -217,37 +216,102 @@ export class RiTa {
     static GERUND: number;
 }
 
+export interface MarkovOptions {
+    n?: number;
+    text?: string;
+    sentences?: string[];
+    trace?: boolean;
+    maxLengthMatch?: number;
+    maxAttempts?: number;
+    tokenize?: (sentence: string) => string[];
+    untokenize?: (tokens: string[]) => string;
+}
+
+export interface GenerateOptions {
+    n?: number;
+    prompt?: string[];
+    numSentences?: number;
+    /** minimum tokens before a stop condition is honoured */
+    minLength?: number;
+    /** also accepted as minTokens */
+    minTokens?: number;
+    /** maximum tokens to generate */
+    maxLength?: number;
+    /** also accepted as maxTokens */
+    maxTokens?: number;
+    /** sampling temperature */
+    temp?: number;
+    /** also accepted as temperature */
+    temperature?: number;
+    /** max run of consecutive tokens that may appear verbatim in training data */
+    maxLengthMatch?: number;
+    /** stop token string or predicate */
+    generateUntil?: string | ((token: string, soFar: string[]) => boolean);
+    allowDuplicates?: boolean;
+}
+
+export class BackoffModel {
+    static SILENT: number;
+    static fromJSON(json: string): BackoffModel;
+    constructor(input?: string | string[], opts?: MarkovOptions);
+    addText(text: string): BackoffModel;
+    addSentences(sentences: string[]): BackoffModel;
+    addTokens(tokens: string[]): BackoffModel;
+    build(opts?: object): BackoffModel;
+    size(): number;
+    toJSON(): object;
+    toString(opts?: object): string;
+    suffixes: SuffixArray;
+    startToken: string;
+    endToken: string;
+    ready: boolean;
+}
+
+export class SuffixArray {
+    static SEQ_START_TOKEN: string;
+    static SEQ_END_TOKEN: string;
+    hasPrefix(seq: string[]): boolean;
+    pdist(context: string[], opts?: { temp?: number }): Record<string, number> | undefined;
+    startIndexDist(): Record<string, number>;
+    length: number;
+}
+
 export class RiMarkov {
     static fromJSON(json: string): RiMarkov;
-    constructor(n?: number, options?: {
-        text?: string | string[];
-        trace?: boolean;
-        maxLengthMatch?: number;
-        maxAttempts?: number;
-        tokenizer?: object;
-        untokenizer?: object;
-        disableInputChecks?: boolean;
-    });
+    /** new RiMarkov(n, opts) */
+    constructor(n: number, options?: MarkovOptions);
+    /** new RiMarkov(text, opts) */
+    constructor(text: string, options?: MarkovOptions);
+    /** new RiMarkov(opts) */
+    constructor(options?: MarkovOptions);
+    /** new RiMarkov() — empty model */
+    constructor();
     n: number;
-    addText(text: string | string[], multiplier?: number): RiMarkov;
-    generate(count: number, options?: {
-        minLength?: number;
-        maxLength?: number;
-        temperature?: number;
-        allowDuplicates?: boolean;
-        seed?: string | string[];
-    }): string[];
-    generate(options?: {
-        minLength?: number;
-        maxLength?: number;
-        temperature?: number;
-        allowDuplicates?: boolean;
-        seed?: string | string[];
-    }): string;
+    model: BackoffModel;
+    opts: Partial<GenerateOptions>;
+    addText(text: string): RiMarkov;
+    addSentences(sentences: string[]): RiMarkov;
+    addTokens(tokens: string[]): RiMarkov;
+    build(opts?: object): RiMarkov;
+    /** Generate one sentence (numSentences=1, default) */
+    generate(n: number, prompt: string[], opts: GenerateOptions & { numSentences: 1 }): string;
+    /** Generate multiple sentences */
+    generate(n: number, prompt: string[], opts: GenerateOptions & { numSentences: number }): string[];
+    /** Generate with prompt and options */
+    generate(n: number, prompt?: string[], opts?: GenerateOptions): string;
+    /** Generate with prompt array and options */
+    generate(prompt: string[], opts?: GenerateOptions): string;
+    /** Generate with options object only */
+    generate(opts?: GenerateOptions): string | string[];
+    /** Stream tokens one-by-one */
+    stream(n: number, prompt?: string[], opts?: GenerateOptions): IterableIterator<string>;
+    stream(prompt: string[], opts?: GenerateOptions): IterableIterator<string>;
+    stream(opts?: GenerateOptions): IterableIterator<string>;
     toJSON(): string;
-    completions(pre: string[], post?: string[]): string[];
-    probabilities(path: string | string[], temperature?: number): object;
-    probability(data: string | string[]): number;
-    toString(root: object, sort: boolean): string;
+    completions(pre: string[], post?: string[], opts?: { allowSpecial?: boolean }): string[];
+    probabilities(tokens?: string[], opts?: { temp?: number; allowSpecial?: boolean }): Record<string, number>;
+    /** @deprecated — throws. Use probabilities() instead. */
+    probability(prompt: string[], next?: string | string[]): never;
+    toString(opts?: object): string;
     size(): number;
 }
