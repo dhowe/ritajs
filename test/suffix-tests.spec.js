@@ -1,6 +1,8 @@
 
 import { assert, expect } from 'chai';
-import SuffixArray from '../src/suffixes.js';
+import { RiTa } from './index.js';
+
+const { SuffixArray } = RiTa;
 
 const SEQ_START_TOKEN = SuffixArray.SEQ_START_TOKEN;
 const SEQ_END_TOKEN = SuffixArray.SEQ_END_TOKEN;

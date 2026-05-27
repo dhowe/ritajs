@@ -1,8 +1,8 @@
 
 import { expect } from 'chai';
-import BackoffModel from '../src/backoff.js';
-import SuffixArray from '../src/suffixes.js';
-import { RiTa } from '../src/rita.js';
+import { RiTa } from './index.js';
+
+const { BackoffModel, SuffixArray } = RiTa;
 
 let exampleStr = 'The brown fox jumps over the lazy dog. The brown dog wept over the treat.'
 
