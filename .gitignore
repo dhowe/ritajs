@@ -1,4 +1,5 @@
 .DS_STORE
+.npmrc
 
 types/generated
 dist
