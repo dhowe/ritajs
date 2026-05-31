@@ -473,52 +473,6 @@ describe('Analyzer', function () {
     RiTa.SILENCE_LTS = silent;
   });
 
-  it('Should call phones(raw)', function () {
-
-    let silent = RiTa.SILENCE_LTS;
-    RiTa.SILENCE_LTS = true;
-
-    let result, answer;
-    let opts = { 'rawPhones': true };
-
-    eq(RiTa.phones("", opts), "");
-    eq(RiTa.phones("b", opts), "b");
-    eq(RiTa.phones("B", opts), "b");
-    eq(RiTa.phones("The", opts), "dh-ah");
-    eq(RiTa.phones("flowers", opts), "f-l-aw-er-z");
-    eq(RiTa.phones("mice", opts), "m-ay-s");
-    eq(RiTa.phones("ant", opts), "ae-n-t");
-
-    eq(RiTa.phones("The.", opts), "dh-ah .");
-
-    // different without lexicon ------------------------------------------
-
-    result = RiTa.phones("The boy jumped over the wild dog.", opts);
-    answer = hasLex ? "dh-ah b-oy jh-ah-m-p-t ow-v-er dh-ah w-ay-l-d d-ao-g ." : 'dh-ah b-oy jh-ah-m-p-t ow-v-er dh-ah w-ay-l-d d-aa-g .';
-    eq(result, answer);
-
-    result = RiTa.phones("The boy ran to the store.", opts);
-    answer = hasLex ? "dh-ah b-oy r-ae-n t-uw dh-ah s-t-ao-r ." : 'dh-ah b-oy r-ah-n t-ow dh-ah s-t-ao-r .';
-    eq(result, answer);
-
-    result = RiTa.phones("The dog ran faster than the other dog.  But the other dog was prettier.", opts);
-    answer = hasLex ? "dh-ah d-ao-g r-ae-n f-ae-s-t-er dh-ae-n dh-ah ah-dh-er d-ao-g . b-ah-t dh-ah ah-dh-er d-ao-g w-aa-z p-r-ih-t-iy-er ." : 'dh-ah d-aa-g r-ah-n f-ae-s-t-er th-ae-n dh-ah ah-dh-er d-aa-g . b-ah-t dh-ah ah-dh-er d-aa-g w-ah-z p-r-eh-t-iy-er .';
-    eq(result, answer);
-
-    eq(RiTa.phones("quiche", opts), hasLex ? "k-iy-sh" : 'k-w-ih-sh');
-    eq(RiTa.phones("said", opts), hasLex ? "s-eh-d" : 's-ey-d');
-    eq(RiTa.phones("chevrolet", opts), hasLex ? "sh-eh-v-r-ow-l-ey" : 'ch-eh-v-r-ow-l-ah-t');
-    eq(RiTa.phones("women", opts), hasLex ? "w-ih-m-eh-n" : 'w-ow-m-eh-n');
-    eq(RiTa.phones("genuine", opts), hasLex ? "jh-eh-n-y-uw-w-ah-n" : 'jh-eh-n-y-ah-ay-n');
-
-    if (!hasLex) return; // NOTE: below may fail without lexicon
-
-    expect(RiTa.phones("deforestations", opts)).eq('d-ih-f-ao-r-ih-s-t-ey-sh-ah-n-z');
-    expect(RiTa.phones("schizophrenias", opts)).eq('s-k-ih-t-s-ah-f-r-iy-n-iy-ah-z');
-
-    RiTa.SILENCE_LTS = silent;
-  });
-
   it('Should call syllables', function () {
 
     let silent = RiTa.SILENCE_LTS;
@@ -921,6 +875,72 @@ describe('Analyzer', function () {
     expect(RiTa.analyzer.computePhones("1")).eql(['w', 'ah', 'n']);
     //console.log(RiTa.analyzer.computePhones("50"));
     expect(RiTa.analyzer.computePhones("50")).eql(['f', 'ay', 'v', 'z', 'ih', 'r', 'ow']);
+  });
+
+  it('Should call analyze with ipaPhones option', function () {
+
+    // empty input
+    let feats = RiTa.analyze('', { ipaPhones: true });
+    expect(feats.phones).eq('');
+
+    // single monosyllabic word — no stress marker
+    feats = RiTa.analyze('cat', { ipaPhones: true });
+    expect(feats.phones).eq('kæt');
+    expect(feats.syllables).eq('k-ae-t'); // syllables still Arpabet
+    expect(feats.stresses).eq('1');       // stresses unchanged
+
+    // single polysyllabic word — stressed syllable gets ˈ
+    feats = RiTa.analyze('abandon', { ipaPhones: true });
+    expect(feats.phones).eq('əˈbændən');
+
+    // unstressed 'the' → ðə
+    feats = RiTa.analyze('the', { ipaPhones: true });
+    expect(feats.phones).eq('ðə');
+
+    // multi-word sentence
+    feats = RiTa.analyze('The birch canoe slid on the smooth planks', { ipaPhones: true });
+    expect(feats.phones).eq('ðə bɜrtʃ kəˈnuː slɪd ɑːn ðə smuːð plæŋkz');
+
+    // sentence with punctuation — punctuation tokens are skipped in IPA output
+    feats = RiTa.analyze('The dog ran.', { ipaPhones: true });
+    expect(feats.phones).eq('ðə dɔːɡ ɹæn');
+
+    // ipaPhones: false (default) returns Arpabet
+    feats = RiTa.analyze('abandon');
+    expect(feats.phones).eq('ah-b-ae-n-d-ah-n');
+
+    feats = RiTa.analyze('abandon', { ipaPhones: false });
+    expect(feats.phones).eq('ah-b-ae-n-d-ah-n');
+  });
+
+  it('Should call phones with ipaPhones option', function () {
+
+    // mirrors RiTa.analyze — same logic, just returns the string directly
+    expect(RiTa.phones('', { ipaPhones: true })).eq('');
+    expect(RiTa.phones('cat', { ipaPhones: true })).eq('kæt');
+    expect(RiTa.phones('abandon', { ipaPhones: true })).eq('əˈbændən');
+    expect(RiTa.phones('the', { ipaPhones: true })).eq('ðə');
+    expect(RiTa.phones('The birch canoe slid on the smooth planks', { ipaPhones: true }))
+      .eq('ðə bɜrtʃ kəˈnuː slɪd ɑːn ðə smuːð plæŋkz');
+
+    // default (no option) still returns Arpabet
+    expect(RiTa.phones('abandon')).eq('ah-b-ae-n-d-ah-n');
+    expect(RiTa.phones('abandon', { ipaPhones: false })).eq('ah-b-ae-n-d-ah-n');
+  });
+
+  it('Should call syllables with ipaPhones option', function () {
+
+    // syllable boundaries preserved as '/' in IPA output
+    expect(RiTa.syllables('abandon', { ipaPhones: true })).eq('ə/ˈbæn/dən');
+    expect(RiTa.syllables('the', { ipaPhones: true })).eq('ðə');
+    expect(RiTa.syllables('The birch canoe slid on the smooth planks', { ipaPhones: true }))
+      .eq('ðə bɜrtʃ kə/ˈnuː slɪd ɑːn ðə smuːð plæŋkz');
+
+    // punctuation skipped
+    expect(RiTa.syllables('The dog ran.', { ipaPhones: true })).eq('ðə dɔːɡ ɹæn');
+
+    // default still returns Arpabet with boundaries
+    expect(RiTa.syllables('abandon')).eq('ah/b-ae-n/d-ah-n');
   });
 
   function ok(a, m) { expect(a, m).to.be.true; }

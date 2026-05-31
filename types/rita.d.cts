@@ -130,10 +130,15 @@ export class RiTa {
         interrogative?: boolean;
     }): string;
     static stresses(input: string, options?: object): string;
-    static syllables(input: string, options?: object): string;
-    static phones(input: string, options?: object): string;
+    static syllables(input: string, options?: {
+        ipaPhones?: boolean;
+    }): string;
+    static phones(input: string, options?: {
+        ipaPhones?: boolean;
+    }): string;
     static analyze(input: string, options?: {
         simple?: boolean;
+        ipaPhones?: boolean;
     }): object;
     static spellsLikeSync(word: string, options?: {
         minLength?: number;

@@ -580,7 +580,11 @@ class RiTa {
    * @returns {string} a string containing the syllables of the input text
    */
   static syllables(input, options) {
-    return RiTa.analyzer.analyze(input, options).syllables;
+    const result = RiTa.analyzer.analyze(input, options);
+    if (options && options.ipaPhones) {
+      return Analyzer.syllablesToIpa(result.syllables, result.stresses, true);
+    }
+    return result.syllables;
   }
 
   /**
@@ -590,7 +594,11 @@ class RiTa {
    * @returns {string} a string containing the phones of the input text
    */
   static phones(input, options) {
-    return RiTa.analyzer.analyze(input, options).phones;
+    const result = RiTa.analyzer.analyze(input, options);
+    if (options && options.ipaPhones) {
+      return Analyzer.syllablesToIpa(result.syllables, result.stresses);
+    }
+    return result.phones;
   }
 
   /**
@@ -599,10 +607,15 @@ class RiTa {
    * @param {string} input - the text to analyze
    * @param {object} [options] - options for the analysis
    * @param {boolean} [options.simple=false] - whether to use the simplified tag set [a, r, v, n]
+   * @param {boolean} [options.ipaPhones=false] - whether to return phones in IPA format instead of Arpabet
    * @returns {object} an object containing the features of the input text (phones, syllables, stresses, pos), or the features inline
    */
   static analyze(input, options) {
-    return RiTa.analyzer.analyze(input, options);
+    const result = RiTa.analyzer.analyze(input, options);
+    if (options && options.ipaPhones) {
+        result.phones = Analyzer.syllablesToIpa(result.syllables, result.stresses);
+    }
+    return result;
   }
 
   ////////////////////////////// lex-sync ////////////////////////////
