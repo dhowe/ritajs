@@ -4,9 +4,10 @@
   ],
   "compilerOptions": {
     // "outFile": "./dist/rita.d.ts",
+    "rootDir": "src",
     "outDir": "types/generated",
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "declaration": true,
     "declarationMap": false,
     "emitDeclarationOnly": true,

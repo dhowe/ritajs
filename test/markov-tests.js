@@ -779,49 +779,6 @@ describe('Markov', function () {
       expect(res).eql(expec);
     });
 
-    it.skip('should call probability', function () {
-
-      let text, rm;
-      text = 'the dog ate the boy the';
-      rm = new RiMarkov(3);
-      rm.addText(text);
-      expect(rm.probability(["the"])).eq(.5);
-      expect(rm.probability(["dog"])).eq(1 / 6);
-      expect(rm.probability(["cat"])).eq(0);
-
-      text = 'the dog ate the boy that the dog found.';
-      rm = new RiMarkov(3);
-      rm.addText(text);
-
-      expect(rm.probability(["the"])).eq(.3);
-      expect(rm.probability(["dog"])).eq(.2);
-      expect(rm.probability(["cat"])).eq(0);
-
-      rm = new RiMarkov(3);
-      rm.addText(sample);
-      expect(rm.probability(["power"])).eq(0.017045454545454544);
-
-      //bad inputs
-      expect(rm.probability(["Non-exist"])).eq(0);
-    });
-
-    it.skip('should call probability.array', function () {
-
-      let rm = new RiMarkov(3);
-      rm.addText(sample);
-
-      let check = 'personal power is'.split(' ');
-      expect(rm.probability(check)).eq(1 / 3);
-
-      check = 'personal powXer is'.split(' ');
-      expect(rm.probability(check)).eq(0);
-
-      check = 'someone who pretends'.split(' ');
-      expect(rm.probability(check)).eq(1 / 2);
-
-      expect(rm.probability([])).eq(0);
-    });
-
     it('should call addText', function () {
       let rm = new RiMarkov(4);
       let sents = RiTa.sentences(sample);
@@ -1198,45 +1155,7 @@ describe('Markov', function () {
       const rm2 = new RiMarkov(exampleStr);
       expect(() => rm2.generate(undefined, ['The'], {})).to.throw();
     });
-
-    it.skip('RiMarkov.probability', () => {
-      const rm = new RiMarkov(exampleStr);
-
-      expect(rm.probability(['xyz'])).to.equal(0);
-      expect(rm.probability(['the'])).to.be.above(0).and.be.at.most(1);
-      expect(rm.probability(['the'])).to.be.above(rm.probability(['fox']));
-
-      const pSeq1 = rm.probability(['The', 'brown']);
-      const pSeq2 = rm.probability(['The', 'brown', 'fox']);
-      expect(pSeq1).to.be.above(0);
-      expect(pSeq2).to.be.above(0);
-      expect(pSeq1).to.be.above(pSeq2);
-
-      expect(rm.probability(['brown', 'fox', 'lazy'])).to.equal(0);
-      expect(rm.probability(['The', 'brown'], 'fox')).to.be.closeTo(0.5, 0.01);
-      expect(rm.probability(['The', 'brown'], 'dog')).to.be.closeTo(0.5, 0.01);
-      expect(rm.probability(['The', 'brown'], ['fox', 'jumps'])).to.be.above(0).and.be.at.most(1);
-      expect(rm.probability(['The', 'brown'], 'xyz')).to.equal(0);
-      expect(rm.probability([], ['The'])).to.be.above(0);
-      expect(() => rm.probability('not-an-array', 'token')).to.throw();
-
-      const rm2 = new RiMarkov('the dog ate the boy the');
-      expect(rm2.probability('the')).to.be.closeTo(3 / rm2.model.suffixes.length, 1e-9);
-      expect(rm2.probability('dog')).to.be.closeTo(1 / rm2.model.suffixes.length, 1e-9);
-      expect(rm2.probability('cat')).to.equal(0);
-
-      const rm3 = new RiMarkov('the dog ate the boy that the dog found.');
-      expect(rm3.probability('the')).to.be.closeTo(3 / rm3.model.suffixes.length, 1e-9);
-      expect(rm3.probability('dog')).to.be.closeTo(2 / rm3.model.suffixes.length, 1e-9);
-      expect(rm3.probability('cat')).to.equal(0);
-
-      const rm4 = new RiMarkov(sample);
-      expect(rm4.probability('Non-exist')).to.equal(0);
-      expect(rm4.probability([])).to.equal(0);
-      expect(rm4.probability('personal power is'.split(' '))).to.be.above(0);
-      expect(rm4.probability('personal powXer is'.split(' '))).to.equal(0);
-    });
-
+    
     it('RiMarkov.probabilities', () => {
       const rm = new RiMarkov(exampleStr);
 
