@@ -13,6 +13,8 @@ class Lexicon {
     this.data = custom || dict;
     this.analyzer = parent.analyzer;
     this.lexWarned = false;
+    this._words = null;
+    this._dataRef = null;
   }
 
   hasWord(word, opts = {}) {
@@ -69,7 +71,7 @@ class Lexicon {
     if (!fss) return [];
 
     let phone = this._firstPhone(fss);
-    let words = Object.keys(dict);
+    let words = this._getWords();
 
     // make sure we parsed first phoneme
     if (!phone) {
@@ -123,7 +125,7 @@ class Lexicon {
 
     const dict = this.data;
     let phone = this._lastStressedPhoneToEnd(theWord);
-    let words = Object.keys(dict);
+    let words = this._getWords();
 
     if (!phone) return [];
 
@@ -194,7 +196,7 @@ class Lexicon {
 
     // no arguments, just return
     if (!pattern && !opts) {
-      return this.RiTa.random(Object.keys(this.data));
+      return this.RiTa.random(this._getWords());
     }
 
     // handle different parameter options
@@ -235,7 +237,7 @@ class Lexicon {
 
   searchSync(pattern, options) {
 
-    let words = Object.keys(this.data);
+    let words = this._getWords();
 
     // no arguments, just return
     if (!pattern && !options) return words;
@@ -309,7 +311,7 @@ class Lexicon {
 
     if (!phonesA) return [];
 
-    let minVal = Number.MAX_VALUE, words = Object.keys(dict);
+    let minVal = Number.MAX_VALUE, words = this._getWords();
 
     // randomize list order if shuffle is true
     if (opts.shuffle) words = this.RiTa.randomizer.shuffle(words);
@@ -498,53 +500,20 @@ class Lexicon {
 
   // med for 2 strings (or 2 arrays)
   minEditDist(source, target) {
-
-    let cost; // cost
-    let i, j;
-    /**
-     * @type {number[][]}
-     */
-    let matrix = []; // matrix
-    let sI; // ith character of s
-    let tJ; // jth character of t
-
-    // Step 1 ----------------------------------------------
-
-    for (i = 0; i <= source.length; i++) {
-      matrix[i] = [];
-      matrix[i][0] = i;
-    }
-
-    for (j = 0; j <= target.length; j++) {
-      matrix[0][j] = j;
-    }
-
-    // Step 2 ----------------------------------------------
-
-    for (i = 1; i <= source.length; i++) {
-      sI = source[i - 1];
-
-      // Step 3 --------------------------------------------
-
-      for (j = 1; j <= target.length; j++) {
-        tJ = target[j - 1];
-
-        // Step 4 ------------------------------------------
-
-        cost = (sI == tJ) ? 0 : 1;
-
-        // Step 5 ------------------------------------------
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j - 1] + cost
-        );
+    const sLen = source.length, tLen = target.length;
+    let prev = new Array(tLen + 1);
+    let curr = new Array(tLen + 1);
+    for (let j = 0; j <= tLen; j++) prev[j] = j;
+    for (let i = 1; i <= sLen; i++) {
+      curr[0] = i;
+      const sI = source[i - 1];
+      for (let j = 1; j <= tLen; j++) {
+        const cost = (sI === target[j - 1]) ? 0 : 1;
+        curr[j] = Math.min(prev[j] + 1, curr[j - 1] + 1, prev[j - 1] + cost);
       }
+      const tmp = prev; prev = curr; curr = tmp;
     }
-
-    // Step 6 ----------------------------------------------
-
-    return matrix[source.length][target.length];
+    return prev[tLen];
   }
 
   isMassNoun(w) {
@@ -698,6 +667,14 @@ class Lexicon {
   _lookupRaw(word) {
     word = word && word.toLowerCase();
     return this.data[word];
+  }
+
+  _getWords() {
+    if (this._dataRef !== this.data) {
+      this._words = Object.keys(this.data);
+      this._dataRef = this.data;
+    }
+    return this._words;
   }
 }
 
