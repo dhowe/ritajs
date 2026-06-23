@@ -151,13 +151,13 @@ class Analyzer {
 const HAS_LETTER_RE = /[a-zA-Z]+/;
 
 /**
- * Mapping from Arpabet phonemes (as used by RiTa, lowercase) to IPA symbols.
+ * Mapping from Arpabet phonemes (lowercase in RiTa) to IPA symbols.
  * Source: https://en.wikipedia.org/wiki/ARPABET
  *
  * Notes:
  *  - RiTa emits lowercase Arpabet without stress digits (e.g. "ah" not "AH0")
  *  - "ah" = ʌ (canonical Arpabet AH); unstressed occurrences (schwa) are also
- *    represented as "ah" in RiTa, so the conversion is approximate for those cases
+ *    represented as "ah", so the conversion is approximate for those cases
  *  - "er" is context-sensitive: stressed → ɜr (bird), unstressed → ər (butter)
  */
 Analyzer.arpabetToIpa = {
@@ -214,7 +214,7 @@ Analyzer.arpabetToIpa = {
 };
 
 /**
- * Convert a RiTa phones string to an approximate IPA string (no stress markers).
+ * Convert a RiTa phones string to an approximate IPA string (without stress markers).
  * RiTa format: phonemes within a word joined by "-", words joined by " "
  * e.g. "dh-ah b-er-ch k-ah-n-uw" → "ðʌ bɜrtʃ kʌnu"
  *
@@ -230,7 +230,7 @@ Analyzer.phonesToIpa = function(phones) {
 };
 
 /**
- * Convert RiTa syllables + stresses strings to IPA with primary stress markers (ˈ).
+ * Convert RiTa syllables + stress strings to IPA with primary stress markers (ˈ).
  * Uses ə for unstressed 'ah' (schwa) and ʌ for stressed 'ah'.
  * Uses ər for unstressed 'er' and ɜr for stressed 'er'.
  * Adds length mark ː to stressed aa/iy/ao/uw (e.g. beat→biː, caught→kɔː).

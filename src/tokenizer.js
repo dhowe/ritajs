@@ -48,14 +48,13 @@ class Tokenizer {
 
     if (opts.regex) return input.split(opts.regex); // TODO: tests
 
-    let { tags, text } = this.pushTags(input.trim());
+    let { tags, text } = this._pushTags(input.trim());
 
     for (let i = 0; i < TOKENIZE_RE.length; i += 2) {
       if (opts.debug) var pre = text;
       text = text.replace(TOKENIZE_RE[i], TOKENIZE_RE[i + 1]);
       if (opts.debug && text !== pre) console.log('HIT' + i, pre + ' -> '
         + text, TOKENIZE_RE[i], TOKENIZE_RE[i + 1]);
-
     }
 
     // https://github.com/dhowe/rita/issues/65
@@ -71,97 +70,29 @@ class Tokenizer {
       }
     }
 
-    let result = this.popTags(text.trim().split(WS_RE), tags);
-
-    return result;
+    return this._popTags(text.trim().split(WS_RE), tags);
   }
 
-  untokenize(arr, delim = ' ') { // very ugly (but works somehow)
+  untokenize(tokenArray, delim = ' ') {
 
-    if (!arr || !Array.isArray(arr)) return '';
+    if (!Array.isArray(tokenArray)) return '';
 
-    arr = this.preProcessTags(arr);
+    let tokens = this._preProcessTags(tokenArray);
 
-    let nextNoSpace = false, afterQuote = false, midSentence = false;
-    let withinQuote = arr.length && QUOTE_RE.test(arr[0]);
-    let result = arr[0] || '';
+    let state = { // state variables for decision rules
+      withinQuote: !!(tokens.length && QUOTE_RE.test(tokens[0])),
+      afterQuote: false,
+      midSentence: false,
+      nextNoSpace: false
+    };
 
-    for (let i = 1; i < arr.length; i++) {
-
-      if (!arr[i]) continue;
-      let thisToken = arr[i];
-      let lastToken = arr[i - 1];
-      let thisComma = thisToken === ',', lastComma = lastToken === ',';
-      let thisNBPunct = NOSP_BF_PUNCT_RE.test(thisToken)
-        || UNTAG_RE[2].test(thisToken) || LINEBREAK_RE.test(thisToken); // NB -> no space before the punctuation (add closing tag)
-      let thisLBracket = LB_RE.test(thisToken); // LBracket -> left bracket
-      let thisRBracket = RB_RE.test(thisToken); // RBracket -> right bracket
-      let lastNBPunct = NOSP_BF_PUNCT_RE.test(lastToken)
-        || LINEBREAK_RE.test(lastToken); // NB -> no space before
-      let lastNAPunct = NOSP_AF_PUNCT_RE.test(lastToken)
-        || UNTAG_RE[1].test(lastToken) || LINEBREAK_RE.test(lastToken); // NA -> no space after (add opening tag)
-      let lastLB = LB_RE.test(lastToken), lastRB = RB_RE.test(lastToken);
-      let lastEndWithS = (lastToken[lastToken.length - 1] === 's' &&
-        lastToken != "is" && lastToken != "Is" && lastToken != "IS");
-      let lastIsWWW = WWW_RE.test(lastToken), isDomain = DOMAIN_RE.test(thisToken);
-      let nextIsS = i == arr.length - 1 ? false : (arr[i + 1] === "s"
-        || arr[i + 1] === "S");
-      let lastQuote = QUOTE_RE.test(lastToken), isLast = (i == arr.length - 1);
-      let thisQuote = QUOTE_RE.test(thisToken);
-      let thisLineBreak = LINEBREAK_RE.test(thisToken);
-
-      if ((lastToken === "." && isDomain) || nextNoSpace) {
-        nextNoSpace = false;
-        result += thisToken;
-        continue;
-
-      } else if (thisToken === "." && lastIsWWW) {
-        nextNoSpace = true;
-
-      } else if (thisLBracket) {
-        result += delim;
-
-      } else if (lastRB) {
-        if (!thisNBPunct && !thisLBracket) {
-          result += delim;
-        }
-
-      } else if (thisQuote) {
-
-        if (withinQuote) {
-          // no-delim, mark quotation done
-          afterQuote = true;
-          withinQuote = false;
-        } else if (!((APOS_RE.test(thisToken) && lastEndWithS) ||
-          (APOS_RE.test(thisToken) && nextIsS))) {
-          withinQuote = true;
-          afterQuote = false;
-          result += delim;
-        }
-
-      } else if (afterQuote && !thisNBPunct) {
-        result += delim;
-        afterQuote = false;
-
-      } else if (lastQuote && thisComma) {
-        midSentence = true;
-
-      } else if (midSentence && lastComma) {
-        result += delim;
-        midSentence = false;
-
-      } else if ((!thisNBPunct && !lastQuote && !lastNAPunct
-        && !lastLB && !thisRBracket) ||
-        (!isLast && thisNBPunct && lastNBPunct && !lastNAPunct &&
-          !lastQuote && !lastLB && !thisRBracket) && !thisLineBreak) {
-        result += delim;
-      }
-
-      result += thisToken; // add to result
-      if (thisNBPunct && !lastNBPunct && !withinQuote
-        && SQUOTE_RE.test(thisToken) && lastEndWithS) {
-        result += delim;
-      }
+    let result = tokens[0] || '';
+    for (let i = 1; i < tokens.length; i++) {
+      if (!tokens[i]) continue;
+      const [space, trailing, nextState] = this._nextState
+        (tokens[i - 1], tokens[i], tokens[i + 1], i === tokens.length - 1, state);
+      result += (space ? delim : '') + tokens[i] + (trailing ? delim : '');
+      state = nextState;
     }
 
     return result.trim();
@@ -207,17 +138,103 @@ class Tokenizer {
   }
 
 
-  pushTags(text) {
+  /**
+   * Decide whether a space (delimiter) should be inserted before `curr` (and optionally after it).
+   * Returns [spaceBefore, spaceAfter, nextState]. 
+   * @param {string} prev - the preceding token
+   * @param {string} curr - the current token being appended
+   * @param {string|undefined} next - the token after curr (may be undefined)
+   * @param {boolean} isLast - whether curr is the last token
+   * @param {{withinQuote:boolean, afterQuote:boolean, midSentence:boolean, nextNoSpace:boolean}} state
+   * @returns {[boolean, boolean, object]}
+   */
+  _nextState(prev, curr, next, isLast, state) {
+    let { withinQuote, afterQuote, midSentence, nextNoSpace } = state;
+
+    // derived booleans — computed once per state, used below
+    const thisNBPunct = NOSP_BF_PUNCT_RE.test(curr) || UNTAG_RE[2].test(curr) || LINEBREAK_RE.test(curr); // no space before curr
+    const lastNBPunct = NOSP_BF_PUNCT_RE.test(prev) || LINEBREAK_RE.test(prev);
+    const lastNAPunct = NOSP_AF_PUNCT_RE.test(prev) || UNTAG_RE[1].test(prev) || LINEBREAK_RE.test(prev); // no space after prev
+    const thisLBracket = LB_RE.test(curr), thisRBracket = RB_RE.test(curr);
+    const lastLB = LB_RE.test(prev), lastRB = RB_RE.test(prev);
+    const thisQuote = QUOTE_RE.test(curr), lastQuote = QUOTE_RE.test(prev);
+    const thisComma = curr === ',', lastComma = prev === ',';
+    const thisLineBreak = LINEBREAK_RE.test(curr);
+    const isDomain = DOMAIN_RE.test(curr), lastIsWWW = WWW_RE.test(prev);
+    const lastEndWithS = prev[prev.length - 1] === 's' && prev !== 'is' && prev !== 'Is' && prev !== 'IS';
+    const nextIsS = next === 's' || next === 'S';
+
+    // ── rules (ordered by priority) - ugly but working
+
+    // URL domain continuation or deferred no-space
+    if ((prev === '.' && isDomain) || nextNoSpace) {
+      return [false, false, { withinQuote, afterQuote, midSentence, nextNoSpace: false }];
+    }
+
+    // www.<domain>  — suppress space before the dot, and before whatever follows
+    if (curr === '.' && lastIsWWW) {
+      return [false, false, { withinQuote, afterQuote, midSentence, nextNoSpace: true }];
+    }
+
+    // left bracket: always space before
+    if (thisLBracket) {
+      return [true, false, { withinQuote, afterQuote, midSentence, nextNoSpace }];
+    }
+
+    // after right bracket: space unless followed by punct or another bracket
+    if (lastRB) {
+      const space = !thisNBPunct && !thisLBracket;
+      return [space, false, { withinQuote, afterQuote, midSentence, nextNoSpace }];
+    }
+
+    // trailing space: possessive apostrophe after plural — computed here so quote branch can use it
+    const trailingSpace = thisNBPunct && !lastNBPunct && !withinQuote && SQUOTE_RE.test(curr) && lastEndWithS;
+
+    // quote token
+    if (thisQuote) {
+      if (withinQuote) {
+        // closing quote — no space before, mark done
+        return [false, false, { withinQuote: false, afterQuote: true, midSentence, nextNoSpace }];
+      }
+      // possessive apostrophe after plural (dogs') or before 's'
+      if ((APOS_RE.test(curr) && lastEndWithS) || (APOS_RE.test(curr) && nextIsS)) {
+        return [false, trailingSpace, { withinQuote, afterQuote, midSentence, nextNoSpace }];
+      }
+      // opening quote — space before
+      return [true, false, { withinQuote: true, afterQuote: false, midSentence, nextNoSpace }];
+    }
+
+    // first token after a closing quote
+    if (afterQuote && !thisNBPunct) {
+      return [true, false, { withinQuote, afterQuote: false, midSentence, nextNoSpace }];
+    }
+
+    // "word," mid-sentence pattern: "he said," she replied
+    if (lastQuote && thisComma) {
+      return [false, false, { withinQuote, afterQuote, midSentence: true, nextNoSpace }];
+    }
+    if (midSentence && lastComma) {
+      return [true, false, { withinQuote, afterQuote, midSentence: false, nextNoSpace }];
+    }
+
+    // general case
+    const generalSpace = (!thisNBPunct && !lastQuote && !lastNAPunct && !lastLB && !thisRBracket)
+      || (!isLast && thisNBPunct && lastNBPunct && !lastNAPunct
+        && !lastQuote && !lastLB && !thisRBracket && !thisLineBreak);
+
+    return [generalSpace, trailingSpace, { withinQuote, afterQuote, midSentence, nextNoSpace }];
+  }
+
+  _pushTags(text) {
     let tags = [], tagIdx = 0;
     while (TAG_RE.test(text)) {
       tags.push(text.match(TAG_RE)[0]);
       text = text.replace(TAG_RE, " _" + TAG + (tagIdx++) + "_ ");
     }
-
     return { tags, text };
   }
 
-  popTags(result, tags) {
+  _popTags(result, tags) {
     for (let i = 0; i < result.length; i++) {
       if (POPTAG_RE.test(result[i])) {
         result[i] = tags.shift();
@@ -229,7 +246,7 @@ class Tokenizer {
     return result;
   }
 
-  preProcessTags(array) {
+  _preProcessTags(array) {
     let result = [], currentIdx = 0;
     while (currentIdx < array.length) {
       let currentToken = array[currentIdx];
@@ -261,14 +278,14 @@ class Tokenizer {
         currentIdx = inspectIdx + 1;
         continue;
       }
-      let tag = this.tagSubarrayToString(subArray);
+      let tag = this._tagSubarrayToString(subArray);
       result.push(tag);
       currentIdx = inspectIdx + 1;
     }
     return result;
   }
 
-  tagSubarrayToString(array) {
+  _tagSubarrayToString(array) {
     if (!LT_RE.test(array[0]) || !GT_RE.test(array[array.length - 1])) {
       throw Error(array + 'is not a tag');
     }
@@ -425,7 +442,6 @@ const TOKENIZE_RE = [
 const CONTRACTS_RE = [
   // TODO: 'She'd have wanted' -> 'She would have wanted'
 
-  // WORKING HERE: add word boundaries \b to these
   /\b([Cc])an['\u2019]t/g, "$1an not",
   /\b([Dd])idn['\u2019]t/g, "$1id not",
   /\b([CcWw])ouldn['\u2019]t/g, "$1ould not",

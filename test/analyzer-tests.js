@@ -7,11 +7,7 @@ describe('Analyzer', function () {
 
   let hasLex = true;
 
-  /*it('Should one-off', function () {
-    expect(RiTa.inflector.isPlural('hardness')).true;
-  })*/
-
-  it('Should call analyze-inline', function () {
+  it('Should call analyzer.analyze', function () {
     let data = RiTa.analyzer.analyze("abandon");
     expect(data.phones).eq("ah-b-ae-n-d-ah-n");
     expect(data.stresses).eq("0/1/0");
@@ -156,7 +152,7 @@ describe('Analyzer', function () {
   it('Should treat hyphenated words as single tokens', function () {
     // treating word as a single token:
 
-    let lts = RiTa.SILENCE_LTS; // remembers
+    let lts = RiTa.SILENCE_LTS; // remember
     RiTa.SILENCE_LTS = true; // disable LTS logging 
 
     // pool1: all parts in dict
@@ -291,63 +287,6 @@ describe('Analyzer', function () {
       eq(feats.syllables, feats3[i].syllables, '[syllables]fail at ' + pool3[i]);
       eql(feats.tokens.split(' '), RiTa.tokenize(pool3[i]));
     }
-    RiTa.SILENCE_LTS = lts; // reset
-  });
-
-  0 && it('Should treat hyphenated words as separate tokens', function () {  // see https://github.com/dhowe/rita/issues/65
-
-    let lts = RiTa.SILENCE_LTS; // remembers
-    RiTa.SILENCE_LTS = true; // disable LTS logging 
-
-    // treating parts as separate tokens:
-    let feats = RiTa.analyze("off-site");
-    eq(feats["pos"], "in - nn");
-    eq(feats["tokens"], "off - site");
-    eq(feats["phones"], 'ao-f - s-ay-t');
-    eq(feats["stresses"], "1 - 1");
-    eq(feats["syllables"], "ao-f - s-ay-t");
-    eql(feats["tokens"].split(' '), RiTa.tokenize("off-site"));
-
-    feats = RiTa.analyze("oft-cited");
-    eq(feats["pos"], "rb - vbd");
-    eq(feats["tokens"], "oft - cited");
-    eq(feats["phones"], 'ao-f-t - s-ih-t-ah-d');
-    eq(feats["stresses"], "1 - 1/0");
-    eq(feats["syllables"], "ao-f-t - s-ih/t-ah-d");
-    eql(feats["tokens"].split(' '), RiTa.tokenize("oft-cited"));
-
-    feats = RiTa.analyze("deeply-nested");
-    eq(feats["pos"], "rb - vbd");
-    eq(feats["tokens"], "deeply - nested");
-    eq(feats["phones"], 'd-iy-p-l-iy - n-eh-s-t-ah-d');
-    eq(feats["stresses"], "1/0 - 1/0");
-    eq(feats["syllables"], "d-iy-p/l-iy - n-eh/s-t-ah-d");
-    eql(feats["tokens"].split(' '), RiTa.tokenize("deeply-nested"));
-
-    feats = RiTa.analyze("father-in-law");
-    eq(feats["pos"], "nn - in - nn");
-    eq(feats["tokens"], "father - in - law");
-    eq(feats["phones"], 'f-aa-dh-er - ih-n - l-ao');
-    eq(feats["stresses"], "1/0 - 0 - 1");
-    eq(feats["syllables"], "f-aa/dh-er - ih-n - l-ao");
-    eql(feats["tokens"].split(' '), RiTa.tokenize("father-in-law"));
-
-    feats = RiTa.analyze("up-to-date");
-    eq(feats["pos"], "in - to - nn");
-    eq(feats["tokens"], "up - to - date");
-    eq(feats["phones"], 'ah-p - t-uw - d-ey-t');
-    eq(feats["stresses"], "1 - 1 - 1");
-    eq(feats["syllables"], "ah-p - t-uw - d-ey-t");
-    eql(feats["tokens"].split(' '), RiTa.tokenize("up-to-date"));
-
-    feats = RiTa.analyze("state-of-the-art");
-    eq(feats["pos"], "jj - in - dt - nn");
-    eq(feats["tokens"], "state - of - the - art");
-    eq(feats["phones"], 's-t-ey-t - ah-v - dh-ah - aa-r-t');
-    eq(feats["stresses"], "1 - 1 - 0 - 1");
-    eq(feats["syllables"], "s-t-ey-t - ah-v - dh-ah - aa-r-t");
-    eql(feats["tokens"].split(' '), RiTa.tokenize("state-of-the-art"));
-
     RiTa.SILENCE_LTS = lts; // reset
   });
 
