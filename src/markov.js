@@ -149,37 +149,6 @@ export default class RiMarkov {
   }
 
   /**
-   * Returns the probability of `next` following sequence of tokens in `prompt`. For example:
-   * 
-   *  rm.probability(['the', 'cat'], 'sat') -> returns the probability of 'sat' following the sequence 'the cat' in the model.
-   * 
-   * If `next` is an array, returns the probability of the entire sequence following `prompt`, 
-   * e.g. rm.probability(['the', 'cat'], ['sat', 'on', 'the', 'mat'])
-   * 
-   * If only one argument is provided, it is treated as the `next` array and `prompt` is assumed
-   * to be empty, eg rm.probability(['the', 'cat']) returns the raw probability of the sequence 'the cat' in the model.
-   */
-  probabilityOrig(prompt, next) {
-
-    if (!this.model.ready) this.model.build();
-
-    // single-argument form: probability(['the', 'cat']) — treat array as the 'next' sequence
-    if (typeof next === 'undefined') {
-      next = prompt;
-      prompt = [this.model.startToken];
-    }
-    if (!Array.isArray(prompt)) throw Error('Array required for prompt');
-    if (typeof next === 'string') next = [next];
-    if (!Array.isArray(next)) throw Error('String or array required for next');
-    if (next.length === 0) return 0;
-
-    const sa = this.model.suffixes;
-    // if ()
-    // let dist = sa.pdist(prompt, { temp: 0 });
-    // if (!dist) return 0;
-  }
-
-  /**
    * @deprecated
    */
   probability(prompt, next) {
