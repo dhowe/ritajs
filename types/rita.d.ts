@@ -185,7 +185,7 @@ export class RiTa {
     static randi(param1: number, param2?: number): number;
     static random(param1?: number | object[], param2?: number): number | object;
 
-    static randomizer: { seed(n: number): void; random(...args: any[]): number; pselect<T>(arr: T[]): T; pselectIndex(arr: number[]): number; pselect2(arr: number[]): number; ndist(weights: number[], temp?: number): number[]; randomOrdering<T>(arr: T[]): T[]; };
+    static randomizer: { seed(n: number): void; random(...args: any[]): number; pselect<T>(arr: T[]): T; pselectIndex(arr: number[]): number; ndist(weights: number[], temp?: number): number[]; randomOrdering<T>(arr: T[]): T[]; };
     static RiMarkov: typeof RiMarkov;
     static BackoffModel: typeof BackoffModel;
     static SuffixArray: typeof SuffixArray;

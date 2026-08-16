@@ -160,8 +160,9 @@ class RiTa {
    * @returns {boolean} - true if the sentence is a question, else false
    */
   static isQuestion(sentence) {
-    return RiTa.QUESTIONS.includes
-      (RiTa.tokenize(sentence)[0].toLowerCase());
+    let tokens = RiTa.tokenize(sentence);
+    if (!tokens || !tokens.length) return false;
+    return RiTa.QUESTIONS.includes(tokens[0].toLowerCase());
   }
 
   /**

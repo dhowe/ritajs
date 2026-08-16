@@ -95,21 +95,6 @@ describe('Markov', function () {
     expect(results[i = 2], 'failed #' + i + ' temp=' + temps[i]).to.be.closeTo(expected[i], .4);
     expect(results[i = 3], 'failed #' + i + ' temp=' + temps[i]).to.be.closeTo(expected[i], 1);
 
-    let distr = [[1, 2, 3, 4], [0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]];
-    expected = [3, 0.3, 0.3857];
-    for (let k = 0; k < 10; k++) {
-      let results = [];
-      distr.forEach(sm => {
-        let sum = 0;
-        for (let j = 0; j < 1000; j++) {
-          sum += Random.pselect2(sm);
-        }
-        results.push(sum / 1000);
-      });
-      expect(results[0]).to.be.closeTo(expected[0], .5);
-      expect(results[1]).to.be.closeTo(expected[1], .05);
-      expect(results[2]).to.be.closeTo(expected[2], .05);
-    }
   });
 
   // NOTE: markov-a called this 'should call Random.pselectIndex' (lowercase s); name unified to C spelling
@@ -140,22 +125,6 @@ describe('Markov', function () {
     expect(results[i = 3], 'failed #' + i + ' temp=' + temps[i]).to.be.closeTo(expected[i], 1);
     //expect(results[i = 4], 'failed #' + i + ' temp=' + temps[i]).to.be.closeTo(expected[i], .75);
 
-    let distr = [[1, 2, 3, 4], [0.1, 0.2, 0.3, 0.4], [0.2, 0.3, 0.4, 0.5]];
-    expected = [3, 0.3, 0.3857];
-    //should pselect2 return index or return the value (which is what is returned now)
-    for (let k = 0; k < 10; k++) {
-      let results = [];
-      distr.forEach(sm => {
-        let sum = 0;
-        for (let j = 0; j < 1000; j++) {
-          sum += Random.pselect2(sm); // TODO: check diff between pselect, pselect2 and pselectIndex
-        }
-        results.push(sum / 1000);
-      });
-      expect(results[0]).to.be.closeTo(expected[0], .5);
-      expect(results[1]).to.be.closeTo(expected[1], .05);
-      expect(results[2]).to.be.closeTo(expected[2], .05);
-    }
   });
 
   it('should call Random.ndist', function () {

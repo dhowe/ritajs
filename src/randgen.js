@@ -49,55 +49,36 @@ class SeededRandom {
     }
   }
 
-  /*
-    Selects and returns the index from a probability distribution
-  */
+  /* Selects and returns the index from a probability distribution (normalized or not) */
   pselect(probs) {
     if (!Array.isArray(probs) || probs.length === 0) {
       throw Error('Array required');
     }
-    let point = this._rndf(), cutoff = 0;
-    for (let i = 0; i < probs.length - 1; ++i) {
-      cutoff += probs[i];
-      if (point < cutoff) return i;
+    let sum = probs.reduce((acc, ele) => acc + ele, 0);
+    let rand = this._rndf() * sum;
+    for (let i = 0; i < probs.length - 1; i++) {
+      rand -= probs[i];
+      if (rand < 0) return i;
     }
     return probs.length - 1;
   }
 
-  /**
-   * Selects and return an element from an object distribution (mapping keys to probabilities) 
-   * 
-   * 
-   */
+  /* Selects and returns a key from an object distribution (mapping keys to weights) */
   pselectObj(dist) {
     if (!dist || typeof dist !== 'object') throw Error('arg required');
-    let point = this._rndf(), cutoff = 0;
-    for (let key in dist) {
-      cutoff += dist[key];
-      if (point < cutoff) return key;
-    }
-    console.warn('pselectObj: probabilities do not sum to 1, returning last key');
-    return Object.keys(dist)[Object.keys(dist).length - 1];
+    const keys = Object.keys(dist);
+    return keys[this.pselect(Object.values(dist))];
   }
 
   pselectIndex(probs) {
     if (!probs || !probs.length) throw Error('arg required');
-    let point = this._rndf(), cutoff = 0;
-    for (let i = 0; i < probs.length - 1; ++i) {
-      cutoff += probs[i];
-      if (point < cutoff) return i;
+    let sum = probs.reduce((acc, ele) => acc + ele, 0);
+    let rand = this._rndf() * sum;
+    for (let i = 0; i < probs.length - 1; i++) {
+      rand -= probs[i];
+      if (rand < 0) return i;
     }
     return probs.length - 1;
-  }
-
-  /*
-   * Returns the selected index from a probability distribution
-   * TODO: test (more general version)
-   */
-  pselect2(weightsArray) {
-    let sum = weightsArray.reduce((acc, ele) => acc + ele, 0);
-    let rand = Math.random() * sum; // from 0 - sum
-    return weightsArray.find(ele => (rand -= ele) < 0);
   }
 
   /*
