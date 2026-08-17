@@ -242,7 +242,7 @@ describe('Markov.Backoff', () => {
   it('BackoffModel.generateSentences', () => {
     const lm = new BackoffModel(sample);
     const prompt = ['I'];
-    const opts = { minLength: 3, maxLength: 20 };
+    const opts = { minLength: 3, maxLength: 20, numSentences: 2 };
 
     // returns an array of strings, default numSentences=2
     const three = lm.generateSentences(3, prompt, opts);

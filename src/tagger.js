@@ -187,12 +187,6 @@ class Tagger {
     }
   }
 
-  _safeConcat(a, b) {
-    if (a && b) return a.concat(b);
-    if (a) return a;
-    if (b) return b;
-  } // ! this function is never used
-
   _derivePosData(word, noGuessing) {
 
     // noGuessing arg disables the final guess when true, 
@@ -424,7 +418,7 @@ class Tagger {
 
       // transform 5: convert a common noun (NN or NNS) to a (only if longer than 4 letters)
       // adjective if it ends with "al", special-case for mammal
-      if (word.length > 4 && tag.startsWith("nn") && word.endsWith("al") && word != 'mammal') {
+      if (word.length > 4 && tag.startsWith("nn") && word.endsWith("al") && word !== 'mammal') {
         tag = "jj";
         //dbug && this._log(5, word, tag);
       }
@@ -469,7 +463,7 @@ class Tagger {
         //if it is not at the start of a sentence or it is the only word
         // or when it is at the start of a sentence but can't be found in the dictionary
         let sing = this.RiTa.singularize(word.toLowerCase());
-        if (words.length === 1 || i > 0 || (i == 0 && !this._lexHas('nn', sing))) {
+        if (words.length === 1 || i > 0 || (i === 0 && !this._lexHas('nn', sing))) {
           tag = tag.endsWith("s") ? "nnps" : "nnp";
           //dbug && this._log(10, word, tag);
         }
@@ -477,7 +471,7 @@ class Tagger {
 
       // transform 11(dch): convert plural nouns (which are also 3sg-verbs) 
       // to 3sg-verbs when followed by adverb
-      if (i < result.length - 1 && tag == "nns" && result[i + 1].startsWith("rb") &&
+      if (i < result.length - 1 && tag === "nns" && result[i + 1].startsWith("rb") &&
         this.hasTag(choices[i], "vbz")) {
         tag = "vbz";
         //dbug && this._log(11, word, tag);

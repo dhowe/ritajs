@@ -246,7 +246,7 @@ export default class SuffixArray {
     * Lower values move the highest-weighted output toward a probability of 1.0.
     * Higher values tend toward evening out all the probabilities (all tokens equally likely).
     */
-  static normaliseDist(mapping, temp = 0) { // TODO: move to utils, grab from RiTa-Markov
+  static normaliseDist(mapping, temp = 0) {
 
     if (Object.keys(mapping).length === 0) return {}; // empty
 
@@ -279,7 +279,7 @@ export default class SuffixArray {
    * @throws {Error} Index out of range
    */
   tokensFor(index, len) { // 
-    if (typeof index === 'undefined' || index < 0 || index > this.data.length) {
+    if (typeof index === 'undefined' || index < 0 || index >= this.data.length) {
       throw Error('Index out of range: ' + index);
     }
     let toks;

@@ -296,7 +296,7 @@ class Conjugator {
     let dbug = 0, res, name = ruleSet.name;
     let rules = ruleSet.rules, defRule = ruleSet.defaultRule;
 
-    if (!rules) console.error("no rule: " + ruleSet.name + ' of ' + theVerb);
+    if (!rules) throw Error('No rules for ' + name);
     if (MODALS.includes(theVerb)) return theVerb;
 
     for (let i = 0; i < rules.length; i++) {

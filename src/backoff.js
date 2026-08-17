@@ -66,7 +66,7 @@ export default class BackoffModel extends SuffixGram {
    * @returns {string | string[]} string if count = 1, else array of sentences, length = numSentences
    */
   generateSentences(n, prompt, opts = {}) {
-    const numSentences = opts.numSentences ?? 2;
+    const numSentences = opts.numSentences ?? 1;
 
     const dbug = opts.debug ? (...args) => console.log('[generateSentences]', ...args) : () => {};
     const perSentenceMax = opts.maxLength ?? BackoffModel.generationDefaults.maxLength;
@@ -331,22 +331,7 @@ export default class BackoffModel extends SuffixGram {
     }
     return this;
   }
-
-  pselect(dist) { // map: token -> probability
-
-    if (typeof dist !== 'object') throw Error('object required');
-
-    let cutoff = 0;
-    let point = Math.random();
-    let keys = Object.keys(dist);
-    for (let i = 0; i < keys.length - 1; ++i) {
-      let tok = keys[i], prob = dist[tok];
-      cutoff += prob;
-      if (point < cutoff) return tok;
-    }
-    return keys[keys.length - 1];
-  }
-
+  
   static resolveOpts(n, options, ignorableKeys = []) {
     if (typeof options !== 'undefined' && !SuffixGram.isObject(options)) {
       throw Error('Options must be an object');

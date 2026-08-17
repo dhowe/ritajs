@@ -13,7 +13,6 @@ class LetterToSound {
 
   constructor(parent) {
     this.RiTa = parent;
-    this.cache = {}; // TODO: lts cache
     this.letterIndex = {};
     this.fval_buff = [];
     this.numStates = 0;

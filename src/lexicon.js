@@ -101,8 +101,7 @@ class Lexicon {
         if (word !== words[i]) data = dict[word];
       }
 
-      // TODO: use 'data' here unless we've changed 
-      // to a new word not in dict
+      // OPT: use 'data' here unless we've changed to a new word not in dict
       let c2 = this._firstPhone(this._firstStressedSyl(word));
       if (phone === c2) result.push(word);
 
@@ -380,7 +379,7 @@ class Lexicon {
     if (result !== word) {
       if (opts.numSyllables) {
 
-        // TODO: use rdata here if possible
+        // TODO: use rdata here if possible, rather than recomputing
         let syls = this.analyzer.analyzeWord(result, { silent: true }).syllables;
         let num = syls.split(this.RiTa.SYLLABLE_BOUNDARY).length;
 
@@ -494,7 +493,7 @@ class Lexicon {
 
     if (!noLts) {
       let phones = this.RiTa.analyzer.computePhones(word);
-      return Util.syllablesFromPhones(phones); // TODO: bad name
+      return Util.syllablesFromPhones(phones);
     }
   }
 
