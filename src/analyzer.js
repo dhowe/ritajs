@@ -32,7 +32,10 @@ class Analyzer {
       features.stresses += SP + stresses;
       features.syllables += SP + syllables;
     }
-    Object.keys(features).forEach(k => features[k] = features[k].trim());
+    
+    for (const k in features) {
+      features[k] = features[k].trim(); 
+    }
 
     return features;
   }

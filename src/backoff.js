@@ -258,6 +258,7 @@ export default class BackoffModel extends SuffixGram {
       // total sentence length including prompt
       const totalSoFar = prompt.length + generated; 
 
+      const nonSpecial = context.filter(t => !(t.startsWith('<') && t.endsWith('>')));
       for (const [token, prob] of Object.entries(dist)) {
 
         if (isSpecial(token)) { // filter
@@ -266,7 +267,6 @@ export default class BackoffModel extends SuffixGram {
             continue;
           }
         } else if (checkLength) {
-          const nonSpecial = context.filter(t => !(t.startsWith('<') && t.endsWith('>')));
           const seq = [...nonSpecial.slice(-maxLengthMatch), token];
           const hp = this.suffixes.hasPrefix(seq);
           if (debug) console.log(`[MLM] token="${token}" seq.len=${seq.length} mlm=${maxLengthMatch} seqGtMlm=${seq.length > maxLengthMatch} hasPrefix=${hp} seq=[${seq.join(',')}]`);
@@ -331,7 +331,7 @@ export default class BackoffModel extends SuffixGram {
     }
     return this;
   }
-  
+
   static resolveOpts(n, options, ignorableKeys = []) {
     if (typeof options !== 'undefined' && !SuffixGram.isObject(options)) {
       throw Error('Options must be an object');

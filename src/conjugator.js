@@ -437,7 +437,7 @@ class Conjugator {
     let allVerb = this.allVerbs;
     while (w.length > 1) {
       let pattern = new RegExp("^" + w);
-      let guess = allVerb.filter(item => pattern.test(item));
+      let guess = allVerb.filter(item => item.startsWith(w));
       if (!guess || guess.length < 1) {
         w = w.slice(0, -1);
         continue;

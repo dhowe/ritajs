@@ -65,18 +65,20 @@ class Concorder {
   ///////////////////////////////////////////////////////////////////////////
 
   _buildModel() {
-    if (!this.words || this.words.length == 0) throw Error('No text in model'); 
+    if (!this.words || this.words.length == 0) {
+      throw Error('No text in model'); 
+    }
     this.model = {};
     for (let j = 0; j < this.words.length; j++) {
       let word = this.words[j];
       if (this._isIgnorable(word)) continue;
-      let _lookup = this._lookup(word);
+      let key = this._compareKey(word);
+      let _lookup = this.model[key];
       // The typeof check below fixes a strange bug in Firefox: #XYZ
       // where the string 'watch' comes back from _lookup as a function
-      // TODO: resolve in a better way
       if (!_lookup || typeof _lookup !== 'object') {
-        _lookup = { word: word, key: this._compareKey(word), indexes: [] };
-        this.model[_lookup.key] = _lookup;
+        _lookup = { word: word, key, indexes: [] };
+        this.model[key] = _lookup;
       }
       _lookup.indexes.push(j);
     }

@@ -52,27 +52,11 @@ export default class SuffixArray {
   compressTokens(input) {
     if (!input || !input.length) return input;
 
-    let words = new Set(); // set of all words
-    for (let i = 0; i < input.length; i++) {
-      words.add(input[i]);
-    }
+    this.encoder = {};
+    this.decoder = Array.from(new Set(input)).sort();
+    this.decoder.forEach((word, i) => this.encoder[word] = i);
 
-    // words are sorted lexicographically
-    this.decoder = Array.from(words).sort();
-
-    // create mapping: word -> sorted-position
-    this.encoder = {}; // perf: loop 
-    for (let i = 0; i < this.decoder.length; i++) {
-      this.encoder[this.decoder[i]] = i;
-    }
-
-    // compress input based on mapping table
-    let compressed = []; // perf: loop 
-    for (let i = 0; i < input.length; i++) {
-      compressed.push(this.encoder[input[i]]);
-    }
-
-    return compressed;
+    return input.map(token => this.encoder[token]);
   }
 
   toFileSync(path) {
