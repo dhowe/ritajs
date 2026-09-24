@@ -15,6 +15,15 @@ describe('Markov', function () {
     Random = RiTa.randomizer;
   });
 
+  
+  it('should call generate with tight maxLengthMatch + minLength', function () {
+    // regression test from annograms
+    let rm = new RiMarkov(3, { maxLengthMatch: 6, trace: 0 });
+    rm.addText(sample + ' ' + sample4);
+    let sents = rm.generate(4, {minLength: 8 });
+    expect(sents.length).eq(4);
+  });
+
   it('should call RiMarkov', function () {
     let rm = RiTa.markov(3);
     ok(typeof rm === 'object');
