@@ -127,7 +127,7 @@ console.log(grammar.expand());
 
 [RiScript](https://github.com/dhowe/riscript) (the minor language that powers RiTa) was designed specifically for writers working with code. RiScript primitives (choices, symbols, gates, transforms, etc) can be used as part of any RiTa [grammar](https://rednoise.org/rita/reference/RiTa/grammar/) or executed directly using [RiTa.evaluate](https://rednoise.org/rita/reference/RiTa/evaluate/). For more info, see this interactive [notebook](https://observablehq.com/@dhowe/riscript) on observable.
 
-<br>&nbsp;<br>
+<br>
 
 ## Developing
 To install/build the library and run tests (with npm/mocha and node v14.x):
