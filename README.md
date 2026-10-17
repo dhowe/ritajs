@@ -133,8 +133,8 @@ console.log(grammar.expand());
 To install/build the library and run tests (with npm/mocha and node v14.x):
 ```sh
 
-$ git clone https://github.com/dhowe/ritajs.git
-$ cd ritajs 
+$ git clone https://github.com/dhowe/rita4.git
+$ cd js 
 $ npm install
 $ npm run build 
 $ npm test
@@ -145,18 +145,6 @@ If all goes well, you should see a list of successful tests and find the library
 <br>
 
 Please make contributions via [fork-and-pull](https://reflectoring.io/github-fork-and-pull/) - thanks!
-
----------------
-
-&nbsp;
-
-### Visual Studio Code
-
-Once you have things running with npm/mocha/tsup, you might also try [VSCode](https://code.visualstudio.com/).
-
-Here you can see the tests in the VSCode _Testing_ view
-
-<img width="800" alt="vscode-tests" src="https://github.com/dhowe/ritajs/assets/737638/103665fb-3dc8-448b-9ed3-d706be6797fc">
 
 &nbsp;
 
