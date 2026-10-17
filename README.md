@@ -6,10 +6,11 @@
 
 ## RiTa: tools for computational writing
 
-RiTa is implemented in JavaScript and Java, with a common [API](https://github.com/dhowe/rita4j/blob/master/README.md#api) for both, and is free/libre/open-source.
+RiTa is implemented in JavaScript and Java, with a common [API](https://rednoise.org/rita) for both, and is free/libre/open-source.
 
-### Features in v3.0
+### Features in v4.0
 
+* A complete rewrite of the Markov generator, efficiently employing unbounded (infinite) N-grams
 * Smart lexicon search for words matching part-of-speech, syllable, stress and rhyme patterns
 * Fast, heuristic algorithms for inflection, conjugation, stemming, tokenization, and more
 * Letter-to-sound engine for feature analysis of arbitrary words (with/without lexicon)
@@ -238,7 +239,7 @@ If you already have a sketch, simply add `<script src="https://cdn.jsdelivr.net/
 To install: `$ npm install rita`
 
 ```javascript
-let RiTa = require('rita');
+let { RiTa } = require('rita');
 let data = RiTa.analyze("The elephant took a bite!");
 console.log(data);
 ```
