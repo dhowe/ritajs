@@ -5,11 +5,6 @@
 
 #### This repo has been archived, see the main repo at https://github.com/dhowe/rita
 
-<br> 
-## RiTa: tools for computational writing
-
-RiTa is implemented in JavaScript, Java and Python, with a common [API](https://rednoise.org/rita) for both, and is free/libre/open-source.
-
 <!--
 ### Features
 
