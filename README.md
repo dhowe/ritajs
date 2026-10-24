@@ -87,7 +87,6 @@ console.log(grammar.expand());
       <a href="https://rednoise.org/rita/reference/RiTa/randomSeed/index.html">RiTa.randomSeed()</a><br/>
       <a href="https://rednoise.org/rita/reference/RiTa/randomWord/index.html">RiTa.randomWord()</a><br/>
       <a href="https://rednoise.org/rita/reference/RiTa/rhymes/index.html">RiTa.rhymes()</a><br/>
-      <!--a href="./RiTa/scripting/index.html">RiTa.scripting()</a><br/-->
       <a href="https://rednoise.org/rita/reference/RiTa/search/index.html">RiTa.search()</a><br/>
       <a href="https://rednoise.org/rita/reference/RiTa/sentences/index.html">RiTa.sentences()</a><br/>
       <a href="https://rednoise.org/rita/reference/RiTa/singularize/index.html">RiTa.singularize()</a><br/>
@@ -107,7 +106,6 @@ console.log(grammar.expand());
       <a href="https://rednoise.org/rita/reference/RiMarkov/probability/index.html">probability()</a><br/>
       <a href="https://rednoise.org/rita/reference/RiMarkov/probabilities/index.html">probabilities()</a><br/>
       <a href="https://rednoise.org/rita/reference/RiMarkov/size/index.html">size()</a><br/>
-<!--       <a href="https://rednoise.org/rita/reference/RiMarkov/toString/index.html">toString()</a><br/-->
       <a href="https://rednoise.org/rita/reference/RiMarkov/toJSON/index.html">toJSON()</a><br/> 
       <a href="https://rednoise.org/rita/reference/RiMarkov/fromJSON/index.html">fromJSON()</a><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
     </td>
@@ -117,7 +115,6 @@ console.log(grammar.expand());
       <a href="https://rednoise.org/rita/reference/RiGrammar/removeRule/index.html">removeRule()</a><br/>
       <a href="https://rednoise.org/rita/reference/RiGrammar/addRules/index.html">setRules()</a><br/>
       <a href="https://rednoise.org/rita/reference/RiGrammar/toJSON/index.html">toJSON()</a><br/>
-<!--       <a href="https://rednoise.org/rita/reference/RiGrammar/toString/index.html">toString()</a><br/-->
       <a href="https://rednoise.org/rita/reference/RiGrammar/fromJSON/index.html">fromJSON()</a><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/> 
     </td>
  </tr>
