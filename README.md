@@ -6,9 +6,11 @@
 
 ## RiTa: tools for computational writing
 
-RiTa is implemented in JavaScript and Java, with a common [API](https://rednoise.org/rita) for both, and is free/libre/open-source.
+RiTa is implemented in JavaScript, Java and Python, with a common [API](https://rednoise.org/rita) for both, and is free/libre/open-source.
 
-### Features in v4.0
+This repo has been archived, see the main repo at https://github.com/dhowe/rita
+<!--
+### Features
 
 * A complete rewrite of the Markov generator, efficiently employing unbounded (infinite) N-grams
 * Smart lexicon search for words matching part-of-speech, syllable, stress and rhyme patterns
@@ -17,8 +19,6 @@ RiTa is implemented in JavaScript and Java, with a common [API](https://rednoise
 * Integration of the [RiScript](https://observablehq.com/@dhowe/riscript) scripting language, built with the blazing fast [Chevrotain](https://chevrotain.io/) parser
 * New options for generation via grammars and Markov chains
 * Published in ESM, CommonJS and as an IIFE
-
-Note: version 3.0 contains breaking changes -- please check the [release notes](https://rednoise.org/rita/#whats-new)
 
 ### Installation
 
@@ -245,3 +245,4 @@ This project exists only because of the people who contribute. Thank you!
 <a href="https://opencollective.com/rita/donate" target="_blank">
   <img src="https://opencollective.com/rita/contribute/button@2x.png?color=blue" width=300 />
 </a>
+-->
